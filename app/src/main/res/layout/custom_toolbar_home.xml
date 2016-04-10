@@ -9,8 +9,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="bottom"
-        android:paddingTop="@dimen/dimen_12dp"
         android:paddingRight="@dimen/dimen_16dp">
         <ImageButton
             android:id="@+id/btn_menu"
@@ -19,6 +17,7 @@
             android:layout_alignParentLeft="true"
             android:src="@drawable/navigation_icon"
             android:background="@color/transparent"
+            android:layout_centerVertical="true"
            />
         <SearchView
             android:layout_width="match_parent"
@@ -28,7 +27,8 @@
             android:layout_toRightOf="@+id/btn_menu"
             android:layout_toLeftOf="@+id/ib_new_compose"
             android:background="@drawable/round_corner_bg_white_2"
-           >
+            android:layout_centerVertical="true"
+            >
 
         </SearchView>
         <ImageButton
@@ -39,6 +39,7 @@
             android:src="@drawable/ic_pen"
             android:background="@color/transparent"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             />
 
 

@@ -30,6 +30,7 @@
     <dimen name="dimen_8dp">8dp</dimen>
     <dimen name="dimen_12dp">12dp</dimen>
     <dimen name="dimen_16dp">16dp</dimen>
+    <dimen name="dimen_20dp">20dp</dimen>
     <dimen name="dimen_24dp">24dp</dimen>
     <dimen name="dimen_28dp">28dp</dimen>
 
@@ -55,4 +56,7 @@
     <dimen name="edittext_height">36dp</dimen>
     <dimen name="tabbar_height">52dp</dimen>
     <dimen name="button_height">36dp</dimen>
+    <dimen name="avatar_size">56dp</dimen>
+    <dimen name="avatar_bg_size">65dp</dimen>
+    <dimen name="social_button_size">42dp</dimen>
 </resources>

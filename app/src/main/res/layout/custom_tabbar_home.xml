@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/tabbar_height"
-    android:background="@drawable/bottom_bar_green">
+    android:background="@drawable/bg_bottom_bar_green">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/tabbar_height"
@@ -31,7 +31,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_chatting_full"
+                android:src="@drawable/chat_bubble_white"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
         <RelativeLayout
@@ -42,7 +42,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_camera_white"
+                android:src="@drawable/camera_white"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
         <RelativeLayout
@@ -53,7 +53,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_checkin_white"
+                android:src="@drawable/checkin_white"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
         <RelativeLayout

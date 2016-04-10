@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.heyoe.controller.fragments.SignupFragment"
-    android:background="@drawable/green_bg">
+    android:background="@drawable/bg_green">
 
   <LinearLayout
       android:layout_width="fill_parent"
