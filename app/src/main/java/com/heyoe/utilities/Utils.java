@@ -21,8 +21,9 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.allytours.R;
-import com.allytours.model.Constant;
+
+import com.heyoe.R;
+import com.heyoe.model.Constant;
 
 import org.json.JSONObject;
 
@@ -106,35 +107,7 @@ public class Utils {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
-    public static Dialog showProgressDialog(Context mContext, String text,
-                                            boolean cancelable) {
-        Dialog mDialog = new Dialog(mContext, R.style.ProgressBarTheme);
-        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        LayoutInflater mInflater = LayoutInflater.from(mContext);
-        mDialog.getWindow().setBackgroundDrawable(
-                new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        View layout = mInflater.inflate(R.layout.custom_progressbar, null);
-        mDialog.setContentView(layout);
-
-        TextView tvProgressMessage = (TextView) layout
-                .findViewById(R.id.tvProgressMessage);
-
-        if (text.equals(""))
-            tvProgressMessage.setVisibility(View.GONE);
-        else
-            tvProgressMessage.setText(text);
-
-        mDialog.setCancelable(cancelable);
-        mDialog.setCanceledOnTouchOutside(false);
-		/*
-		 * mDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND
-		 * );
-		 */
-        mDialog.show();
-
-        return mDialog;
-    }
     public static synchronized void hideProgress () {
         if (mProgressDialog != null)
         {

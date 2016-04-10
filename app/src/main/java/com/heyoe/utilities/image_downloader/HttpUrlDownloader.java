@@ -3,7 +3,6 @@ package com.heyoe.utilities.image_downloader;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.allytours.utilities.image_downloader.UrlImageViewHelper.RequestPropertiesCallback;
 
 import org.apache.http.NameValuePair;
 
@@ -13,13 +12,13 @@ import java.net.URL;
 import java.util.ArrayList;
 
 public class HttpUrlDownloader implements UrlDownloader {
-    private RequestPropertiesCallback mRequestPropertiesCallback;
+    private UrlImageViewHelper.RequestPropertiesCallback mRequestPropertiesCallback;
 
-    public RequestPropertiesCallback getRequestPropertiesCallback() {
+    public UrlImageViewHelper.RequestPropertiesCallback getRequestPropertiesCallback() {
         return mRequestPropertiesCallback;
     }
 
-    public void setRequestPropertiesCallback(final RequestPropertiesCallback callback) {
+    public void setRequestPropertiesCallback(final UrlImageViewHelper.RequestPropertiesCallback callback) {
         mRequestPropertiesCallback = callback;
     }
 

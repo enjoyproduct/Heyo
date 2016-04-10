@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/toolbar_green">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:paddingTop="@dimen/dimen_12dp"
+        android:paddingRight="@dimen/dimen_16dp">
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/navigation_icon"
+            android:background="@color/transparent"
+           />
+        <SearchView
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_marginLeft="@dimen/dimen_12dp"
+            android:layout_marginRight="@dimen/dimen_12dp"
+            android:layout_toRightOf="@+id/btn_menu"
+            android:layout_toLeftOf="@+id/ib_new_compose"
+            android:background="@drawable/round_corner_bg_white_2"
+           >
+
+        </SearchView>
+        <ImageButton
+            android:id="@+id/ib_new_compose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_pen"
+            android:background="@color/transparent"
+            android:layout_alignParentRight="true"
+            />
+
+
+    </RelativeLayout>
+
+</android.support.v7.widget.Toolbar>

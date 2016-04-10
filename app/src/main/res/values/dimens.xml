@@ -53,6 +53,6 @@
     <dimen name="space_between_content">8dp</dimen>
     <dimen name="menu_text_size">14sp</dimen>
     <dimen name="edittext_height">36dp</dimen>
-    <dimen name="tabbar_height">42dp</dimen>
+    <dimen name="tabbar_height">52dp</dimen>
     <dimen name="button_height">36dp</dimen>
 </resources>

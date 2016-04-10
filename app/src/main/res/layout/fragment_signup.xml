@@ -24,6 +24,7 @@
                   android:layout_height="match_parent"
                   android:background="@drawable/green_menu_banner"/>
               <ImageView
+                  android:id="@+id/iv_signup_banner"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:background="@drawable/green_menu_banner_noeffect"/>
@@ -32,6 +33,7 @@
                   android:layout_height="match_parent"
                   android:layout_margin="@dimen/dimen_28dp">
                   <ImageView
+                      android:id="@+id/iv_signup_default_avatar"
                       android:layout_width="match_parent"
                       android:layout_height="match_parent"
                       android:src="@drawable/default_circular_user_photo"
@@ -39,6 +41,7 @@
 
                       />
                   <ImageView
+                      android:id="@+id/iv_signup_white_circle"
                       android:layout_width="match_parent"
                       android:layout_height="match_parent"
                       android:src="@drawable/white_circle_border"
@@ -46,6 +49,7 @@
 
                       />
                   <com.heyoe.widget.MyCircularImageView
+                      android:id="@+id/civ_signup_avatar"
                       android:layout_width="match_parent"
                       android:layout_height="match_parent"
                       android:layout_centerInParent="true"
@@ -85,11 +89,14 @@
                   android:layout_marginTop="@dimen/dimen_4dp"
                   android:gravity="center_vertical">
                   <EditText
+                      android:id="@+id/et_signup_firstname"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:hint="@string/firstname"
                       android:background="@null"
-                      android:inputType="text"/>
+                      android:inputType="text"
+                      android:maxLength="50"
+                      android:singleLine="true"/>
               </LinearLayout>
               <!--Lastname-->
               <LinearLayout
@@ -102,11 +109,14 @@
                   android:layout_marginTop="@dimen/dimen_4dp"
                   android:gravity="center_vertical">
                   <EditText
+                      android:id="@+id/et_signup_lastname"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:hint="@string/lastname"
                       android:background="@null"
-                      android:inputType="text"/>
+                      android:inputType="text"
+                      android:maxLength="50"
+                      android:singleLine="true"/>
               </LinearLayout>
               <!--email-->
               <LinearLayout
@@ -119,11 +129,14 @@
                   android:layout_marginTop="@dimen/dimen_4dp"
                   android:gravity="center_vertical">
                   <EditText
+                      android:id="@+id/et_signup_email"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:hint="@string/email"
                       android:background="@null"
-                      android:inputType="textEmailAddress"/>
+                      android:inputType="textEmailAddress"
+                      android:maxLength="50"
+                      android:singleLine="true"/>
               </LinearLayout>
               <!--password-->
               <LinearLayout
@@ -136,11 +149,14 @@
                   android:layout_marginTop="@dimen/dimen_4dp"
                   android:gravity="center_vertical">
                   <EditText
+                      android:id="@+id/et_signup_password"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:hint="@string/password"
                       android:background="@null"
-                      android:inputType="textPassword"/>
+                      android:inputType="textPassword"
+                      android:maxLength="50"
+                      android:singleLine="true"/>
               </LinearLayout>
               <!--confirm password-->
               <LinearLayout
@@ -153,11 +169,14 @@
                   android:layout_marginTop="@dimen/dimen_4dp"
                   android:gravity="center_vertical">
                   <EditText
+                      android:id="@+id/et_signup_confirm_pass"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:hint="@string/confirm_password"
                       android:background="@null"
-                      android:inputType="textPassword"/>
+                      android:inputType="textPassword"
+                      android:maxLength="50"
+                      android:singleLine="true"/>
               </LinearLayout>
 
           </LinearLayout>
@@ -176,6 +195,7 @@
                   android:orientation="horizontal"
                   android:gravity="center">
                   <Button
+                      android:id="@+id/btn_signup"
                       android:layout_width="100dp"
                       android:layout_height="@dimen/button_height"
                       android:background="@drawable/round_corner_bg_white"
@@ -228,6 +248,7 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content">
                           <TextView
+                              android:id="@+id/tv_signup_termsofuse"
                               android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
                               android:text="@string/Terms_of_use"
@@ -246,6 +267,7 @@
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content">
                           <TextView
+                              android:id="@+id/tv_signup_privacypolicy"
                               android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
                               android:text="@string/Privacy_policy"

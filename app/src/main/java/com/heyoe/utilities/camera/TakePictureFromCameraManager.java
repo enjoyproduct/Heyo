@@ -10,9 +10,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.allytours.R;
-import com.allytours.utilities.MediaUtility;
-import com.allytours.utilities.UIUtility;
+import com.heyoe.R;
+import com.heyoe.utilities.MediaUtility;
 
 import java.io.File;
 import java.io.IOException;

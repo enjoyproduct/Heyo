@@ -47,6 +47,7 @@
                 android:layout_weight="1.05"
                 >
                 <RelativeLayout
+                    android:id="@+id/rl_signin_fb"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -60,6 +61,7 @@
                         android:background="@color/transparent"/>
                 </RelativeLayout>
                 <RelativeLayout
+                    android:id="@+id/rl_signin_google"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -88,11 +90,14 @@
                 android:layout_weight="0.8"
                 android:gravity="center">
                 <EditText
+                    android:id="@+id/et_signin_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:hint="@string/email"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="textEmailAddress"
+                    android:maxLength="50"
+                    android:singleLine="true"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
@@ -100,14 +105,18 @@
                     android:layout_marginTop="@dimen/dimen_4dp"
                     android:layout_marginBottom="@dimen/dimen_4dp"/>
                 <EditText
+                    android:id="@+id/et_signin_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:hint="@string/password"
-                    android:inputType="textPassword"/>
+                    android:inputType="textPassword"
+                    android:maxLength="50"
+                    android:singleLine="true"/>
             </LinearLayout>
             <!--login button-->
             <Button
+                android:id="@+id/btn_signin"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/dimen_28dp"
@@ -132,6 +141,7 @@
 
                 >
                 <TextView
+                    android:id="@+id/tv_signin_forgot_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -143,6 +153,7 @@
                     android:layout_marginLeft="@dimen/dimen_8dp"
                     android:background="@color/white"/>
                 <TextView
+                    android:id="@+id/tv_signin_register"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
