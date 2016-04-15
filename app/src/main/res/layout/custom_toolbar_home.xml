@@ -11,7 +11,7 @@
         android:orientation="horizontal"
         android:paddingRight="@dimen/dimen_16dp">
         <ImageButton
-            android:id="@+id/btn_menu"
+            android:id="@+id/ib_menu"
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_alignParentLeft="true"
@@ -20,19 +20,20 @@
             android:layout_centerVertical="true"
            />
         <SearchView
+            android:id="@+id/sv_menu"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:layout_marginLeft="@dimen/dimen_12dp"
             android:layout_marginRight="@dimen/dimen_12dp"
             android:layout_toRightOf="@+id/btn_menu"
-            android:layout_toLeftOf="@+id/ib_new_compose"
+            android:layout_toLeftOf="@+id/ib_menu_new_compose"
             android:background="@drawable/round_corner_bg_white_2"
             android:layout_centerVertical="true"
             >
 
         </SearchView>
         <ImageButton
-            android:id="@+id/ib_new_compose"
+            android:id="@+id/ib_menu_new_compose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"

@@ -246,15 +246,15 @@ public class Utils {
     }
 
     //////check email
-
-    public final static boolean isValidEmail(CharSequence target) {
-        if (target == null) {
-            return false;
-        } else {
-            return Patterns.EMAIL_ADDRESS.matcher(target)
-                    .matches();
-        }
-    }
+//
+//    public final static boolean isValidEmail(CharSequence target) {
+//        if (target == null) {
+//            return false;
+//        } else {
+//            return Patterns.EMAIL_ADDRESS.matcher(target)
+//                    .matches();
+//        }
+//    }
     /**
      * method is used for checking valid email id format.
      *

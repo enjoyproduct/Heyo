@@ -4,8 +4,30 @@ package com.heyoe.model;
  * Created by dell17 on 4/10/2016.
  */
 public class UserModel {
-    String user_id, fullname, email, city, country, birthday, about_me, celebrity, media_count, friend_count,
-        avatar, header_photo, header_video, gender;
+    String user_id;
+    String fullname;
+    String email;
+    String city;
+    String country;
+    String birthday;
+    String about_me;
+    String celebrity;
+    String media_count;
+    String friend_count;
+    String avatar;
+    String header_photo;
+    String header_video;
+    String gender;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    String password;
 
     public String getUser_id() {
         return user_id;

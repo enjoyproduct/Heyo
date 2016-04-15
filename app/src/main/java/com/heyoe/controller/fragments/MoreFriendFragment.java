@@ -1,30 +1,105 @@
 package com.heyoe.controller.fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
+import com.heyoe.model.UserModel;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MoreFriendFragment extends Fragment {
 
+    private ListView lvHome;
+    private PullToRefreshListView mPullRefreshHomeListView;
+    private FriendAdapter FriendAdapter;
+    private Context mContext;
+    static boolean isLast;
+    static int offset;
+    private ArrayList<UserModel> arrUsers;
 
     public MoreFriendFragment() {
         // Required empty public constructor
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_more_friend, container, false);
+        View view = inflater.inflate(R.layout.fragment_more_friend, container, false);
+        return view;
+    }
+
+    private void initVariables() {
+        mContext = getActivity();
+        isLast = false;
+        offset = 0;
+        arrUsers = new ArrayList<>();
+    }
+    private void initUI(View view) {
+///create listview
+        mPullRefreshHomeListView = (PullToRefreshListView) view.findViewById(R.id.lv_friend_list);
+//        mPullRefreshHomeListView.setVisibility(View.GONE);
+        mPullRefreshHomeListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
+
+            @Override
+            public void onLastItemVisible() {
+                if (!isLast) {
+//                    defaluteFetchTrip(currentCategory, GlobalVariable.getInstance().currentCountryName);
+//                    reDrawListView();
+                }
+                mPullRefreshHomeListView.onRefreshComplete();
+
+            }
+        });
+        lvHome = mPullRefreshHomeListView.getRefreshableView();
+        FriendAdapter = new FriendAdapter(arrUsers);
+        lvHome.setAdapter(FriendAdapter);
+    }
+    public class FriendAdapter extends BaseAdapter {
+
+        LayoutInflater mlayoutInflater;
+        ArrayList<UserModel> arrFriends;
+        public FriendAdapter (ArrayList<UserModel> arrFriends) {
+            mlayoutInflater = LayoutInflater.from(mContext);
+            this.arrFriends = arrFriends;
+        }
+        @Override
+        public int getCount() {
+            return arrFriends.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return arrFriends.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                view = mlayoutInflater.inflate(R.layout.item_activity, null);
+            }
+            UserModel UserModel = arrFriends.get(position);
+
+            return view;
+        }
     }
 
 }

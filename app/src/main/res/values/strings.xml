@@ -27,18 +27,36 @@
     <string name="and">and</string>
     <string name="Privacy_policy">Privacy policy</string>
     <string name="checkout_all_comment">Checkout all comments</string>
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
+
+    <string name="FAVORITES">FAVORITES</string>
+    <string name="FRIENDS">FRIENDS</string>
+    <string name="MORE_FRIENDS">MORE FRIENDS</string>
+    <string name="INVITE_FRIENDS">INVITE FRIENDS</string>
+    <string name="GROUPS">GROUPS</string>
+    <string name="CALENDAR">CALENDAR</string>
+    <string name="FAQ">FAQ</string>
+    <string name="LOG_OUT">LOG OUT</string>
+
+    <string name="INFO">INFO</string>
+    <string name="MEDIA">MEDIA</string>
+    <string name="FRIEND">FRIENDS</string>
+
+    <string name="photos">photos</string>
+    <string name="videos">videos</string>
+
+    <string name="contact">contact</string>
+    <string name="about_you">about you</string>
+    <string name="Name">Name</string>
+    <string name="City">City</string>
+    <string name="Country">Country</string>
+    <string name="Language">Language</string>
+    <string name="Email">Email</string>
+    <string name="Birthday">Birthday</string>
+    <string name="Gender">Gender</string>
+    <string name="Celebrity">Celebrity</string>
+    <string name="Password">Password</string>
+    <string name="Confirm_Password">Confirm Password</string>
+
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
@@ -76,4 +94,78 @@
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
 
+    <!--Alert text-->
+    <string name="Please_input_name">Please input your name</string>
+    <string name="Invalid_email">Invalid email</string>
+    <string name="Input_password">Please input password</string>
+    <string name="Confirm_password">Please confrim password</string>
+    <string name="input_email">Please input email</string>
+    <string name="choose_avatar">Choose picture from</string>
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+
+    <!--response string-->
+    <string name="email_registerd">Email already registered</string>
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
 </resources>

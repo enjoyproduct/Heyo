@@ -58,5 +58,7 @@
     <dimen name="button_height">36dp</dimen>
     <dimen name="avatar_size">56dp</dimen>
     <dimen name="avatar_bg_size">65dp</dimen>
+    <dimen name="avatar_size_profile">72dp</dimen>
+    <dimen name="avatar_bg_size_profile">84dp</dimen>
     <dimen name="social_button_size">42dp</dimen>
 </resources>

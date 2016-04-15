@@ -1,4 +1,5 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,7 +21,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/logo_small1"/>
+                android:src="@drawable/logo"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,7 +56,7 @@
                     android:layout_marginRight="@dimen/dimen_4dp">
                     <ImageButton
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/ic_facebook"
                         android:layout_centerInParent="true"
                         android:background="@color/transparent"/>
@@ -69,7 +70,7 @@
                     android:layout_marginLeft="@dimen/dimen_4dp">
                     <ImageButton
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/ic_google"
                         android:layout_centerInParent="true"
                         android:background="@color/transparent"/>
@@ -162,4 +163,4 @@
         </LinearLayout>
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>
