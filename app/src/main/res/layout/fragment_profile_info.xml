@@ -1,11 +1,11 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.heyoe.controller.fragments.ProfileInfoFragment">
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="fill_parent">
         <LinearLayout
             android:layout_width="fill_parent"
@@ -27,7 +27,7 @@
                 <ImageButton
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/check_green"
+                    android:src="@drawable/edit_pen"
                     android:background="@color/transparent"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
@@ -42,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@color/grey_light"
+
                 >
                 <TextView
                     android:id="@+id/tv_info_name"
@@ -51,8 +52,17 @@
                     android:textSize="@dimen/txt_18sp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dimen_16dp"/>
-                <TextView
-                    android:id="@+id/tv_info_name_content"
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_info_name_content"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Jessica"-->
+                    <!--android:textSize="@dimen/txt_18sp"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginRight="@dimen/dimen_16dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:textColor="@color/black"/>-->
+                <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Jessica"
@@ -60,16 +70,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dimen_16dp"
                     android:layout_alignParentRight="true"
-                    android:textColor="@color/black"/>
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Jessica"
-                    android:textSize="@dimen/txt_18sp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/dimen_16dp"
-                    android:layout_marginLeft="@dimen/dimen_16dp"
-                    android:layout_alignParentRight="true"
+                    android:singleLine="true"
+                    android:maxLength="50"
                     android:background="@color/transparent"/>
             </RelativeLayout>
             <TextView
@@ -97,6 +99,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dimen_16dp"
                     android:layout_alignParentRight="true"
+                    android:singleLine="true"
+                    android:maxLength="50"
                     android:background="@color/transparent"/>
             </RelativeLayout>
             <TextView
@@ -124,6 +128,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dimen_16dp"
                     android:layout_alignParentRight="true"
+                    android:singleLine="true"
+                    android:maxLength="50"
                     android:background="@color/transparent"/>
             </RelativeLayout>
             <TextView
@@ -151,6 +157,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dimen_16dp"
                     android:layout_alignParentRight="true"
+                    android:singleLine="true"
+                    android:maxLength="50"
                     android:background="@color/transparent"/>
             </RelativeLayout>
             <TextView
@@ -178,6 +186,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dimen_16dp"
                     android:layout_alignParentRight="true"
+                    android:singleLine="true"
+                    android:maxLength="50"
                     android:background="@color/transparent"/>
             </RelativeLayout>
             <TextView
@@ -205,13 +215,15 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dimen_16dp"
                     android:layout_alignParentRight="true"
+                    android:singleLine="true"
+                    android:maxLength="50"
                     android:background="@color/transparent"/>
             </RelativeLayout>
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/grey"/>
-            <!--gender-->
+            <!--celebrity-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -246,13 +258,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="@string/contact"
+                    android:text="@string/about_you"
                     android:textColor="@color/green"
                     android:textSize="@dimen/dimen_24dp"/>
                 <ImageButton
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    android:src="@drawable/check_green"
+                    android:src="@drawable/edit_pen"
                     android:background="@color/transparent"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
@@ -262,33 +274,29 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/grey"/>
-            <!--about you content-->
+            <!--about you-->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@color/grey_light"
                 >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Celebrity"
-                    android:textSize="@dimen/txt_18sp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dimen_16dp"/>
+
                 <EditText
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Name"
+                    android:text="Life is not about waiting for the..."
                     android:textSize="@dimen/txt_18sp"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dimen_16dp"
                     android:layout_marginRight="@dimen/dimen_16dp"
-                    android:layout_alignParentRight="true"
-                    android:background="@color/transparent"/>
+                    android:background="@color/transparent"
+                    android:maxLength="200"/>
             </RelativeLayout>
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/grey"/>
+
             <!--password-->
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -298,7 +306,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="@string/contact"
+                    android:text="@string/password"
                     android:textColor="@color/green"
                     android:textSize="@dimen/dimen_24dp"/>
                 <ImageButton
@@ -310,7 +318,68 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dimen_16dp"/>
             </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/grey_light"
+                >
+                <TextView
+                    android:id="@+id/tv_profile_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/password"
+                    android:textSize="@dimen/txt_18sp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dimen_16dp"/>
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Female"
+                    android:textSize="@dimen/txt_18sp"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:maxLength="50"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_profile_password"
+                    android:layout_marginLeft="@dimen/dimen_16dp"
+                    android:background="@color/transparent"/>
+            </RelativeLayout>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/grey"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/grey_light"
+                >
+                <TextView
+                    android:id="@+id/tv_profile_confirm_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/confirm_password"
+                    android:textSize="@dimen/txt_18sp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dimen_16dp"/>
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Female"
+                    android:textSize="@dimen/txt_18sp"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:maxLength="50"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_profile_confirm_password"
+                    android:layout_marginLeft="@dimen/dimen_16dp"
+                    android:background="@color/transparent"/>
+            </RelativeLayout>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/grey"/>
+
         </LinearLayout>
     </ScrollView>
 
-</FrameLayout>
+</LinearLayout>

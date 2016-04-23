@@ -2,6 +2,7 @@ package com.heyoe.controller.fragments;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.heyoe.R;
 import com.heyoe.controller.HomeActivity;
+import com.heyoe.controller.ProfileActivity;
 import com.heyoe.widget.MyCircularImageView;
 
 import java.util.ArrayList;
@@ -54,13 +56,19 @@ public class MainMenuFragment extends Fragment {
 
     }
     private void initUI(View view) {
-        ivDefaultAvatar = (ImageView)view.findViewById(R.id.iv_menu_default_avatar);
+//        ivDefaultAvatar = (ImageView)view.findViewById(R.id.iv_menu_default_avatar);
         ivWhiteCircle = (ImageView)view.findViewById(R.id.iv_menu_white_circle);
         ivCheckCelibrity = (ImageView)view.findViewById(R.id.iv_menu_celebrity);
         myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_menu_avatar);
         tvFullname = (TextView)view.findViewById(R.id.tv_menu_fullname);
         listView = (ListView)view.findViewById(R.id.lv_menu_listview);
 
+        myCircularImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.startActivity(new Intent(mActivity, ProfileActivity.class));
+            }
+        });
         MenuAdapter menuAdapter = new MenuAdapter(generateMenuModel());
         listView.setAdapter(menuAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -93,6 +101,7 @@ public class MainMenuFragment extends Fragment {
         int[] titles = {
                 R.string.FAVORITES,
                 R.string.FRIENDS,
+                R.string.REQUESTS,
                 R.string.MORE_FRIENDS,
                 R.string.INVITE_FRIENDS,
                 R.string.GROUPS,

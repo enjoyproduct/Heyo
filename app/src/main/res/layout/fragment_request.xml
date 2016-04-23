@@ -1,13 +1,45 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.heyoe.controller.fragments.RequestFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
+        <!--tabbar-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <Button
+                android:id="@+id/btn_request_request"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:background="@color/grey"
+                android:text="@string/request"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                />
+            <Button
+                android:id="@+id/btn_request_friend"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:background="@color/white"
+                android:text="@string/friends"
+                android:textColor="@color/green"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+            android:id="@+id/plv_request_request"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:smoothScrollbar="true">
+        </com.handmark.pulltorefresh.library.PullToRefreshListView>
+    </LinearLayout>
 
-</FrameLayout>
+
+</LinearLayout>

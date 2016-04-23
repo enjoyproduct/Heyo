@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 
@@ -28,6 +29,22 @@ public class SocialUtility {
             mContext.startActivity(Intent.createChooser(intent, "Send mail"));
         }
 
+    }
+    public static void sendEmail(Context mContext, String toAddress) {
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.putExtra(Intent.EXTRA_EMAIL, new String[] { toAddress });
+        email.putExtra(Intent.EXTRA_SUBJECT, "Perceptual Yoga");
+        email.putExtra(Intent.EXTRA_TEXT,
+                "Namaste\n\nKeep track of your Yoga activity such as Practice, Teaching and Learning, browse our members database, share your achievements and more. \nDownload Perpetual Yoga \n Find it at your AllytoursApplication Store and Google Play \n https://play.google.com/store?hl=en&tab=i8");
+        email.setType("message/rfc822");
+        mContext.startActivity(Intent.createChooser(email,
+                "Choose an Email client :"));
+    }
+
+    public static void call(Context mContext, String phone) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + phone));
+//        mContext.startActivity(callIntent);
     }
     private void sharingText(Context mContext, String subject, String title, String shareBody){
 

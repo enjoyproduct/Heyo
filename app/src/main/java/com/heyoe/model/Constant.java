@@ -1,14 +1,19 @@
 package com.heyoe.model;
 
+import android.os.Environment;
+
 /**
  * Created by Administrator on 2/9/2016.
  */
 public class Constant {
 
+    public static String MEDIA_PATH = Environment.getExternalStorageDirectory().toString() + "/";
     //////////string parameters
 
     public static String INDECATOR = "Heyoe";
-    public static String DEVICE_TYPE = "android";
+    public static String ANDROID = "android";
+    public static String DEVICE_TYPE = "device_type";
+    public static String DEVICE_TOKEN = "device_token";
 
     public static String USER_ID = "user_id";
     public static String EMAIL = "email";
@@ -19,6 +24,7 @@ public class Constant {
     public static String BIRTHDAY = "birthday";
     public static String GENDER = "gender";
     public static String AVATAR = "avatar";
+    public static String ADD_AVATAR = "add_avatar";
     public static String CITY = "city";
     public static String COUNTRY = "country";
     public static String VERIFY_CODE = "verify_code";
@@ -31,12 +37,13 @@ public class Constant {
 
 
     ///for facebook login
-    public static String FB_EMAIL = "fb_email";
-    public static String FB_ID = "fb_id";
-    public static String FB_ACCESS_TOKEN = "fb_access_token";
-    public static String FB_NAME = "fb_name";
-    public static String FB_PHOTO = "fb_photo";
+    public static String FB_EMAIL = INDECATOR + "_fb_email";
+    public static String FB_ID = INDECATOR + "_fb_id";
+    public static String FB_ACCESS_TOKEN = INDECATOR + "_fb_access_token";
+    public static String FB_NAME = INDECATOR + "_fb_name";
+    public static String FB_PHOTO = INDECATOR + "_fb_photo";
 
-
+    public static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 101;
+    public static int REQUEST_PLACE_PICKER = 102;
 
 }

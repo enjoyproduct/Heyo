@@ -3,7 +3,6 @@ package com.heyoe.utilities.camera;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,7 +10,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.heyoe.R;
-import com.heyoe.utilities.MediaUtility;
+import com.heyoe.utilities.BitmapUtility;
 
 import java.io.File;
 import java.io.IOException;
@@ -101,11 +100,11 @@ public class TakePictureFromCameraManager {
     }
     private void setPicture() {
         ////////process image to lower quality
-//        String processedImage = MediaUtility.saveProgressimageToSDCARD(bitmap, photoPath.substring(photoPath.lastIndexOf("/") + 1), "Allytours");
+//        String processedImage = BitmapUtility.saveProgressimageToSDCARD(bitmap, photoPath.substring(photoPath.lastIndexOf("/") + 1), "Allytours");
 //        Bitmap finalbitmap = BitmapFactory.decodeFile(processedImage);
-        Bitmap adjustBitmap = MediaUtility.adjustBitmap(photoPath);
-        Bitmap croppedBitmap = MediaUtility.cropBitmapAnySize(adjustBitmap, 200, 200);
-        MediaUtility.saveBitmapToLocal(croppedBitmap, photoPath, photoPath);
+        Bitmap adjustBitmap = BitmapUtility.adjustBitmap(photoPath);
+        Bitmap croppedBitmap = BitmapUtility.cropBitmapAnySize(adjustBitmap, 200, 200);
+        BitmapUtility.saveBitmapToLocal(croppedBitmap, photoPath, photoPath);
         destinationImageView.setImageBitmap(croppedBitmap);
     }
 
@@ -142,7 +141,7 @@ public class TakePictureFromCameraManager {
 //		/* Associate the Bitmap to the ImageView */
 //         /* Decode the JPEG file into a Bitmap */
 //        bitmap = BitmapFactory.decodeFile(photoPath, bmOptions);
-////                bitmap = MediaUtility.rotateImage(bitmap, 90);
+////                bitmap = BitmapUtility.rotateImage(bitmap, 90);
 //
 //        destinationImageView.setImageBitmap(bitmap);
 //

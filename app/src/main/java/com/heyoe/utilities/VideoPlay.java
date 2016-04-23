@@ -11,6 +11,7 @@ public class VideoPlay {
     private Context mContext;
     private VideoView videoView;
     private String videoUrl;/////local path
+
     public VideoPlay(Context context, VideoView videoView, String videoUrl) {
         this.mContext = context;
         this.videoUrl = videoUrl;///local path
@@ -33,13 +34,13 @@ public class VideoPlay {
         }
 //        videoView.seekTo(100);
         videoView.requestFocus();
+        videoView.start();
 //        videoView.seekTo(100);
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Close the progress bar and play the video
             public void onPrepared(MediaPlayer mp) {
                 //////////start play
                 videoView.start();
-                videoView.seekTo(100);
             }
         });
     }

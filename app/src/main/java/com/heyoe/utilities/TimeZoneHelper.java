@@ -62,7 +62,7 @@ public class TimeZoneHelper {
 //                        String timeZoneID = response.getString("timeZoneId");
 //                        String timeZoneName = response.getString("timeZoneName");
 
-                        Utils.setOnPreference(mContext, "rawOffset", rawOffset);
+                        Utils.saveToPreference(mContext, "rawOffset", rawOffset);
                     }
 
                 } catch (Exception e) {
@@ -116,7 +116,7 @@ public class TimeZoneHelper {
 //                        String timeZoneID = response.getString("timeZoneId");
 //                        String timeZoneName = response.getString("timeZoneName");
                             arrOffsets.add(cityName + "=" + String.valueOf(hour));
-//                        Utils.setOnPreference(mContext, "rawOffset", rawOffset);
+//                        Utils.saveToPreference(mContext, "rawOffset", rawOffset);
                     }
 
                 } catch (Exception e) {

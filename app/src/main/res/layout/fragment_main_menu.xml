@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,85 +12,74 @@
         android:weightSum="5"
         android:gravity="center_horizontal">
         <!--profile photo-->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3.1">
-            <RelativeLayout
+            android:layout_height="wrap_content">
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/green_menu_banner"/>
-                <ImageView
-                    android:id="@+id/iv_menu_banner"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/green_menu_banner_noeffect"/>
+                android:layout_height="wrap_content"
+                android:background="@drawable/green_menu_banner"
+                />
+            <!--avatar-->
+            <RelativeLayout
+                android:id="@+id/rl_menu_avatar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_32dp"
+                >
 
-                <!--avatar-->
-                <RelativeLayout
-                    android:id="@+id/rl_menu_avatar"
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/iv_menu_white_circle"
+                    android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_above="@+id/tv_menu_fullname"
-                    android:layout_marginBottom="8dp"
-                    >
-                    <ImageView
-                        android:id="@+id/iv_menu_default_avatar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/default_circular_user_photo"
-                        android:layout_centerInParent="true"
-                        />
-                    <ImageView
-                        android:id="@+id/iv_menu_white_circle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:src="@drawable/white_circle_border"
-                        android:layout_centerInParent="true"
-
-                        />
-                    <com.heyoe.widget.MyCircularImageView
-                        android:id="@+id/civ_menu_avatar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_centerInParent="true"
-                        android:layout_margin="@dimen/dimen_8dp"
+                    android:src="@drawable/white_circle_border"
+                    android:layout_centerInParent="true"
+                    />
+                <com.heyoe.widget.MyCircularImageView
+                    android:id="@+id/civ_menu_avatar"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/user3"
+                    android:layout_margin="@dimen/dimen_8dp"
                     />
 
-                </RelativeLayout>
+            </RelativeLayout>
+            <!--name-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/rl_menu_avatar">
                 <TextView
                     android:id="@+id/tv_menu_fullname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Esteban"
+                    android:text="Esra"
                     android:layout_centerHorizontal="true"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     android:textSize="@dimen/txt_18sp"
-                    android:layout_marginBottom="50dp"
-                    android:layout_alignParentBottom="true"
                     />
                 <ImageView
                     android:id="@+id/iv_menu_celebrity"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/check"
                     android:layout_toRightOf="@+id/tv_menu_fullname"
-                    android:layout_below="@+id/rl_menu_avatar"
                     android:layout_marginLeft="@dimen/dimen_8dp"/>
             </RelativeLayout>
-        </LinearLayout>
+
+        </RelativeLayout>
         <ListView
             android:id="@+id/lv_menu_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.9">
+            android:dividerHeight="0dp"
+            >
 
         </ListView>
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>

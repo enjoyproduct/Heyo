@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
+import com.heyoe.model.ActivityModel;
 import com.heyoe.model.UserModel;
 
 import java.util.ArrayList;
@@ -41,6 +42,8 @@ public class FriendFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friend, container, false);
+        initVariables();
+        initUI(view);
         return view;
     }
 
@@ -67,7 +70,9 @@ public class FriendFragment extends Fragment {
             }
         });
         lvHome = mPullRefreshHomeListView.getRefreshableView();
-        FriendAdapter = new FriendAdapter(arrUsers);
+//        for test
+        FriendAdapter = new FriendAdapter(makeSampleActivity());
+
         lvHome.setAdapter(FriendAdapter);
     }
     public class FriendAdapter extends BaseAdapter {
@@ -97,12 +102,22 @@ public class FriendFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = convertView;
             if (view == null) {
-                view = mlayoutInflater.inflate(R.layout.item_activity, null);
+                view = mlayoutInflater.inflate(R.layout.item_friend, null);
             }
             UserModel UserModel = arrFriends.get(position);
 
             return view;
         }
+    }
+
+    //    for test
+    private ArrayList<UserModel> makeSampleActivity() {
+        ArrayList<UserModel> arrayList = new ArrayList<>();
+        for (int i = 0; i < 20; i ++) {
+            UserModel activityModel = new UserModel();
+            arrayList.add(activityModel);
+        }
+        return arrayList;
     }
 
 }

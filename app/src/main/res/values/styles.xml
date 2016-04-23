@@ -26,6 +26,7 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">12sp</item>
     </style>
+
     <style name="AlertTheme" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:bottomBright">@color/transparent</item>
         <item name="android:bottomDark">@color/transparent</item>
@@ -40,6 +41,7 @@
         <item name="android:editable">@color/transparent</item>
         <item name="android:editTextStyle">@style/Widget.EditText.Black</item>
     </style>
+
     <style name="Widget.EditText.Black" parent="@android:style/Widget.EditText">
         <item name="android:textColor">@color/font_blue_color</item>
     </style>

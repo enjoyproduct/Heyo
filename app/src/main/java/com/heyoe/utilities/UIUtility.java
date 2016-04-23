@@ -6,8 +6,11 @@ import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 /**
  * Created by Administrator on 1/4/2016.
@@ -77,11 +80,32 @@ public class UIUtility {
 
 
     }
-//    public static void dismissKeyboard(Context mContext, View registerPlan) {
-//        InputMethodManager inputMethodManager = (InputMethodManager) mContext
-//                .getSystemService(Activity.INPUT_METHOD_SERVICE);
-//        inputMethodManager.hideSoftInputFromWindow(
-//                registerPlan.getWindowToken(), 0);
-//
-//    }
+
+    public static void setImageViewSize(ImageView imageview, int screenWidth){
+
+        imageview.setMaxWidth(screenWidth);
+        imageview.setMaxHeight(screenWidth);
+
+    }
+
+    public static void setRelativeLayoutSize(RelativeLayout relativeLayout, int screenWidth){
+        ViewGroup.LayoutParams layoutParams = null;
+        try{
+            layoutParams =  relativeLayout.getLayoutParams();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        layoutParams.width = screenWidth ;
+        layoutParams.height = screenWidth;
+
+
+        relativeLayout.setLayoutParams(layoutParams);
+
+
+    }
+    public static int getScreenWidth(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return displayMetrics.widthPixels;
+    }
+
 }

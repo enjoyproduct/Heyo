@@ -149,30 +149,30 @@
         android:orientation="horizontal">
         <ImageButton
             android:id="@+id/ib_ipfnf_like"
-            android:layout_width="@dimen/social_button_size"
-            android:layout_height="@dimen/social_button_size"
-            android:src="@drawable/ic_green_heart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_like"
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
         <ImageButton
             android:id="@+id/ib_ipfnf_unlike"
-            android:layout_width="@dimen/social_button_size"
-            android:layout_height="@dimen/social_button_size"
-            android:src="@drawable/ic_unlike_dark_border"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_unlike"
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
         <ImageButton
             android:id="@+id/ib_ipfnf_comment"
-            android:layout_width="@dimen/social_button_size"
-            android:layout_height="@dimen/social_button_size"
-            android:src="@drawable/comment_dark_boarder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_comment"
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
         <ImageButton
             android:id="@+id/ib_ipfnf_share"
-            android:layout_width="@dimen/social_button_size"
-            android:layout_height="@dimen/social_button_size"
-            android:src="@drawable/ic_share_dark_border"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_share"
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
     </LinearLayout>

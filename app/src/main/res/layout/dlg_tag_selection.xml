@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="@dimen/dimen_24dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:background="@color/white">
+        <!--<AutoCompleteTextView-->
+            <!--android:id="@+id/actv_tag_selection"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+        <ListView
+            android:id="@+id/lv_tag_selection"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+        </ListView>
+    </LinearLayout>
+</LinearLayout>

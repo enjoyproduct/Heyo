@@ -147,7 +147,7 @@ public class Utils {
         }
         return objSharedPreferences;
     }
-    public static void setOnPreference(Context context, String key, String value){
+    public static void saveToPreference(Context context, String key, String value){
         SharedPreferences preferences = getSharedPreferences(context);
         /////////save user information in preference
         SharedPreferences.Editor edit = preferences.edit();
@@ -161,23 +161,7 @@ public class Utils {
         return getSharedPreferences(context).getString(key, "");
     }
 
-    public static void sendEmail(Context mContext, String toAddress) {
-        Intent email = new Intent(Intent.ACTION_SEND);
-        email.putExtra(Intent.EXTRA_EMAIL, new String[] { toAddress });
-        email.putExtra(Intent.EXTRA_SUBJECT, "Perceptual Yoga");
-        email.putExtra(
-                Intent.EXTRA_TEXT,
-                "Namaste\n\nKeep track of your Yoga activity such as Practice, Teaching and Learning, browse our members database, share your achievements and more. \nDownload Perpetual Yoga \n Find it at your AllytoursApplication Store and Google Play \n https://play.google.com/store?hl=en&tab=i8");
-        email.setType("message/rfc822");
-        mContext.startActivity(Intent.createChooser(email,
-                "Choose an Email client :"));
-    }
 
-    public static void call(Context mContext, String phone) {
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:" + phone));
-//        mContext.startActivity(callIntent);
-    }
 
     public static void CopyStream(InputStream is, OutputStream os) {
         final int buffer_size = 1024;

@@ -12,6 +12,9 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven {
+        url "https://s3.amazonaws.com/repo.commonsware.com"
+    }
 }
 
 
@@ -23,8 +26,8 @@ android {
         applicationId "com.heyoe"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         multiDexEnabled true
     }
     buildTypes {
@@ -38,17 +41,20 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    compile project(':volleylibrary')
+    compile project(':pullToRefreshLibrary')
+    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
+    //    compile 'com.android.support:multidex:1.0.0'
+    //    compile files('libs/joda-time-2.9.2.jar')
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+        transitive = true;
+    }
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:design:22.2.1'
     compile 'com.android.support:percent:22.2.0'
     compile 'com.android.support:cardview-v7:22.2.1'
-    compile 'com.google.android.gms:play-services:8.1.0'
-    compile project(':volleylibrary')
-    compile project(':pullToRefreshLibrary')
-//    compile project(':facebook-android-sdk-4.10.0')
-//    compile 'com.android.support:multidex:1.0.0'
-//    compile files('libs/joda-time-2.9.2.jar')
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
-        transitive = true;
-    }
+    compile 'com.google.android.gms:play-services:8.3.0'
+    //    compile 'com.android.support:support-v4:22.2.1'
+    compile 'com.commonsware.cwac:richedit:0.5.+'
+    compile files('libs/YouTubeAndroidPlayerApi.jar')
 }

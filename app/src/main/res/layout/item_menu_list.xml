@@ -4,25 +4,26 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
 
-    android:background="@color/green">
+   >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="@dimen/dimen_16dp"
+        android:padding="@dimen/dimen_8dp"
         >
         <ImageView
             android:id="@+id/iv_item_menu"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_star_white"/>
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/ic_star_white"
+            android:layout_marginLeft="@dimen/dimen_12dp"/>
         <TextView
             android:id="@+id/tv_item_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Favorites"
-            android:textSize="@dimen/txt_24sp"
+            android:textSize="@dimen/txt_20sp"
             android:textColor="@color/white"
             android:layout_marginLeft="@dimen/dimen_16dp"
 

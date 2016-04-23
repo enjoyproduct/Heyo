@@ -1,5 +1,10 @@
 package com.heyoe.utilities;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
+
 import java.io.File;
 
 /**
@@ -35,5 +40,29 @@ public class FileUtility {
             return false;
         }
     }
+    public static boolean checkFileExist(String fileName, String PATH){
 
+        File file = new File(PATH + fileName);
+        if(file.exists()){
+            return true;
+        }else
+            return false;
+    }
+    //    convert bitmap to byte[] from Uri============================================end
+    public static String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Video.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri, proj, null,
+                    null, null);
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
 }

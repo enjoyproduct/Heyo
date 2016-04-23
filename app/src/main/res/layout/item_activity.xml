@@ -6,15 +6,15 @@
     android:gravity="center_vertical">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_12dp">
+        android:layout_height="80dp"
+        >
         <!--avatar-->
         <com.heyoe.widget.MyCircularImageView
             android:id="@+id/civ_ia_friend_avatar3"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
             android:src="@drawable/user3"
-
+            android:layout_margin="@dimen/dimen_12dp"
             />
         <!--description-->
         <LinearLayout
@@ -24,12 +24,14 @@
             android:layout_toRightOf="@+id/civ_ia_friend_avatar3"
             android:layout_toLeftOf="@+id/rl_ia_social"
             android:layout_marginLeft="@dimen/dimen_12dp"
-            android:layout_marginRight="@dimen/dimen_12dp">
+            android:layout_marginRight="@dimen/dimen_12dp"
+            android:layout_centerVertical="true">
             <TextView
                 android:id="@+id/tv_ia_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_8dp"
+                android:text="Brown Liked your post"
                 android:maxLines="2"/>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -45,15 +47,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_12dp"
-                    android:text="asdf"/>
+                    android:text="1 hours ago"/>
             </LinearLayout>
         </LinearLayout>
         <!--social icon-->
         <RelativeLayout
             android:id="@+id/rl_ia_social"
             android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_alignParentRight="true">
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen_12dp"
+            android:layout_centerVertical="true">
+            <TextView
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="@color/grey"
+                android:layout_centerHorizontal="true"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,6 +74,8 @@
                 android:layout_height="20dp"
                 android:src="@drawable/ic_like_white_41"
                 android:layout_centerInParent="true"/>
+
+
         </RelativeLayout>
     </RelativeLayout>
 

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
         <!--header media-->
         <RelativeLayout
-            android:id="@+id/rl_profile_media"
+            android:id="@+id/rl_profile_header_media"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <ImageView
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_below="@+id/rl_profile_media">
+            android:layout_below="@+id/rl_profile_header_media">
             <!--username-->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -102,9 +102,11 @@
                     >
                     <!--info-->
                     <RelativeLayout
+                        android:id="@+id/rl_profile_info"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        >
                         <ImageView
                             android:id="@+id/iv_profile_tabbar_userinfo"
                             android:layout_width="28dp"
@@ -122,6 +124,7 @@
                     </RelativeLayout>
                     <!--media-->
                     <RelativeLayout
+                        android:id="@+id/rl_profile_media"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -153,6 +156,7 @@
                     </RelativeLayout>
                     <!--friend-->
                     <RelativeLayout
+                        android:id="@+id/rl_profile_friend"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -178,7 +182,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/rl_profile_media"
+            android:layout_alignBottom="@+id/rl_profile_header_media"
             android:layout_marginBottom="-40dp"
             android:layout_marginLeft="@dimen/dimen_28dp">
             <com.heyoe.widget.MyCircularImageView

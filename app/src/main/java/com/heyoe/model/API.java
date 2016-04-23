@@ -4,12 +4,15 @@ package com.heyoe.model;
  * Created by dell17 on 4/15/2016.
  */
 public class API {
-    public static String BASE_URL = "http://54.213.114.248/Allytour/public/mobile/";
-//    public static String BASE_URL = "http://54.213.114.248/Allytour/public/mobile/";
+//    public static String BASE_URL = "http://192.168.2.2/heyoe/index.php/api/";
+    public static String BASE_URL = "http://www.heyoe.com/heyoe/index.php/api/";
+//    public static String BASE_URL = "http://192.168.2.17/heyoe/index.php/api/";
 
-    public static String SINGUP = BASE_URL + "signup";
-    public static String SINGIN = BASE_URL + "signin";
-    public static String GOOGLE_SINGIN = BASE_URL + "google_signin";
+
+
+    public static String SINGUP = BASE_URL + "sign_up";
+    public static String SINGIN = BASE_URL + "sign_in";
+    public static String SINGIN_SOCIAL = BASE_URL + "sign_in_social";
     public static String GET_ALL_POSTS = BASE_URL + "get_all_posts";
     public static String GET_MY_POSTS = BASE_URL + "get_my_posts";
     public static String DELETE_MY_POST = BASE_URL + "delete_my_post";

@@ -2,10 +2,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".controller.HomeActivity">
-    <item
-        android:id="@+id/action_settings"
+    <item android:id="@+id/action_search"
+        android:orderInCategory="5"
+        android:title="Search"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="ifRoom|collapseActionView"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
+    <item android:id="@+id/ic_compose"
+        android:title="Compose"
+        android:icon="@drawable/ic_pen"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"
-        android:visible="false"/>
+        app:showAsAction="ifRoom"/>
 </menu>

@@ -33,6 +33,7 @@
     <dimen name="dimen_20dp">20dp</dimen>
     <dimen name="dimen_24dp">24dp</dimen>
     <dimen name="dimen_28dp">28dp</dimen>
+    <dimen name="dimen_32dp">32dp</dimen>
 
 
     <dimen name="txt_7sp">7sp</dimen>
@@ -60,5 +61,5 @@
     <dimen name="avatar_bg_size">65dp</dimen>
     <dimen name="avatar_size_profile">72dp</dimen>
     <dimen name="avatar_bg_size_profile">84dp</dimen>
-    <dimen name="social_button_size">42dp</dimen>
+    <dimen name="social_button_size">36dp</dimen>
 </resources>

@@ -35,7 +35,7 @@ public  class DiskBitmapCache extends DiskBasedCache implements ImageCache {
 /*			//Down size the bitmap.If not done, OutofMemoryError occurs while decoding large bitmaps.
              // If w & h is set during image request ( using ImageLoader ) then this is not required.
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			Bitmap downSized = BitmapUtil.downSizeBitmap(bitmap, 50);
+			Bitmap downSized = VideoUtility.downSizeBitmap(bitmap, 50);
 
 			downSized.compress(Bitmap.CompressFormat.JPEG, 100, baos);
 			byte[] data = baos.toByteArray();
@@ -43,7 +43,7 @@ public  class DiskBitmapCache extends DiskBasedCache implements ImageCache {
 			System.out.println("####### Size of bitmap is ######### "+url+" : "+data.length);
 	        entry.data = data ; */
 
-            entry.data = BitmapUtil.convertBitmapToBytes(bitmap) ;
+            entry.data = BitmapUtility.convertBitmapToBytes(bitmap) ;
             put(url, entry);
         }
 

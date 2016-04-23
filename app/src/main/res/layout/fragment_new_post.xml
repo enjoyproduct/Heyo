@@ -1,13 +1,197 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.heyoe.controller.fragments.NewPostFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_above="@+id/ll_np_bottom_bar">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <!--avatar, name-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="@dimen/dimen_12dp"
+                >
+                <com.heyoe.widget.MyCircularImageView
+                    android:id="@+id/civ_compose_avatar"
+                    android:layout_width="@dimen/avatar_size"
+                    android:layout_height="@dimen/avatar_size"
+                    android:src="@drawable/user3"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    >
+                    <TextView
+                        android:id="@+id/tv_compose_fullname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="Esra"
+                        android:textSize="@dimen/txt_18sp"
+                        android:singleLine="true"
+                        android:textColor="@color/black"/>
 
-</FrameLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <!--rich edit text-->
+            <com.commonsware.cwac.richedit.RichEditText
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/editor"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_16dp"
+                android:gravity="top|left"
+                android:inputType="textMultiLine"
+                android:imeOptions="flagNoExtractUi"
+                android:maxLength="150">
+
+                <requestFocus/>
+
+            </com.commonsware.cwac.richedit.RichEditText>
+            <EditText
+                android:id="@+id/et_compose_youtube_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Paste Youtube video url here"
+                android:layout_margin="@dimen/dimen_16dp"
+                android:editable="false"
+                android:visibility="gone"
+                />
+            <!--image or video-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dimen_16dp"
+                >
+                <ImageView
+                    android:id="@+id/iv_compose"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    />
+                <ImageButton
+                    android:id="@+id/ib_compose_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:src="@drawable/play"
+                    android:background="@color/transparent"
+                    android:layout_centerInParent="true"/>
+                <VideoView
+                    android:id="@+id/vv_compose"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/ll_np_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:weightSum="5"
+        android:padding="@dimen/dimen_8dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <!--tag-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:gravity="center"
+                android:layout_weight="1"
+                >
+                <ImageButton
+                    android:id="@+id/ib_compose_tag"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/tag"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/dimen_8dp"/>
+            </LinearLayout>
+            <!--photo-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:gravity="center"
+                android:layout_weight="1"
+                >
+                <ImageButton
+                    android:id="@+id/ib_compose_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/photo"
+                    android:background="@color/transparent"
+                    android:padding="@dimen/dimen_8dp"/>
+            </LinearLayout>
+            <!--video-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:gravity="center"
+                android:layout_weight="1"
+                >
+                <ImageButton
+                    android:id="@+id/ib_compose_video"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/video"
+                    android:background="@color/transparent"/>
+            </LinearLayout>
+            <!--checkin-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:gravity="center"
+                android:layout_weight="1"
+
+                >
+                <ImageButton
+                    android:id="@+id/ib_compose_checkin"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/checkin"
+                    android:background="@color/transparent"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+        <!--post-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_compose_post"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
+                android:text="@string/post"
+                android:textColor="@color/white"
+                android:textSize="@dimen/txt_16sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

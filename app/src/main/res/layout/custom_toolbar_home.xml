@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/toolbar_green">
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingRight="@dimen/dimen_16dp">
+        android:layout_marginRight="@dimen/dimen_16dp">
         <ImageButton
             android:id="@+id/ib_menu"
             android:layout_width="42dp"
@@ -19,29 +20,32 @@
             android:background="@color/transparent"
             android:layout_centerVertical="true"
            />
-        <SearchView
-            android:id="@+id/sv_menu"
-            android:layout_width="match_parent"
-            android:layout_height="36dp"
-            android:layout_marginLeft="@dimen/dimen_12dp"
-            android:layout_marginRight="@dimen/dimen_12dp"
-            android:layout_toRightOf="@+id/btn_menu"
-            android:layout_toLeftOf="@+id/ib_menu_new_compose"
-            android:background="@drawable/round_corner_bg_white_2"
-            android:layout_centerVertical="true"
-            >
+        <!--<AutoCompleteTextView-->
+            <!--android:id="@+id/sv_menu"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="32dp"-->
+            <!--android:layout_marginRight="@dimen/dimen_8dp"-->
+            <!--android:layout_toRightOf="@+id/ib_menu"-->
+            <!--android:layout_toLeftOf="@+id/ib_menu_new_compose"-->
+            <!--android:background="@drawable/round_corner_bg_white_2"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:drawableStart="@drawable/ic_search_white_small"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:singleLine="true"-->
+            <!--android:maxLength="50"-->
+            <!-->-->
 
-        </SearchView>
-        <ImageButton
-            android:id="@+id/ib_menu_new_compose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:src="@drawable/ic_pen"
-            android:background="@color/transparent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            />
+        <!--</AutoCompleteTextView>-->
+        <!--<ImageButton-->
+            <!--android:id="@+id/ib_menu_new_compose"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:src="@drawable/ic_pen"-->
+            <!--android:background="@color/transparent"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--/>-->
 
 
     </RelativeLayout>

@@ -18,25 +18,7 @@ public class DeviceUtility {
         return StringUtility.capitalize(manufacturer) + " " + model;
     }
 
-//    private static String capitalize(String str) {
-//        if (TextUtils.isEmpty(str)) {
-//            return str;
-//        }
-//        char[] arr = str.toCharArray();
-//        boolean capitalizeNext = true;
-//        String phrase = "";
-//        for (char c : arr) {
-//            if (capitalizeNext && Character.isLetter(c)) {
-//                phrase += Character.toUpperCase(c);
-//                capitalizeNext = false;
-//                continue;
-//            } else if (Character.isWhitespace(c)) {
-//                capitalizeNext = true;
-//            }
-//            phrase += c;
-//        }
-//        return phrase;
-//    }
+
     public static String getPhoneNumber(Context context) {
         TelephonyManager tMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String mPhoneNumber = tMgr.getLine1Number();

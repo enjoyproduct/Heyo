@@ -41,6 +41,8 @@ public class ActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_activity, container, false);
+        initVariables();
+        initUI(view);
         return view;
     }
 
@@ -68,6 +70,8 @@ public class ActivityFragment extends Fragment {
         });
         lvHome = mPullRefreshHomeListView.getRefreshableView();
         activityAdapter = new ActivityAdapter(arrActivities);
+//        for test
+        activityAdapter = new ActivityAdapter(makeSampleActivity());
         lvHome.setAdapter(activityAdapter);
     }
     public class ActivityAdapter extends BaseAdapter {
@@ -103,5 +107,15 @@ public class ActivityFragment extends Fragment {
 
             return view;
         }
+    }
+
+//    for test
+    private ArrayList<ActivityModel> makeSampleActivity() {
+        ArrayList<ActivityModel> arrayList = new ArrayList<>();
+        for (int i = 0; i < 20; i ++) {
+            ActivityModel activityModel = new ActivityModel();
+            arrayList.add(activityModel);
+        }
+        return arrayList;
     }
 }

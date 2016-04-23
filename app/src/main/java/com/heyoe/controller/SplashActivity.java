@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.crashlytics.android.Crashlytics;
 import com.heyoe.R;
 import com.heyoe.utilities.ExceptionHandler;
+import com.heyoe.utilities.SocialUtility;
+
 import io.fabric.sdk.android.Fabric;
 
 
@@ -22,6 +24,8 @@ public class SplashActivity extends AppCompatActivity {
         ///set exception handler
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
+//        SocialUtility.printKeyHash(this);
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -29,7 +33,7 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(new Intent(SplashActivity.this, SignActivity.class));
                 finish();
             }
-        }, 2000);
+        }, 1200);
     }
 
 }

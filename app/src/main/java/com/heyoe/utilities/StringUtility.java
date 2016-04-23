@@ -3,6 +3,8 @@ package com.heyoe.utilities;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 1/4/2016.
@@ -94,4 +96,15 @@ public class StringUtility {
 
         return arrString;
     }
+    public final static boolean isValidCharacter (String txtInput){
+        Pattern pattern;
+        Matcher matcher;
+
+        final String USERNAME_PATTERN = "^[a-z0-9A-Z]{2,25}$";
+        pattern = Pattern.compile(USERNAME_PATTERN);
+
+        matcher = pattern.matcher(txtInput);
+        return matcher.matches();
+    }
+
 }

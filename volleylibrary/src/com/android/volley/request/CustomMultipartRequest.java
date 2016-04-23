@@ -1,5 +1,8 @@
 package com.android.volley.request;
 
+import android.graphics.Bitmap;
+import android.provider.SyncStateContract;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -53,56 +56,20 @@ public class CustomMultipartRequest extends Request<JSONObject> {
         multipartEntity.addPart(filePart);
         return this;
     }
+
     public CustomMultipartRequest addVideoPart(String key, String filePath) {
         FilePart filePart = new FilePart(key, new File(filePath), filePath.substring(filePath.lastIndexOf("/") + 1), "video/mp4");
         multipartEntity.addPart(filePart);
         return this;
     }
-//    public HttpEntity buildMultipartEntity() {
-//        mHttpEntity = multipartEntity;
-//        return mHttpEntity;
-//    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////end
-//
-//    public CustomMultipartRequest(String url, String filePath, String routeId,
-//                                  Response.Listener<String> listener,
-//                                  Response.ErrorListener errorListener) {
-//        super(Method.POST, url, errorListener);
-//
-//        mRouteId = routeId;
-//        mListener = listener;
-//        mHttpEntity = buildMultipartEntity(filePath);
-//    }
-//
-//    public CustomMultipartRequest(String url, File file, String routeId,
-//                                  Response.Listener<String> listener,
-//                                  Response.ErrorListener errorListener) {
-//        super(Method.POST, url, errorListener);
-//
-//        mRouteId = routeId;
-//        mListener = listener;
-//        mHttpEntity = buildMultipartEntity(file);
-//    }
-//
-//    private HttpEntity buildMultipartEntity(String filePath) {
-//        File file = new File(filePath);
-//        return buildMultipartEntity(file);
-//    }
-//
-//    private HttpEntity buildMultipartEntity(File file) {
-//        MultipartEntity multipartEntity = new MultipartEntity();
-//        FilePart filePart = new FilePart(KEY_PICTURE_NAME, file, KEY_PICTURE_NAME, "image/jpg");
-//        multipartEntity.addPart(filePart);
-//        return multipartEntity;
-////        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-////        String fileName = file.getName();
-////        FileBody fileBody = new FileBody(file);
-////        builder.addPart(KEY_PICTURE, fileBody);
-////        builder.addTextBody(KEY_PICTURE_NAME, fileName);
-////        builder.addTextBody(KEY_ROUTE_ID, mRouteId);
-////        return builder.build();
-//    }
+    public CustomMultipartRequest addImagePartFromBitmap(String key, Bitmap bitmap, String photoName) {
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
+        byte [] ba = bao.toByteArray();
+//        multipartEntity.addPart("file", new ByteArrayBody(ba, photoName + ".png"), "image/jpg");
 
+        return this;
+    }
     @Override
     public String getBodyContentType() {
         return multipartEntity.getContentType().getValue();
@@ -119,15 +86,6 @@ public class CustomMultipartRequest extends Request<JSONObject> {
         return bos.toByteArray();
     }
 
-//    @Override
-//    protected Response<String> parseNetworkResponse(NetworkResponse response) {
-//        return Response.success("Uploaded", getCacheEntry());
-//    }
-//
-//    @Override
-//    protected void deliverResponse(String response) {
-//        mListener.onResponse(response);
-//    }
     @Override
     protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
         try {

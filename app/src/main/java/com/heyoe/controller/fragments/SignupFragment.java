@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.transition.CircularPropagation;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +30,12 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.NetworkError;
+import com.android.volley.error.NoConnectionError;
+import com.android.volley.error.ParseError;
+import com.android.volley.error.ServerError;
+import com.android.volley.error.TimeoutError;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.CustomMultipartRequest;
 import com.android.volley.request.CustomRequest;
@@ -41,7 +46,7 @@ import com.heyoe.controller.SignActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.model.UserModel;
-import com.heyoe.utilities.MediaUtility;
+import com.heyoe.utilities.BitmapUtility;
 import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.camera.AlbumStorageDirFactory;
 import com.heyoe.utilities.camera.BaseAlbumDirFactory;
@@ -68,8 +73,8 @@ public class SignupFragment extends Fragment {
     private static final String JPEG_FILE_PREFIX = "Heyoe__";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
 
-    private ImageView ivDefaultAvatar, ivWhiteCircle, ivBanner;
-    private MyCircularImageView civAvatar;
+    private ImageView ivDefaultAvatar,  ivBanner;
+    private MyCircularImageView ivWhiteCircle, civAvatar;
     private EditText etFirstname, etLastname, etEmail, etPassword, etConfirmPassword;
     private Button btnSignup;
     private TextView tvTerms, tvPolicy;
@@ -107,8 +112,7 @@ public class SignupFragment extends Fragment {
 
     private void initUI(View view) {
 
-        ivDefaultAvatar = (ImageView)view.findViewById(R.id.iv_signup_default_avatar);
-        ivWhiteCircle = (ImageView)view.findViewById(R.id.iv_signup_white_circle);
+        ivWhiteCircle = (MyCircularImageView)view.findViewById(R.id.iv_signup_white_circle);
         ivBanner = (ImageView)view.findViewById(R.id.iv_signup_banner);
 
         civAvatar = (MyCircularImageView)view.findViewById(R.id.civ_signup_avatar);
@@ -204,17 +208,15 @@ public class SignupFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         Utils.hideProgress();
                         try {
-                            String success = response.getString("result");
-                            if (success.equals("success")) {
-//                                signin();
-                            } else {
-                                String reason = response.getString("reason");
-                                if (reason.equals("401")) {
-                                    Utils.showOKDialog(mActivity, getResources().getString(R.string.email_registerd));
-                                }else if (reason.equals("403")) {
-//                                    Utils.showOKDialog(mActivity, "Invalid card");
-                                }
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                signin();
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
+                            }else  if (status.equals("401")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.email_registerd));
                             }
+
                         }catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -224,20 +226,39 @@ public class SignupFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Utils.hideProgress();
-                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            Toast.makeText(mActivity, "TimeoutError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof AuthFailureError) {
+                            //TODO
+                            Toast.makeText(mActivity, "AuthFailureError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ServerError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ServerError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof NetworkError) {
+                            //TODO
+                            Toast.makeText(mActivity, "NetworkError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ParseError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ParseError", Toast.LENGTH_LONG).show();
+                        } else {
+                            //TODO
+                            Toast.makeText(mActivity, "UnknownError", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
         customMultipartRequest
-                .addStringPart("fullname", userModel.getFullname())
-                .addStringPart("email", userModel.getEmail())
-                .addStringPart("password", userModel.getPassword());
+                .addStringPart(Constant.DEVICE_TYPE, Constant.ANDROID)
+                .addStringPart(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN))
+                .addStringPart(Constant.FULLNAME, userModel.getFullname())
+                .addStringPart(Constant.EMAIL, userModel.getEmail())
+                .addStringPart(Constant.PASSWORD, userModel.getPassword());
 
         if (avatarPath.length() > 0) {
             customMultipartRequest
-                    .addImagePart("userphoto", avatarPath);
-//                    .addStringPart("is_userphoto", "true");
+                    .addStringPart(Constant.ADD_AVATAR, "yes")
+                    .addImagePart(Constant.AVATAR, avatarPath);
         } else {
-//            customMultipartRequest.addStringPart("is_userphoto", "false");
+            customMultipartRequest.addStringPart(Constant.ADD_AVATAR, "no");
         }
 
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
@@ -250,8 +271,10 @@ public class SignupFragment extends Fragment {
 //        Utils.showProgress(mActivity);
 
         Map<String, String> params = new HashMap<String, String>();
-        params.put("email", userModel.getEmail());
-        params.put("password", userModel.getPassword());
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put(Constant.EMAIL, userModel.getEmail());
+        params.put(Constant.PASSWORD, userModel.getPassword());
 
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.SINGIN, params,
                 new Response.Listener<JSONObject>() {
@@ -259,53 +282,51 @@ public class SignupFragment extends Fragment {
                     public void onResponse(JSONObject response) {
 //                        Utils.hideProgress();
                         try {
-                            String success = response.getString("result");
-                            if (success.equals("success")) {
-
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
                                 JSONObject jsonObject = response.getJSONObject("data");
 
                                 String user_id = jsonObject.getString("user_id");
                                 String fullname = jsonObject.getString("fullname");
                                 String email = jsonObject.getString("email");
+                                String password = jsonObject.getString("password");
                                 String city = jsonObject.getString("city");
-                                String country = jsonObject.getString("country");
+                                String country = jsonObject.getString("country_code");
                                 String birthday = jsonObject.getString("birthday");
                                 String gender = jsonObject.getString("gender");
                                 String celebrity = jsonObject.getString("celebrity");
-                                String about_me = jsonObject.getString("about_me");
-                                String media_count = jsonObject.getString("media_count");
+                                String about_me = jsonObject.getString("about_you");
+                                String media_count = jsonObject.getString("post_count");
                                 String friend_count = jsonObject.getString("friend_count");
                                 String avatar = jsonObject.getString("avatar");
-                                String header_photo_url = jsonObject.getString("header_photo_url");
-                                String header_video_url = jsonObject.getString("header_video_url");
+                                String header_photo_url = jsonObject.getString("header_photo");
+                                String header_video_url = jsonObject.getString("header_video");
 
-                                Utils.setOnPreference(mActivity, Constant.USER_ID, user_id);
-                                Utils.setOnPreference(mActivity, Constant.EMAIL, email);
-                                Utils.setOnPreference(mActivity, Constant.PASSWORD,  userModel.getPassword());
-                                Utils.setOnPreference(mActivity, Constant.FULLNAME, fullname);
-                                Utils.setOnPreference(mActivity, Constant.CITY, city);
-                                Utils.setOnPreference(mActivity, Constant.COUNTRY, country);
-                                Utils.setOnPreference(mActivity, Constant.BIRTHDAY, birthday);
-                                Utils.setOnPreference(mActivity, Constant.GENDER, gender);
-                                Utils.setOnPreference(mActivity, Constant.CELEBRITY, celebrity);
-                                Utils.setOnPreference(mActivity, Constant.ABOUT_ME, about_me);
-                                Utils.setOnPreference(mActivity, Constant.MEDIA_COUNT, media_count);
-                                Utils.setOnPreference(mActivity, Constant.FRIEND_COUNT, friend_count);
-                                Utils.setOnPreference(mActivity, Constant.AVATAR, avatar);
-                                Utils.setOnPreference(mActivity, Constant.HEADER_PHOTO, header_photo_url);
-                                Utils.setOnPreference(mActivity, Constant.HEADER_VIDEO, header_video_url);
+                                Utils.saveToPreference(mActivity, Constant.USER_ID, user_id);
+                                Utils.saveToPreference(mActivity, Constant.EMAIL, email);
+                                Utils.saveToPreference(mActivity, Constant.PASSWORD, userModel.getPassword());
+                                Utils.saveToPreference(mActivity, Constant.FULLNAME, fullname);
+                                Utils.saveToPreference(mActivity, Constant.CITY, city);
+                                Utils.saveToPreference(mActivity, Constant.COUNTRY, country);
+                                Utils.saveToPreference(mActivity, Constant.BIRTHDAY, birthday);
+                                Utils.saveToPreference(mActivity, Constant.GENDER, gender);
+                                Utils.saveToPreference(mActivity, Constant.CELEBRITY, celebrity);
+                                Utils.saveToPreference(mActivity, Constant.ABOUT_ME, about_me);
+                                Utils.saveToPreference(mActivity, Constant.MEDIA_COUNT, media_count);
+                                Utils.saveToPreference(mActivity, Constant.FRIEND_COUNT, friend_count);
+                                Utils.saveToPreference(mActivity, Constant.AVATAR, avatar);
+                                Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, header_photo_url);
+                                Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, header_video_url);
 
 
                                 startActivity(new Intent(mActivity, HomeActivity.class));
                                 getActivity().finish();
-                            } else {
-                                String reason = response.getString("reason");
-                                if (reason.equals("401")) {
-                                    Utils.showOKDialog(mActivity, "Email is unregistered");
-                                } else if (reason.equals("402")) {
-                                    Utils.showOKDialog(mActivity, "Password incorrect");
-                                }
+                            } else  if (status.equals("401")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.email_unregistered));
+                            } else if (status.equals("402")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
+
                         }catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -346,7 +367,7 @@ public class SignupFragment extends Fragment {
                     //convert bitmap to drawable
                     Drawable d = Drawable.createFromPath(avatarPath);
 //                    ImageView ivUser = (ImageView)findViewById(R.id.iv_register_user);
-                    Drawable drawable = new BitmapDrawable(getResources(), MediaUtility.adjustBitmap(avatarPath));
+                    Drawable drawable = new BitmapDrawable(getResources(), BitmapUtility.adjustBitmap(avatarPath));
                     civAvatar.setImageDrawable(drawable);
 
                 }
@@ -496,7 +517,7 @@ public class SignupFragment extends Fragment {
 		/* Associate the Bitmap to the ImageView */
         /* Decode the JPEG file into a Bitmap */
         bitmap = BitmapFactory.decodeFile(avatarPath, bmOptions);
-//                bitmap = MediaUtility.rotateImage(bitmap, 90);
+        bitmap = BitmapUtility.rotateImage(bitmap, 90);
         civAvatar.setImageBitmap(bitmap);
 
     }
