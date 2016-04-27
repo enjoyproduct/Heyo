@@ -1,11 +1,12 @@
 package com.heyoe.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by dell17 on 4/10/2016.
  */
-public class PostModel {
+public class PostModel implements Serializable{
     String post_id, posted_date, poster_id, poster_avatar, poster_celebrity, media_type,
         media_url, like_count, dislike_count, comment_count, shared_count, viewed_count,
         like, favorite, commented;
