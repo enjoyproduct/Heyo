@@ -55,23 +55,13 @@ public class MediaAdapter extends BaseAdapter {
             }
         });
         PostModel postModel = arrayList.get(position);
-        if (postModel.getIs_favorite().equals("1")) {
+        if (postModel.getFavorite().equals("yes")) {
             imageButton.setVisibility(View.VISIBLE);
         }
         else {
             imageButton.setVisibility(View.GONE);
         }
-        switch (position % 3) {
-            case 0:
-                imageView.setBackground(activity.getResources().getDrawable(R.drawable.post1));
-                break;
-            case 1:
-                imageView.setBackground(activity.getResources().getDrawable(R.drawable.post2));
-                break;
-            case 2:
-                imageView.setBackground(activity.getResources().getDrawable(R.drawable.post3));
-                break;
-        }
+
         return view;
     }
 }

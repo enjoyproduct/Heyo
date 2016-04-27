@@ -1,24 +1,12 @@
 package com.heyoe.controller;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.heyoe.R;
-import com.heyoe.controller.fragments.ActivityFragment;
-import com.heyoe.controller.fragments.CheckinChatFragment;
-import com.heyoe.controller.fragments.FriendFragment;
-import com.heyoe.controller.fragments.MainFragment;
-import com.heyoe.controller.fragments.MainMenuFragment;
 import com.heyoe.controller.fragments.MediaFragment;
-import com.heyoe.controller.fragments.NewPostFragment;
 import com.heyoe.controller.fragments.ProfileFragment;
 import com.heyoe.controller.fragments.ProfileInfoFragment;
 
@@ -65,9 +53,9 @@ public class ProfileActivity extends AppCompatActivity {
                         .commit();
                 break;
             case 3:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new FriendFragment())
-                        .commit();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, new FriendFragment())
+//                        .commit();
                 break;
 
         }

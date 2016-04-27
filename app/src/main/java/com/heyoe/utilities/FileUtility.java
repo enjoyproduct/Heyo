@@ -40,6 +40,15 @@ public class FileUtility {
             return false;
         }
     }
+    public static boolean deleteFile(String PATH){
+
+        File file = new File(PATH);
+        if(file.exists()){
+            file.delete();
+            return true;
+        }else
+            return false;
+    }
     public static boolean checkFileExist(String fileName, String PATH){
 
         File file = new File(PATH + fileName);

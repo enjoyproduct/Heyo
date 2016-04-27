@@ -7,8 +7,95 @@ import java.util.ArrayList;
  */
 public class PostModel {
     String post_id, posted_date, poster_id, poster_avatar, poster_celebrity, media_type,
-        media_url, like_count, unlike_count, comment_count, shared_count, viewed_count,
-        is_liked, is_unliked, is_favorite, is_commented;
+        media_url, like_count, dislike_count, comment_count, shared_count, viewed_count,
+        like, favorite, commented;
+    String friendStatus;
+    String poster_fullname;
+    Long clickedTime;
+    int imageWidth, imageHeight;
+
+    public int getImageWidth() {
+        return imageWidth;
+    }
+
+    public void setImageWidth(int imageWidth) {
+        this.imageWidth = imageWidth;
+    }
+
+    public int getImageHeight() {
+        return imageHeight;
+    }
+
+    public void setImageHeight(int imageHeight) {
+        this.imageHeight = imageHeight;
+    }
+
+    public Long getClickedTime() {
+        return clickedTime;
+    }
+
+    public void setClickedTime(Long clickedTime) {
+        this.clickedTime = clickedTime;
+    }
+
+    public String getPoster_fullname() {
+        return poster_fullname;
+    }
+
+    public void setPoster_fullname(String poster_fullname) {
+        this.poster_fullname = poster_fullname;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    String description;
+
+    public String getDislike_count() {
+        return dislike_count;
+    }
+
+    public void setDislike_count(String dislike_count) {
+        this.dislike_count = dislike_count;
+    }
+
+    public String getLike() {
+        return like;
+    }
+
+    public void setLike(String like) {
+        this.like = like;
+    }
+
+    public String getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(String favorite) {
+        this.favorite = favorite;
+    }
+
+    public String getCommented() {
+        return commented;
+    }
+
+    public void setCommented(String commented) {
+        this.commented = commented;
+    }
+
+    public String getFriendStatus() {
+        return friendStatus;
+    }
+
+    public void setFriendStatus(String friendStatus) {
+        this.friendStatus = friendStatus;
+    }
+
     ArrayList<UserModel> arrLiked_friends = new ArrayList<>();
 
     public String getPost_id() {
@@ -75,13 +162,7 @@ public class PostModel {
         this.like_count = like_count;
     }
 
-    public String getUnlike_count() {
-        return unlike_count;
-    }
 
-    public void setUnlike_count(String unlike_count) {
-        this.unlike_count = unlike_count;
-    }
 
     public String getComment_count() {
         return comment_count;
@@ -107,37 +188,6 @@ public class PostModel {
         this.viewed_count = viewed_count;
     }
 
-    public String getIs_liked() {
-        return is_liked;
-    }
-
-    public void setIs_liked(String is_liked) {
-        this.is_liked = is_liked;
-    }
-
-    public String getIs_unliked() {
-        return is_unliked;
-    }
-
-    public void setIs_unliked(String is_unliked) {
-        this.is_unliked = is_unliked;
-    }
-
-    public String getIs_favorite() {
-        return is_favorite;
-    }
-
-    public void setIs_favorite(String is_favorite) {
-        this.is_favorite = is_favorite;
-    }
-
-    public String getIs_commented() {
-        return is_commented;
-    }
-
-    public void setIs_commented(String is_commented) {
-        this.is_commented = is_commented;
-    }
 
     public ArrayList<UserModel> getArrLiked_friends() {
         return arrLiked_friends;

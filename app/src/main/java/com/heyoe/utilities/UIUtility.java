@@ -81,11 +81,10 @@ public class UIUtility {
 
     }
 
-    public static void setImageViewSize(ImageView imageview, int screenWidth){
+    public static void setImageViewSize(ImageView imageview, int screenWidth, int screenHeight){
 
-        imageview.setMaxWidth(screenWidth);
-        imageview.setMaxHeight(screenWidth);
-
+        imageview.setMinimumWidth(screenWidth);
+        imageview.setMinimumHeight(screenHeight);
     }
 
     public static void setRelativeLayoutSize(RelativeLayout relativeLayout, int screenWidth){

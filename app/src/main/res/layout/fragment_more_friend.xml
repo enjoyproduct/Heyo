@@ -10,7 +10,7 @@
         <com.handmark.pulltorefresh.library.PullToRefreshListView
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:id="@+id/lv_main_wall"
+            android:id="@+id/lv_more_friends"
 
             android:smoothScrollbar="true">
         </com.handmark.pulltorefresh.library.PullToRefreshListView>

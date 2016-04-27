@@ -102,7 +102,7 @@ public class MediaFragment extends Fragment {
         ArrayList<PostModel> arrayList = new ArrayList<>();
         for (int i = 0; i < 10; i ++) {
             PostModel postModel = new PostModel();
-            postModel.setIs_favorite("1");
+            postModel.setFavorite("yes");
             arrayList.add(postModel);
 
         }
@@ -114,7 +114,7 @@ public class MediaFragment extends Fragment {
         ArrayList<PostModel> arrayList = new ArrayList<>();
         for (int i = 0; i < 10; i ++) {
             PostModel postModel = new PostModel();
-            postModel.setIs_favorite("0");
+            postModel.setFavorite("yes");
             arrayList.add(postModel);
 
         }

@@ -11,9 +11,9 @@
         <!--avatar-->
         <com.heyoe.widget.MyCircularImageView
             android:id="@+id/civ_imf_friend_avatar3"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"
-            android:src="@drawable/user3"
+            android:layout_width="@dimen/avatar_bg_size"
+            android:layout_height="@dimen/avatar_bg_size"
+            android:src="@drawable/default_user"
 
             />
         <!--description-->
@@ -44,6 +44,7 @@
                     <!--android:layout_height="@dimen/dimen_20dp"-->
                     <!--android:src="@drawable/ic_green_circle"/>-->
                 <TextView
+                    android:id="@+id/tv_imf_aboutme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""/>
@@ -54,12 +55,15 @@
             android:id="@+id/rl_imf_social"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_alignParentRight="true">
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+            <ImageButton
+                android:id="@+id/ib_imf_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_plus_green"
                 android:layout_centerInParent="true"
+                android:padding="@dimen/dimen_4dp"
                 android:background="@color/transparent"/>
 
         </RelativeLayout>

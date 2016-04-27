@@ -24,7 +24,7 @@
                     android:id="@+id/civ_compose_avatar"
                     android:layout_width="@dimen/avatar_size"
                     android:layout_height="@dimen/avatar_size"
-                    android:src="@drawable/user3"/>
+                    android:src="@drawable/default_user"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="Esra"
+                        android:text=""
                         android:textSize="@dimen/txt_18sp"
                         android:singleLine="true"
                         android:textColor="@color/black"/>
@@ -87,12 +87,12 @@
                     android:src="@drawable/play"
                     android:background="@color/transparent"
                     android:layout_centerInParent="true"/>
-                <VideoView
-                    android:id="@+id/vv_compose"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:layout_centerInParent="true"/>
+                <!--<VideoView-->
+                    <!--android:id="@+id/vv_compose"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:layout_centerInParent="true"/>-->
 
             </RelativeLayout>
         </LinearLayout>

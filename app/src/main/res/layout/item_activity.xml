@@ -13,7 +13,7 @@
             android:id="@+id/civ_ia_friend_avatar3"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
-            android:src="@drawable/user3"
+            android:src="@drawable/default_user"
             android:layout_margin="@dimen/dimen_12dp"
             />
         <!--description-->

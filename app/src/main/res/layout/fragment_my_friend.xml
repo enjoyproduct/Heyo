@@ -18,18 +18,20 @@
                 android:id="@+id/btn_my_friend"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:background="@color/grey"
+                android:background="@color/white"
                 android:text="@string/friends"
-                android:textColor="@color/white"
+                android:textColor="@color/green"
                 android:layout_weight="1"
                 />
             <Button
                 android:id="@+id/btn_my_friend_blocked"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:background="@color/white"
+                android:background="@color/grey"
                 android:text="@string/blocked"
-                android:textColor="@color/green"
+
+                android:textColor="@color/white"
+
                 android:layout_weight="1"
                 />
         </LinearLayout>

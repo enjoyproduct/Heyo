@@ -46,4 +46,5 @@ public class Constant {
     public static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 101;
     public static int REQUEST_PLACE_PICKER = 102;
 
+
 }

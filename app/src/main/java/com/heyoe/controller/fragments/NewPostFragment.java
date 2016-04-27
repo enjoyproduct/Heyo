@@ -28,6 +28,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,11 +63,15 @@ import com.heyoe.controller.HomeActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.utilities.BitmapUtility;
+import com.heyoe.utilities.FileUtility;
+import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.VideoPlay;
 import com.heyoe.utilities.camera.AlbumStorageDirFactory;
 import com.heyoe.utilities.camera.BaseAlbumDirFactory;
 import com.heyoe.utilities.camera.FroyoAlbumDirFactory;
+import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
+import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
 
 import org.json.JSONObject;
@@ -97,7 +103,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     private TextView tvFullname;
     private static RichEditText richEditor;
     private ImageView imageView;
-    private VideoView videoView;
+//    private VideoView videoView;
     private ImageButton ibPlay;
     private EditText etYotubeUrl;
 
@@ -133,7 +139,24 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     }
     private void initUI(View view) {
         myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_compose_avatar);
+        String avatar = Utils.getFromPreference(mActivity, Constant.AVATAR);
+        if (!avatar.equals("")) {
+            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + avatar, R.drawable.default_user, new UrlImageViewCallback() {
+                @Override
+                public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                    if (!loadedFromCache) {
+                        ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                        scale.setDuration(10);
+                        scale.setInterpolator(new OvershootInterpolator());
+                        imageView.startAnimation(scale);
+                    }
+                }
+            });
+        } else {
+            myCircularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
+        }
         tvFullname = (TextView)view.findViewById(R.id.tv_compose_fullname);
+        tvFullname.setText(Utils.getFromPreference(mActivity, Constant.FULLNAME));
 
         etYotubeUrl = (EditText)view.findViewById(R.id.et_compose_youtube_url);
         etYotubeUrl.setOnClickListener(new View.OnClickListener() {
@@ -208,32 +231,12 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 }
             }
         });
-        ibPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (videoPath.length() > 0) {
-                    videoView.setVisibility(View.VISIBLE);
-//                    imageView.setVisibility(View.GONE);
-//                    ibPlay.setVisibility(View.GONE);
-                    VideoPlay videoPlay = new VideoPlay(mActivity, videoView, videoPath);
-                    videoPlay.playVideo();
-                }
-            }
-        });
+
         richEditor=(RichEditText)view.findViewById(R.id.editor);
         richEditor.enableActionModes(true);
 
         imageView = (ImageView)view.findViewById(R.id.iv_compose);
-        videoView = (VideoView)view.findViewById(R.id.vv_compose);
-
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                videoView.setVisibility(View.GONE);
-                ibPlay.setVisibility(View.VISIBLE);
-            }
-        });
-
+        UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(mActivity), UIUtility.getScreenWidth(mActivity));
     }
     String mediaType;
     String description;
@@ -309,8 +312,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 .addStringPart(Constant.DEVICE_TYPE, Constant.ANDROID)
                 .addStringPart(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN))
                 .addStringPart("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID))
-                .addStringPart("media_type", String.valueOf(mediaType))
+                .addStringPart("media_type", mediaType)
                 .addStringPart("description", description);
+        customMultipartRequest.addStringPart("width", String.valueOf(imageWidth));
+        customMultipartRequest.addStringPart("height", String.valueOf(imageHeight));
 
         if (mediaType.equals("post_video")) {
             customMultipartRequest.addVideoPart("post_video", videoPath);
@@ -322,6 +327,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         } else if (mediaType.equals("youtube")) {
             customMultipartRequest.addStringPart("media", youtubePath);
 
+            customMultipartRequest.addStringPart("width", "0");
+            customMultipartRequest.addStringPart("height", "0");
         }
 
 
@@ -333,6 +340,14 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        UIUtility.hideSoftKeyboard(mActivity);
+    }
+
     public static void inputTag(String strTag) {
         String str = "<b>" + strTag + "</b>";
         richEditor.append(Html.fromHtml(str));
@@ -438,10 +453,16 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
 
                     //convert bitmap to drawable
-                    Drawable d = Drawable.createFromPath(photoPath);
-//                    ImageView ivUser = (ImageView)findViewById(R.id.iv_register_user);
-                    Drawable drawable = new BitmapDrawable(getResources(), BitmapUtility.adjustBitmap(photoPath));
-                    imageView.setImageDrawable(drawable);
+//                    Drawable d = Drawable.createFromPath(photoPath);
+////                    ImageView ivUser = (ImageView)findViewById(R.id.iv_register_user);
+//                    Drawable drawable = new BitmapDrawable(getResources(), BitmapUtility.adjustBitmap(photoPath));
+
+                    Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
+                    FileUtility.deleteFile(photoPath);
+                    photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+                    imageWidth = bitmap.getWidth();
+                    imageHeight = bitmap.getHeight();
+                    imageView.setImageBitmap(bitmap);
 
                 }
                 break;
@@ -493,11 +514,19 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     if (videoPath != null) {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.MINI_KIND);
 
-                        imageView.setImageBitmap(thumbnail);
                         ibPlay.setVisibility(View.VISIBLE);
+                        //crop thumbnail
                         Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(thumbnail, thumbnail.getWidth(), thumbnail.getWidth());
+                        // save croped thumbnail
                         thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
 
+                        //adjust and resave thumbnail
+                        Bitmap bitmap = BitmapUtility.adjustBitmap(thumbPath);
+                        FileUtility.deleteFile(thumbPath);
+                        thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
+                        imageWidth = bitmap.getWidth();
+                        imageHeight = bitmap.getHeight();
+                        imageView.setImageBitmap(bitmap);
                     }
 
                 }
@@ -510,11 +539,20 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
                     if (videoPath.length() > 0) {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.MINI_KIND);
-                        imageView.setImageBitmap(thumbnail);
+
                         ibPlay.setVisibility(View.VISIBLE);
+                        //crop thumbnail
                         Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(thumbnail, thumbnail.getWidth(), thumbnail.getWidth());
+                        // save croped thumbnail
                         thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
 
+                        //adjust and resave thumbnail
+                        Bitmap bitmap = BitmapUtility.adjustBitmap(thumbPath);
+                        FileUtility.deleteFile(thumbPath);
+                        thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
+                        imageWidth = bitmap.getWidth();
+                        imageHeight = bitmap.getHeight();
+                        imageView.setImageBitmap(bitmap);
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     // User cancelled the video capture
@@ -815,16 +853,15 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = null;
-
-		/* Associate the Bitmap to the ImageView */
-        /* Decode the JPEG file into a Bitmap */
-        bitmap = BitmapFactory.decodeFile(photoPath, bmOptions);
-        bitmap = BitmapUtility.rotateImage(bitmap, 90);
+        Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
+        FileUtility.deleteFile(photoPath);
+        photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+        imageWidth = bitmap.getWidth();
+        imageHeight = bitmap.getHeight();
         imageView.setImageBitmap(bitmap);
 
     }
-
+    int imageWidth = 0 , imageHeight = 0;
 
 
 }

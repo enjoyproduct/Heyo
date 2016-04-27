@@ -4,15 +4,15 @@
     android:layout_height="wrap_content">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="92dp"
         android:padding="@dimen/dimen_12dp"
         android:gravity="center_vertical">
         <!--avatar-->
         <com.heyoe.widget.MyCircularImageView
-            android:id="@+id/civ_ia_friend_avatar3"
+            android:id="@+id/civ_irs_avatar"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
-            android:src="@drawable/user3"
+            android:src="@drawable/default_user"
 
             />
         <!--description-->
@@ -20,17 +20,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_toRightOf="@+id/civ_ia_friend_avatar3"
+            android:layout_toRightOf="@+id/civ_irs_avatar"
             android:layout_toLeftOf="@+id/rl_ia_social"
             android:layout_marginLeft="@dimen/dimen_12dp"
             android:layout_marginRight="@dimen/dimen_12dp"
             android:gravity="center_vertical">
             <TextView
-                android:id="@+id/tv_ia_description"
+                android:id="@+id/tv_irc_fullname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_8dp"
-                android:text="Test User 1"
+                android:text="Tes Usr"
                 android:textStyle="bold"
                 android:maxLines="2"/>
             <LinearLayout
@@ -56,6 +56,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
             <ImageButton
+                android:id="@+id/ib_irs_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/cancel_friend_request"
@@ -63,6 +64,7 @@
                 android:background="@color/transparent"
                 />
             <ImageButton
+                android:id="@+id/ib_irs_sandglass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/sandglass"

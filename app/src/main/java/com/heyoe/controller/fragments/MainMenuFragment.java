@@ -3,12 +3,15 @@ package com.heyoe.controller.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -18,6 +21,11 @@ import android.widget.TextView;
 import com.heyoe.R;
 import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.ProfileActivity;
+import com.heyoe.model.API;
+import com.heyoe.model.Constant;
+import com.heyoe.utilities.Utils;
+import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
+import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
 
 import java.util.ArrayList;
@@ -59,16 +67,36 @@ public class MainMenuFragment extends Fragment {
 //        ivDefaultAvatar = (ImageView)view.findViewById(R.id.iv_menu_default_avatar);
         ivWhiteCircle = (ImageView)view.findViewById(R.id.iv_menu_white_circle);
         ivCheckCelibrity = (ImageView)view.findViewById(R.id.iv_menu_celebrity);
-        myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_menu_avatar);
+        if (Utils.getFromPreference(mActivity, Constant.CELEBRITY).equals("yes")) {
+            ivCheckCelibrity.setVisibility(View.VISIBLE);
+        } else {
+            ivCheckCelibrity.setVisibility(View.INVISIBLE);
+        }
         tvFullname = (TextView)view.findViewById(R.id.tv_menu_fullname);
-        listView = (ListView)view.findViewById(R.id.lv_menu_listview);
+        tvFullname.setText(Utils.getFromPreference(mActivity, Constant.FULLNAME));
 
+        myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_menu_avatar);
         myCircularImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mActivity.startActivity(new Intent(mActivity, ProfileActivity.class));
             }
         });
+        if (!Utils.getFromPreference(mActivity, Constant.AVATAR).equals("")) {
+            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + Utils.getFromPreference(mActivity, Constant.AVATAR), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
+                @Override
+                public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                    if (!loadedFromCache) {
+                        ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                        scale.setDuration(10);
+                        scale.setInterpolator(new OvershootInterpolator());
+                        imageView.startAnimation(scale);
+                    }
+                }
+            });
+        }
+
+        listView = (ListView)view.findViewById(R.id.lv_menu_listview);
         MenuAdapter menuAdapter = new MenuAdapter(generateMenuModel());
         listView.setAdapter(menuAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,24 +116,24 @@ public class MainMenuFragment extends Fragment {
     private ArrayList<MenuModel> generateMenuModel() {
         int[] images = {
                 R.drawable.ic_menu_favorites,
-                R.drawable.ic_menu_friends,
+//                R.drawable.ic_menu_friends,
                 R.drawable.ic_menu_requests,
                 R.drawable.ic_menu_more_friends,
                 R.drawable.ic_menu_invite_friends,
-                R.drawable.ic_menu_groups,
-                R.drawable.ic_menu_calender,
+//                R.drawable.ic_menu_groups,
+//                R.drawable.ic_menu_calender,
                 R.drawable.ic_menu_faq,
                 R.drawable.ic_menu_logout
         };
 
         int[] titles = {
                 R.string.FAVORITES,
-                R.string.FRIENDS,
+//                R.string.FRIENDS,
                 R.string.REQUESTS,
                 R.string.MORE_FRIENDS,
                 R.string.INVITE_FRIENDS,
-                R.string.GROUPS,
-                R.string.CALENDAR,
+//                R.string.GROUPS,
+//                R.string.CALENDAR,
                 R.string.FAQ,
                 R.string.LOG_OUT,
         };

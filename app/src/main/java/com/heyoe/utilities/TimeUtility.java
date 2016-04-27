@@ -1,7 +1,10 @@
 package com.heyoe.utilities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 
+
+import com.heyoe.R;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -162,36 +165,36 @@ public class TimeUtility {
         }
         return mDate;
     }
-    public static String countTime(long timeStamp){
-        if(timeStamp < 60){
-            return String.valueOf(timeStamp) + "s";
-        }
-        String str = "0s";
-        int second = (int)(timeStamp);
-        int result = second;
+    public static String countTime(Context context, long timeStamp){ /// good
+        String str = "";
+        int second = Integer.parseInt(getCurrentTimeStamp()) - (int)(timeStamp);
 
+        int result = second;
+        if (second < 0) {
+            str = "0  " + context.getResources().getString(R.string.minutes_ago);
+        }
         if((int)(result / 60) < 60){
-            str = String.valueOf((int) (result / 60)) + "m";
+            str = String.valueOf((int) (result / 60)) + "  " + context.getResources().getString(R.string.minutes_ago);
 
         } else {
             result = (int)(second / 3600);
             if(result < 24){
-                str = String.valueOf(result) + "h";
+                str = String.valueOf(result) + "  " + context.getResources().getString(R.string.hours_ago);
             }else{
                 result = (int)(second /  (3600 * 24));
                 if(result < 7){
-                    str = String.valueOf(result) + "d";
+                    str = String.valueOf(result) + "  " + context.getResources().getString(R.string.days_ago);
                 }else{
                     result = (int)(second / (3600 * 24 * 7));
                     if(result < 4){
-                        str = String.valueOf(result) + "w";
+                        str = String.valueOf(result) + "  " + context.getResources().getString(R.string.weeks_ago);
                     }else {
                         result = (int)(second / (3600 * 24 * 30));
                         if(result < 12){
-                            str = String.valueOf(result) + "m";
+                            str = String.valueOf(result) + "  " + context.getResources().getString(R.string.monthes_ago);
                         }else {
                             result = (int)(second / (3600 * 24 * 365));
-                            str = String.valueOf(result) + "y";
+                            str = String.valueOf(result) + "  " + context.getResources().getString(R.string.years_ago);
                         }
                     }
                 }
@@ -227,7 +230,7 @@ public class TimeUtility {
     return strDate;
 }
 
-    public static String getCurrentTimeStamp() {
+    public static String getCurrentTimeStamp() {  ////good, get timestamp by second
 
         double timestamp = System.currentTimeMillis() / 1000f;
 

@@ -26,22 +26,22 @@
                   android:layout_height="match_parent"
                   android:background="@drawable/signup_banner"/>
               <RelativeLayout
-                  android:layout_width="125dp"
-                  android:layout_height="125dp"
+                  android:layout_width="115dp"
+                  android:layout_height="115dp"
                   android:layout_centerInParent="true">
 
                   <com.heyoe.widget.MyCircularImageView
                       android:id="@+id/iv_signup_white_circle"
-                      android:layout_width="125dp"
-                      android:layout_height="125dp"
+                      android:layout_width="115dp"
+                      android:layout_height="115dp"
                       android:src="@drawable/user_photo_circle_line2"
                       android:layout_centerInParent="true"
 
                       />
                   <com.heyoe.widget.MyCircularImageView
                       android:id="@+id/civ_signup_avatar"
-                      android:layout_width="105dp"
-                      android:layout_height="105dp"
+                      android:layout_width="97dp"
+                      android:layout_height="97dp"
                       android:layout_centerInParent="true"
                       android:src="@drawable/ic_user_white"
                       />
@@ -81,7 +81,7 @@
                   <EditText
                       android:id="@+id/et_signup_firstname"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
+                      android:layout_height="match_parent"
                       android:hint="@string/firstname"
                       android:background="@null"
                       android:inputType="text"
@@ -101,7 +101,7 @@
                   <EditText
                       android:id="@+id/et_signup_lastname"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
+                      android:layout_height="match_parent"
                       android:hint="@string/lastname"
                       android:background="@null"
                       android:inputType="text"
@@ -121,7 +121,7 @@
                   <EditText
                       android:id="@+id/et_signup_email"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
+                      android:layout_height="match_parent"
                       android:hint="@string/email"
                       android:background="@null"
                       android:inputType="textEmailAddress"
@@ -141,7 +141,7 @@
                   <EditText
                       android:id="@+id/et_signup_password"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
+                      android:layout_height="match_parent"
                       android:hint="@string/password"
                       android:background="@null"
                       android:inputType="textPassword"
@@ -161,7 +161,7 @@
                   <EditText
                       android:id="@+id/et_signup_confirm_pass"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
+                      android:layout_height="match_parent"
                       android:hint="@string/confirm_password"
                       android:background="@null"
                       android:inputType="textPassword"

@@ -268,7 +268,7 @@ public class BitmapUtility {
         BitmapFactory.decodeFile(photopath, options);
         //////
 //        options.inSampleSize = 7;
-        options.inSampleSize = 4;
+        options.inSampleSize = 2;
         options.inJustDecodeBounds = false;
 
         //get bitmap with local path
@@ -434,12 +434,15 @@ public class BitmapUtility {
 
         return bmOverlay;
     }
-    public static String saveBitmap(Bitmap bitmap, String destinationPath,String fileName) {
+    public static String saveBitmap(Bitmap bitmap, String destinationPath, String fileName) {
         if (bitmap == null || destinationPath.length() == 0) {
             return "";
         }
         File myDir = new File(destinationPath);
-        myDir.mkdirs();
+        if (!myDir.exists()) {
+            myDir.mkdirs();
+        }
+
         Random generator = new Random();
         ///generate random number
 //        int n = 10000;

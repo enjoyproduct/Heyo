@@ -278,7 +278,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 String fullname = jsonObject.getString("fullname");
                                 String email = jsonObject.getString("email");
                                 String city = jsonObject.getString("city");
-                                String country = jsonObject.getString("country_code");
+                                String country = jsonObject.getString("country");
                                 String birthday = jsonObject.getString("birthday");
                                 String gender = jsonObject.getString("gender");
                                 String celebrity = jsonObject.getString("celebrity");
@@ -373,7 +373,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                     String email = jsonObject.getString("email");
                                     String password = jsonObject.getString("password");
                                     String city = jsonObject.getString("city");
-                                    String country = jsonObject.getString("country_code");
+                                    String country = jsonObject.getString("country");
                                     String birthday = jsonObject.getString("birthday");
                                     String gender = jsonObject.getString("gender");
                                     String celebrity = jsonObject.getString("celebrity");

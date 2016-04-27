@@ -36,9 +36,11 @@ public class VideoPlay {
         videoView.requestFocus();
         videoView.start();
 //        videoView.seekTo(100);
+        Utils.showProgress(mContext);
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Close the progress bar and play the video
             public void onPrepared(MediaPlayer mp) {
+                Utils.hideProgress();
                 //////////start play
                 videoView.start();
             }

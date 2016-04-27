@@ -10,10 +10,10 @@
         android:padding="@dimen/dimen_12dp">
         <!--avatar-->
         <com.heyoe.widget.MyCircularImageView
-            android:id="@+id/civ_if_friend_avatar3"
+            android:id="@+id/civ_if_avatar"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
-            android:src="@drawable/user3"
+            android:src="@drawable/default_user"
 
             />
         <!--description-->
@@ -21,16 +21,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_toRightOf="@+id/civ_if_friend_avatar3"
+            android:layout_toRightOf="@+id/civ_if_avatar"
             android:layout_toLeftOf="@+id/rl_if_social"
             android:layout_marginLeft="@dimen/dimen_12dp"
             android:layout_marginRight="@dimen/dimen_12dp">
             <TextView
-                android:id="@+id/tv_if_friend_name"
+                android:id="@+id/tv_if_fullname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_8dp"
                 android:textStyle="bold"
+                android:textColor="@color/black"
                 android:text="Madeline Kennedy"
                 android:maxLines="1"/>
             <LinearLayout
@@ -44,10 +45,11 @@
                     android:layout_height="@dimen/dimen_20dp"
                     android:src="@drawable/ic_green_circle"/>
                 <TextView
+                    android:id="@+id/tv_if_last_msg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dimen_12dp"
-                    android:text="asdf"/>
+                    android:text=""/>
             </LinearLayout>
         </LinearLayout>
         <!--social icon-->
@@ -57,6 +59,7 @@
             android:layout_height="45dp"
             android:layout_alignParentRight="true">
             <ImageView
+                android:id="@+id/iv_if_chat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_double_chat_bubble_green"

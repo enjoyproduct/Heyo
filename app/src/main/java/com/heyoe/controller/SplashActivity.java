@@ -7,8 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.crashlytics.android.Crashlytics;
 import com.heyoe.R;
+import com.heyoe.controller.pushnotifications.GcmServiceManager;
+import com.heyoe.controller.pushnotifications.GetNotificationRegID;
+import com.heyoe.model.Constant;
 import com.heyoe.utilities.ExceptionHandler;
 import com.heyoe.utilities.SocialUtility;
+import com.heyoe.utilities.Utils;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -25,6 +29,11 @@ public class SplashActivity extends AppCompatActivity {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
 //        SocialUtility.printKeyHash(this);
+        if (Utils.getFromPreference(this, Constant.DEVICE_TOKEN).length() == 0) {
+            GetNotificationRegID getNotificationRegID = new GetNotificationRegID(this);
+            getNotificationRegID.registerInBackground();
+        }
+
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

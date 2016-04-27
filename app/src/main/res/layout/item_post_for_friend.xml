@@ -22,7 +22,7 @@
                 android:id="@+id/civ_ipff_avatar"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
-                android:src="@drawable/user3"/>
+                android:src="@drawable/default_user"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -30,29 +30,32 @@
                 android:padding="@dimen/dimen_12dp">
                 <TextView
                     android:id="@+id/tv_ipff_fullname"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:text="Esra"
+
                     android:textSize="@dimen/txt_18sp"
                     android:singleLine="true"
                     android:textColor="@color/black"/>
                 <TextView
                     android:id="@+id/tv_ipff_date"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/txt_14sp"
                     android:singleLine="true"
                     android:textColor="@color/black"
-                    android:text="3 weeks ago"/>
+                    />
             </LinearLayout>
         </LinearLayout>
         <TextView
             android:id="@+id/tv_ipff_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hello, everybody"
+
             android:textColor="@color/black"
+            android:textSize="@dimen/txt_12sp"
+            android:maxLines="3"
+            android:textStyle="bold"
             />
     </LinearLayout>
     <!--media-->
@@ -60,22 +63,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
+            android:id="@+id/iv_ipff_media"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/default_tour"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            />
+        <ImageButton
+            android:id="@+id/iv_ipff_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/post1"/>
-        <ImageView
-            android:layout_width="@dimen/dimen_28dp"
-            android:layout_height="@dimen/dimen_28dp"
             android:src="@drawable/ic_favorite_star_empty"
+            android:background="@color/transparent"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_margin="@dimen/dimen_16dp"/>
+        <ImageButton
+            android:id="@+id/ib_ipff_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_play_dark"
+            android:visibility="visible"/>
     </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_margin="@dimen/dimen_12dp"
+        android:background="@color/dark"/>
     <!--social icons-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
         <ImageButton
             android:id="@+id/ib_ipff_like"
             android:layout_width="wrap_content"
@@ -105,6 +127,11 @@
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_margin="@dimen/dimen_12dp"
+        android:background="@color/dark"/>
     <!--social activity count-->
     <LinearLayout
         android:layout_width="match_parent"
@@ -119,9 +146,10 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
             <ImageView
+                android:id="@+id/iv_ipff_like_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/green_like_count"
+                android:src="@drawable/like_count_empty"
                 />
             <TextView
                 android:id="@+id/tv_ipff_like_count"
@@ -140,9 +168,10 @@
             android:gravity="center_vertical"
             android:layout_marginTop="@dimen/dimen_8dp">
             <ImageView
+                android:id="@+id/iv_ipff_dislike_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/green_unlike_count"
+                android:src="@drawable/dislike_count_empty"
                 />
             <TextView
                 android:id="@+id/tv_ipff_unlike_count"
@@ -160,9 +189,10 @@
             android:orientation="horizontal"
             android:layout_marginTop="@dimen/dimen_8dp">
             <ImageView
+                android:id="@+id/iv_ipff_comments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/green_comment_count"
+                android:src="@drawable/comment_count_empty"
                 />
             <LinearLayout
                 android:layout_width="match_parent"
@@ -170,10 +200,12 @@
                 android:orientation="vertical">
                 <!--comment 1-->
                 <LinearLayout
+                    android:id="@+id/ll_ipff_comment1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:layout_marginBottom="@dimen/dimen_8dp"
+                    android:visibility="gone"
                     >
                     <TextView
                         android:id="@+id/tv_ipff_name1"
@@ -182,7 +214,7 @@
                         android:textColor="@color/black"
                         android:layout_marginLeft="18dp"
                         android:textStyle="bold"
-                        android:text="Jolnalda"
+
                         android:maxLength="20"
                         android:singleLine="true"/>
                     <TextView
@@ -191,14 +223,15 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:layout_marginLeft="@dimen/dimen_16dp"
-                        android:text="Good morning"/>
+                        />
                 </LinearLayout>
                 <!--comment 2-->
                 <LinearLayout
+                    android:id="@+id/ll_ipff_comment2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:layout_marginBottom="@dimen/dimen_8dp"
                     android:visibility="gone">
                     <TextView
                         android:id="@+id/tv_ipff_name2"
@@ -220,11 +253,13 @@
                 </LinearLayout>
                 <!--comment 3-->
                 <LinearLayout
+                    android:id="@+id/ll_ipff_comment3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:visibility="gone">
+
+                    android:visibility="gone"
+                    android:layout_marginBottom="@dimen/dimen_8dp">
                     <TextView
                         android:id="@+id/tv_ipff_name3"
                         android:layout_width="wrap_content"
@@ -248,7 +283,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/checkout_all_comment"
-                    android:layout_marginTop="@dimen/dimen_8dp"
+
                     android:layout_marginLeft="@dimen/dimen_16dp"/>
             </LinearLayout>
 
@@ -296,4 +331,8 @@
                 android:text="0"/>
         </LinearLayout>
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/grey"/>
 </LinearLayout>

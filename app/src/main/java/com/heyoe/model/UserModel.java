@@ -10,7 +10,7 @@ public class UserModel {
     String city;
     String country;
     String birthday;
-    String about_me;
+    String about_you;
     String celebrity;
     String media_count;
     String friend_count;
@@ -18,6 +18,15 @@ public class UserModel {
     String header_photo;
     String header_video;
     String gender;
+    String time;
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     public String getPassword() {
         return password;
@@ -77,12 +86,12 @@ public class UserModel {
         this.birthday = birthday;
     }
 
-    public String getAbout_me() {
-        return about_me;
+    public String getAbout_you() {
+        return about_you;
     }
 
-    public void setAbout_me(String about_me) {
-        this.about_me = about_me;
+    public void setAbout_you(String about_you) {
+        this.about_you = about_you;
     }
 
     public String getCelebrity() {

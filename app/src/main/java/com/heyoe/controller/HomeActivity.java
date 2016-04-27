@@ -5,34 +5,31 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AutoCompleteTextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.support.v7.widget.SearchView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe.R;
 import com.heyoe.controller.fragments.ActivityFragment;
-import com.heyoe.controller.fragments.CalendarFragment;
 import com.heyoe.controller.fragments.CheckinChatFragment;
-import com.heyoe.controller.fragments.FAQFragment;
 import com.heyoe.controller.fragments.FavoriteFragment;
-import com.heyoe.controller.fragments.FriendFragment;
-import com.heyoe.controller.fragments.GroupFragment;
 import com.heyoe.controller.fragments.InviteFriendFragment;
 import com.heyoe.controller.fragments.MainFragment;
 import com.heyoe.controller.fragments.MainMenuFragment;
@@ -40,6 +37,7 @@ import com.heyoe.controller.fragments.MoreFriendFragment;
 import com.heyoe.controller.fragments.MyFriendFragment;
 import com.heyoe.controller.fragments.NewPostFragment;
 import com.heyoe.controller.fragments.RequestFragment;
+import com.heyoe.controller.pushnotifications.GcmServiceManager;
 import com.heyoe.model.Constant;
 import com.heyoe.utilities.Utils;
 
@@ -49,27 +47,37 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 //    private SearchView searchView;
 //    private AutoCompleteTextView autoCompleteTextView;
     private ImageView ivMain, ivFriends, ivNewPost, ivCheckin, ivActivity;
+    private RelativeLayout rlMain, rlFriends, rlNewPost, rlCheckin, rlActivity;
     public static DrawerLayout mDrawerLayout;
     private static FragmentManager fragmentManager;
     private MainMenuFragment mainMenuFragment;
-    private static Context context;
+    private static TextView tvTitle;
+    private static Activity mActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        GcmServiceManager gcmServiceManager = GcmServiceManager.getInstance();
+        gcmServiceManager.startGcmService(this);
 
         initVariables();
         initUI();
     }
     private void initVariables() {
         fragmentManager = getSupportFragmentManager();
-        context = this;
+        mActivity = this;
     }
     private void initUI() {
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         ibMenu = (ImageButton)toolbar.findViewById(R.id.ib_menu);
         ibMenu.setOnClickListener(this);
+        tvTitle = (TextView)findViewById(R.id.tv_home_title);
+        this.setTitle("");
+
 //        ibNewPost = (ImageButton)toolbar.findViewById(R.id.ib_menu_new_compose);
 //        ibNewPost.setOnClickListener(this);
 //        searchView = (SearchView)toolbar.findViewById(R.id.sv_menu);
@@ -88,13 +96,31 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         ivCheckin = (ImageView)findViewById(R.id.iv_home_checkin);
         ivActivity = (ImageView)findViewById(R.id.iv_home_activity);
 
-        ivMain.setOnClickListener(this);
-        ivFriends.setOnClickListener(this);
-        ivNewPost.setOnClickListener(this);
-        ivCheckin.setOnClickListener(this);
-        ivActivity.setOnClickListener(this);
+//        ivMain.setOnClickListener(this);
+//        ivFriends.setOnClickListener(this);
+//        ivNewPost.setOnClickListener(this);
+//        ivCheckin.setOnClickListener(this);
+//        ivActivity.setOnClickListener(this);
 
-        navigateTo(0);
+        rlMain = (RelativeLayout)findViewById(R.id.rl_home_main);
+        rlFriends = (RelativeLayout)findViewById(R.id.rl_home_friend);
+        rlNewPost = (RelativeLayout)findViewById(R.id.rl_home_post);
+        rlCheckin = (RelativeLayout)findViewById(R.id.rl_home_checkin);
+        rlActivity = (RelativeLayout)findViewById(R.id.rl_home_activity);
+
+        rlMain.setOnClickListener(this);
+        rlFriends.setOnClickListener(this);
+        rlNewPost.setOnClickListener(this);
+        rlCheckin.setOnClickListener(this);
+        rlActivity.setOnClickListener(this);
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, new MainFragment())
+                .commit();
+    }
+    private static void setTitle(String title) {
+        tvTitle.setText(title);
+
     }
 
     public static void navigateTo(int num) {
@@ -103,72 +129,78 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new MainFragment())
                         .commit();
+                searchItem.setVisible(true);
+                setTitle("");
                 break;
             case 1:
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new MyFriendFragment())
                         .commit();
+                searchItem.setVisible(true);
+                setTitle("");
                 break;
             case 2:
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new NewPostFragment())
                         .commit();
+                searchItem.setVisible(true);
+                setTitle("");
                 break;
             case 3:
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new CheckinChatFragment())
                         .commit();
+                searchItem.setVisible(true);
+                setTitle("");
                 break;
             case 4:
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new ActivityFragment())
                         .commit();
+                searchItem.setVisible(true);
+                setTitle("");
                 break;
         }
     }
+
     public static void menuNavigateTo(int num) {
         switch (num) {
             case 0:
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new FavoriteFragment())
                         .commit();
+                searchItem.setVisible(false);
+                setTitle(mActivity.getResources().getString(R.string.favorite));
+
                 break;
             case 1:
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, new FriendFragment())
-//                        .commit();
-                break;
-            case 2:
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new RequestFragment())
                         .commit();
+                searchItem.setVisible(false);
+                setTitle(mActivity.getResources().getString(R.string.requests));
                 break;
-            case 3:
+            case 2:
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new MoreFriendFragment())
                         .commit();
+                searchItem.setVisible(false);
+                setTitle(mActivity.getResources().getString(R.string.more_friends));
                 break;
-            case 4:
+            case 3:
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new InviteFriendFragment())
                         .commit();
+                searchItem.setVisible(false);
+                setTitle(mActivity.getResources().getString(R.string.invited_friends));
                 break;
-            case 5:
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, new GroupFragment())
-//                        .commit();
-                break;
-            case 6:
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, new CalendarFragment())
-//                        .commit();
-                break;
-            case 7:
+            case 4:
 //                fragmentManager.beginTransaction()
 //                        .replace(R.id.fragment_container, new FAQFragment())
 //                        .commit();
+//                searchItem.setVisible(false);
                 break;
-            case 8:
+            case 5:
                 showSignOutAlert();
                 break;
 
@@ -176,8 +208,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         mDrawerLayout.closeDrawers();
     }
     public static void showSignOutAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(context.getResources().getString(R.string.app_name));
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(mActivity.getResources().getString(R.string.app_name));
         builder.setMessage("Do you want to log out?");
         builder.setCancelable(true);
         builder.setPositiveButton("Log Out",
@@ -197,77 +229,70 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         alert.show();
     }
     private static void sign_out() {
-        Utils.saveToPreference(context, Constant.USER_ID, "");
-        Utils.saveToPreference(context, Constant.EMAIL, "");
-        Utils.saveToPreference(context, Constant.PASSWORD, "");
-        Utils.saveToPreference(context, Constant.FULLNAME, "");
-        Utils.saveToPreference(context, Constant.CITY, "");
-        Utils.saveToPreference(context, Constant.COUNTRY, "");
-        Utils.saveToPreference(context, Constant.BIRTHDAY, "");
-        Utils.saveToPreference(context, Constant.GENDER, "");
-        Utils.saveToPreference(context, Constant.CELEBRITY, "");
-        Utils.saveToPreference(context, Constant.ABOUT_ME, "");
-        Utils.saveToPreference(context, Constant.MEDIA_COUNT, "");
-        Utils.saveToPreference(context, Constant.FRIEND_COUNT, "");
-        Utils.saveToPreference(context, Constant.AVATAR, "");
-        Utils.saveToPreference(context, Constant.HEADER_PHOTO, "");
-        Utils.saveToPreference(context, Constant.HEADER_VIDEO, "");
-        Utils.saveToPreference(context, Constant.FB_ACCESS_TOKEN, "");
-        Utils.saveToPreference(context, Constant.FB_NAME, "");
-        Utils.saveToPreference(context, Constant.FB_EMAIL, "");
-        Utils.saveToPreference(context, Constant.FB_PHOTO, "");
+        Utils.saveToPreference(mActivity, Constant.USER_ID, "");
+        Utils.saveToPreference(mActivity, Constant.EMAIL, "");
+        Utils.saveToPreference(mActivity, Constant.PASSWORD, "");
+        Utils.saveToPreference(mActivity, Constant.FULLNAME, "");
+        Utils.saveToPreference(mActivity, Constant.CITY, "");
+        Utils.saveToPreference(mActivity, Constant.COUNTRY, "");
+        Utils.saveToPreference(mActivity, Constant.BIRTHDAY, "");
+        Utils.saveToPreference(mActivity, Constant.GENDER, "");
+        Utils.saveToPreference(mActivity, Constant.CELEBRITY, "");
+        Utils.saveToPreference(mActivity, Constant.ABOUT_ME, "");
+        Utils.saveToPreference(mActivity, Constant.MEDIA_COUNT, "");
+        Utils.saveToPreference(mActivity, Constant.FRIEND_COUNT, "");
+        Utils.saveToPreference(mActivity, Constant.AVATAR, "");
+        Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, "");
+        Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, "");
+        Utils.saveToPreference(mActivity, Constant.FB_ACCESS_TOKEN, "");
+        Utils.saveToPreference(mActivity, Constant.FB_NAME, "");
+        Utils.saveToPreference(mActivity, Constant.FB_EMAIL, "");
+        Utils.saveToPreference(mActivity, Constant.FB_PHOTO, "");
 
-        context.startActivity(new Intent(context, SignActivity.class));
-        ((HomeActivity)context).finish();
+        mActivity.startActivity(new Intent(mActivity, SignActivity.class));
+        ((HomeActivity)mActivity).finish();
     }
     @Override
     public void onClick(View v) {
         if (v == ibMenu) {
             mDrawerLayout.openDrawer(Gravity.LEFT);
         }
-//        if (v == ibNewPost) {
-//            navigateTo(2);
-//        }
-        if (v == ivMain) {
+
+        if (v == rlMain) {
             navigateTo(0);
         }
-        if (v == ivFriends) {
+        if (v == rlFriends) {
             navigateTo(1);
         }
-        if (v == ivNewPost) {
+        if (v == rlNewPost) {
             navigateTo(2);
         }
-        if (v == ivCheckin) {
+        if (v == rlCheckin) {
             navigateTo(3);
         }
-        if (v == ivActivity) {
+        if (v == rlActivity) {
             navigateTo(4);
         }
     }
-    MenuItem searchItem;
-    MenuItem composeItem;
+    static MenuItem searchItem;
+//    MenuItem composeItem;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_home, menu);
         searchItem = menu.findItem(R.id.action_search);
-        composeItem = menu.findItem(R.id.ic_compose);
 
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // perform query here
-
-
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599
                 searchView.clearFocus();
-
                 return true;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() == 0) {
@@ -275,18 +300,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 return false;
             }
-
         });
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-
-
                 return true;
             }
         });
         return super.onCreateOptionsMenu(menu);
-
     }
 
     @Override
@@ -299,8 +320,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             return true;
-        } else if (id == R.id.ic_compose) {
-            navigateTo(2);
         }
 
         return super.onOptionsItemSelected(item);

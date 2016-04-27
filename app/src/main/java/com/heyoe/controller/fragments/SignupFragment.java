@@ -47,6 +47,7 @@ import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.BitmapUtility;
+import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.camera.AlbumStorageDirFactory;
 import com.heyoe.utilities.camera.BaseAlbumDirFactory;
@@ -291,7 +292,7 @@ public class SignupFragment extends Fragment {
                                 String email = jsonObject.getString("email");
                                 String password = jsonObject.getString("password");
                                 String city = jsonObject.getString("city");
-                                String country = jsonObject.getString("country_code");
+                                String country = jsonObject.getString("country");
                                 String birthday = jsonObject.getString("birthday");
                                 String gender = jsonObject.getString("gender");
                                 String celebrity = jsonObject.getString("celebrity");
@@ -352,24 +353,30 @@ public class SignupFragment extends Fragment {
         switch (requestCode) {
             case from_gallary:
                 if (resultCode == Activity.RESULT_OK) {
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    if (data != null) {
+                        Uri selectedImage = data.getData();
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                    Cursor cursor = mActivity.getContentResolver().query(
-                            selectedImage, filePathColumn, null, null, null);
-                    cursor.moveToFirst();
+                        Cursor cursor = mActivity.getContentResolver().query(
+                                selectedImage, filePathColumn, null, null, null);
+                        cursor.moveToFirst();
 
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    avatarPath = cursor.getString(columnIndex);
-                    cursor.close();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        avatarPath = cursor.getString(columnIndex);
+                        cursor.close();
 
+//
+//                    //convert bitmap to drawable
+//                    Drawable d = Drawable.createFromPath(avatarPath);
+////                    ImageView ivUser = (ImageView)findViewById(R.id.iv_register_user);
+//                    Drawable drawable = new BitmapDrawable(getResources(), BitmapUtility.adjustBitmap(avatarPath));
 
-                    //convert bitmap to drawable
-                    Drawable d = Drawable.createFromPath(avatarPath);
-//                    ImageView ivUser = (ImageView)findViewById(R.id.iv_register_user);
-                    Drawable drawable = new BitmapDrawable(getResources(), BitmapUtility.adjustBitmap(avatarPath));
-                    civAvatar.setImageDrawable(drawable);
+                        Bitmap bitmap = BitmapUtility.adjustBitmap(avatarPath);
+                        FileUtility.deleteFile(avatarPath);
+                        avatarPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(avatarPath));
 
+                        civAvatar.setImageBitmap(bitmap);
+                    }
                 }
                 break;
 
@@ -512,12 +519,9 @@ public class SignupFragment extends Fragment {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = null;
-
-		/* Associate the Bitmap to the ImageView */
-        /* Decode the JPEG file into a Bitmap */
-        bitmap = BitmapFactory.decodeFile(avatarPath, bmOptions);
-        bitmap = BitmapUtility.rotateImage(bitmap, 90);
+        Bitmap bitmap = BitmapUtility.adjustBitmap(avatarPath);
+        FileUtility.deleteFile(avatarPath);
+        avatarPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(avatarPath));
         civAvatar.setImageBitmap(bitmap);
 
     }
