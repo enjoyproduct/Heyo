@@ -3,7 +3,9 @@ package com.heyoe.controller.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -64,7 +66,9 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        initVariable();
         initUI(view);
+        getAllPosts();
 
         return view;
     }
@@ -84,27 +88,20 @@ public class MainFragment extends Fragment {
             @Override
             public void onLastItemVisible() {
                 if (!isLast) {
-//                    defaluteFetchTrip(currentCategory, GlobalVariable.getInstance().currentCountryName);
                     getAllPosts();
                 }
                 mPullRefreshHomeListView.onRefreshComplete();
-
             }
         });
         lvMain = mPullRefreshHomeListView.getRefreshableView();
 
-
-
-
+        mPostAdapter = new PostAdapter(getActivity(),mArrPost);
+        lvMain.setAdapter(mPostAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initVariable();
-        getAllPosts();
-        mPostAdapter = new PostAdapter(getActivity(),mArrPost);
-        lvMain.setAdapter(mPostAdapter);
     }
 
     @Override
@@ -162,25 +159,35 @@ public class MainFragment extends Fragment {
                                     postModel.setImageHeight(Integer.parseInt(postObject.getString("height")));
 
                                     JSONArray jsonArrComments = postObject.getJSONArray("comments");
+                                    ArrayList<CommentModel> arrComments = new ArrayList<>();
                                     for (int j = 0; j < jsonArrComments.length(); j ++) {
+
                                         JSONObject jsonComment = jsonArrComments.getJSONObject(j);
                                         CommentModel commentModel = new CommentModel();
 
                                         commentModel.setFullname(jsonComment.getString("fullname"));
                                         commentModel.setAvatar(jsonComment.getString("avatar"));
                                         commentModel.setComment(jsonComment.getString("comment"));
-                                        commentModel.setTime(jsonComment.getString("time"));
+                                        commentModel.setTime(jsonComment.getString("date"));
+
+                                        arrComments.add(commentModel);
                                     }
+                                    postModel.setArrComments(arrComments);
 
                                     JSONArray jsonArrFriend = postObject.getJSONArray("liked_friends");
+                                    ArrayList<UserModel> arrFriends = new ArrayList<>();
                                     for (int k = 0; k < jsonArrFriend.length(); k ++) {
                                         JSONObject jsonFriend = jsonArrFriend.getJSONObject(k);
                                         UserModel userModel = new UserModel();
 
                                         userModel.setFullname(jsonFriend.getString("fullname"));
                                         userModel.setAvatar(jsonFriend.getString("avatar"));
-                                        userModel.setTime(jsonFriend.getString("time"));
+                                        userModel.setTime(jsonFriend.getString("date"));
+
+                                        arrFriends.add(userModel);
                                     }
+                                    postModel.setArrLiked_friends(arrFriends);
+
                                     postModel.setClickedTime((long) 0);
                                     mArrPost.add(postModel);
 
@@ -369,6 +376,73 @@ public class MainFragment extends Fragment {
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
+    }
+    public static void sharePost(int position) {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("post_id", mArrPost.get(position).getPost_id());
+
+        CustomRequest customRequest = new CustomRequest(Request.Method.POST, API.SHARED_POST, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(customRequest);
+    }
+
+    public static int shardPostNum = 0;
+    public static  void sharing(int position){
+        shardPostNum = position;
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mArrPost.get(position).getPoster_fullname());
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, "http://heyoe.com/");
+        mActivity.startActivityForResult(Intent.createChooser(sharingIntent, "Heyoe"), 102);
+
+    }
+    public static void updateSharedCount() {
+        sharePost(shardPostNum);
+        int shardCount  = Integer.parseInt(mArrPost.get(shardPostNum).getShared_count());
+        shardCount ++;
+        mArrPost.get(shardPostNum).setShared_count(String.valueOf(shardCount));
+        mPostAdapter.notifyDataSetChanged();
+    }
+    public static void updatePostFeed(PostModel postModel) {
+        for (int i = 0; i < mArrPost.size(); i ++) {
+            if (postModel.getPost_id().equals(mArrPost.get(i).getPost_id())) {
+                mArrPost.remove(i);
+                mArrPost.add(i, postModel);
+                mPostAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     public static void showCommentDlg(int position) {

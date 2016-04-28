@@ -10,22 +10,54 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
 
-        <include
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            layout="@layout/custom_toolbar_back">
-        </include>
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/toolbar_green">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <ImageButton
+                    android:id="@+id/ib_back"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/abc_ic_ab_back_mtrl_am_alpha"
+                    android:background="@color/transparent"
+                    android:layout_centerVertical="true"
+                    />
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_home_title"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textSize="@dimen/txt_20sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:layout_centerInParent="true"-->
+                    <!--android:layout_marginLeft="@dimen/dimen_20dp"-->
+                    <!--/>-->
+
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
 
 </android.support.design.widget.CoordinatorLayout>

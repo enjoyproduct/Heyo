@@ -66,7 +66,7 @@
             android:id="@+id/iv_ipff_media"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/default_tour"
+            android:src="@drawable/post1"
             android:layout_centerInParent="true"
             android:scaleType="fitXY"
             />
@@ -106,10 +106,10 @@
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
         <ImageButton
-            android:id="@+id/ib_ipff_unlike"
+            android:id="@+id/ib_ipff_dislike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/btn_unlike"
+            android:src="@drawable/btn_dislike"
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
         <ImageButton
@@ -160,7 +160,7 @@
                 android:textStyle="bold"
                 android:text="0"/>
         </LinearLayout>
-        <!--unlike count-->
+        <!--dislike count-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
                 android:src="@drawable/dislike_count_empty"
                 />
             <TextView
-                android:id="@+id/tv_ipff_unlike_count"
+                android:id="@+id/tv_ipff_dislike_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"

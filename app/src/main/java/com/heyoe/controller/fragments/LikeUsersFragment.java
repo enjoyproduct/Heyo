@@ -75,22 +75,14 @@ public class LikeUsersFragment extends Fragment {
         if (UserListActivity.type.equals("like")) {
             api = API.GET_LIKED_USERS;
         } else {
-            api = API.GET_UNLIKED_USERS;
+            api = API.GET_DISLIKED_USERS;
         }
         arrUsers = new ArrayList<>();
     }
     private void initUI(View view) {
-///create listview
-        mPullRefreshHomeListView = (PullToRefreshListView) view.findViewById(R.id.lv_more_friends);
-        mPullRefreshHomeListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
-            @Override
-            public void onLastItemVisible() {
-//                if (!isLast) {
-//                }
-                mPullRefreshHomeListView.onRefreshComplete();
+        ///create listview
+        mPullRefreshHomeListView = (PullToRefreshListView) view.findViewById(R.id.lv_like_users);
 
-            }
-        });
         lvHome = mPullRefreshHomeListView.getRefreshableView();
         userAdapter = new UserAdpater(arrUsers);
         lvHome.setAdapter(userAdapter);
@@ -101,6 +93,8 @@ public class LikeUsersFragment extends Fragment {
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
         params.put("post_id", UserListActivity.postModel.getPost_id());
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, api, params,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -127,6 +121,7 @@ public class LikeUsersFragment extends Fragment {
                                     String avatar = userObject.getString("avatar");
                                     String header_photo_url = userObject.getString("header_photo");
                                     String header_video_url = userObject.getString("header_video");
+                                    String friend_status  = userObject.getString("friend_status");
 
                                     UserModel userModel = new UserModel();
 
@@ -143,6 +138,7 @@ public class LikeUsersFragment extends Fragment {
                                     userModel.setAvatar(avatar);
                                     userModel.setHeader_photo(header_photo_url);
                                     userModel.setHeader_video(header_video_url);
+                                    userModel.setFriendStatus(friend_status);
 
                                     arrUsers.add(userModel);
                                 }
@@ -188,7 +184,7 @@ public class LikeUsersFragment extends Fragment {
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
-                                arrUsers.remove(position);
+                                arrUsers.get(position).setFriendStatus("invited");
                                 userAdapter.notifyDataSetChanged();
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.invite_sucess));
                             } else  if (status.equals("400")) {
@@ -259,6 +255,11 @@ public class LikeUsersFragment extends Fragment {
             TextView tvName = (TextView)view.findViewById(R.id.tv_imf_friend_name);
             TextView tvAboutMe = (TextView)view.findViewById(R.id.tv_imf_aboutme);
             ImageButton ibAdd = (ImageButton)view.findViewById(R.id.ib_imf_add);
+            if (!arrFriends.get(position).getFriendStatus().equals("none")) {
+                ibAdd.setVisibility(View.GONE);
+            } else {
+                ibAdd.setVisibility(View.VISIBLE);
+            }
             tvName.setText(arrFriends.get(position).getFullname());
             tvAboutMe.setText(arrFriends.get(position).getAbout_you());
             ibAdd.setOnClickListener(new View.OnClickListener() {

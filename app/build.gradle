@@ -55,7 +55,8 @@ dependencies {
     compile 'com.android.support:design:22.2.1'
     compile 'com.android.support:percent:22.2.0'
     compile 'com.android.support:cardview-v7:22.2.1'
-    compile 'com.google.android.gms:play-services:8.4.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.google.android.gms:play-services:8.3.0'
     compile 'com.commonsware.cwac:richedit:0.5.+'
     compile 'com.android.support:support-v4:22.2.1'
 }

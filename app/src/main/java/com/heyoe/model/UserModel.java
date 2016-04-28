@@ -1,9 +1,11 @@
 package com.heyoe.model;
 
+import java.io.Serializable;
+
 /**
  * Created by dell17 on 4/10/2016.
  */
-public class UserModel {
+public class UserModel implements Serializable {
     String user_id;
     String fullname;
     String email;
@@ -19,6 +21,15 @@ public class UserModel {
     String header_video;
     String gender;
     String time;
+    String friendStatus;
+
+    public String getFriendStatus() {
+        return friendStatus;
+    }
+
+    public void setFriendStatus(String friendStatus) {
+        this.friendStatus = friendStatus;
+    }
 
     public String getTime() {
         return time;

@@ -17,8 +17,10 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.Volley;
 import com.heyoe.R;
+import com.heyoe.controller.DetailPostActivity;
 import com.heyoe.controller.MediaPlayActivity;
 import com.heyoe.controller.ProfileActivity;
+import com.heyoe.controller.UserListActivity;
 import com.heyoe.controller.fragments.MainFragment;
 import com.heyoe.model.API;
 import com.heyoe.model.CommentModel;
@@ -87,24 +89,32 @@ public class PostAdapter extends BaseAdapter {
             ivLikeCount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(activity, UserListActivity.class);
+                    intent.putExtra("type", "like");
+                    intent.putExtra("post", postModel);
+                    activity.startActivity(intent);
                 }
             });
 
             ivDislikeCount.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(activity, UserListActivity.class);
+                    intent.putExtra("type", "dislike");
+                    intent.putExtra("post", postModel);
+                    activity.startActivity(intent);
                 }
             });
             ivComments.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(activity, DetailPostActivity.class);
+                    intent.putExtra("post", postModel);
+                    activity.startActivityForResult(intent, 101);
                 }
             });
             TextView tvLikeCount = (TextView)view.findViewById(R.id.tv_ipff_like_count);
-            TextView tvDislike = (TextView)view.findViewById(R.id.tv_ipff_unlike_count);
+            TextView tvDislike = (TextView)view.findViewById(R.id.tv_ipff_dislike_count);
 
             TextView[] tvNames = new TextView[3];
             tvNames[0] = (TextView)view.findViewById(R.id.tv_ipff_name1);
@@ -134,10 +144,16 @@ public class PostAdapter extends BaseAdapter {
                 ivDislikeCount.setImageDrawable(activity.getResources().getDrawable(R.drawable.dislike_count_empty));
             } else if (postModel.getLike().equals("dislike")) {
                 ivLikeCount.setImageDrawable(activity.getResources().getDrawable(R.drawable.like_count_empty));
-                ivDislikeCount.setImageDrawable(activity.getResources().getDrawable(R.drawable.green_unlike_count));
+                ivDislikeCount.setImageDrawable(activity.getResources().getDrawable(R.drawable.green_dislike_count));
             } else {
                 ivLikeCount.setImageDrawable(activity.getResources().getDrawable(R.drawable.like_count_empty));
                 ivDislikeCount.setImageDrawable(activity.getResources().getDrawable(R.drawable.dislike_count_empty));
+            }
+
+            if (postModel.getCommented().equals("yes")) {
+                ivComments.setImageDrawable(activity.getResources().getDrawable(R.drawable.green_comment_count));
+            } else {
+                ivComments.setImageDrawable(activity.getResources().getDrawable(R.drawable.comment_count_empty));
             }
 
             tvLikeCount.setText(postModel.getLike_count());
@@ -315,7 +331,7 @@ public class PostAdapter extends BaseAdapter {
         ibLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60) {
+                if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("dislike")) {
                     if (postModel.getLike().equals("like")) {
                         MainFragment.setLike(position, "cancel_like");
                     } else if (postModel.getLike().equals("none")) {
@@ -325,11 +341,11 @@ public class PostAdapter extends BaseAdapter {
 
             }
         });
-        ImageButton ibDislike = (ImageButton)view.findViewById(R.id.ib_ipff_unlike);
+        ImageButton ibDislike = (ImageButton)view.findViewById(R.id.ib_ipff_dislike);
         ibDislike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60) {
+                if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("like")) {
                     if (postModel.getLike().equals("dislike")) {
                         MainFragment.setLike(position, "cancel_dislike");
                     } else if (postModel.getLike().equals("none")) {
@@ -341,13 +357,13 @@ public class PostAdapter extends BaseAdapter {
         });
         if (postModel.getLike().equals("like")) {
             ibLike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_like_green));
-            ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_unlike));
+            ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_dislike));
         } else if (postModel.getLike().equals("dislike")) {
             ibLike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_like));
             ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_dislike_green));
         } else {
             ibLike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_like));
-            ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_unlike));
+            ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_dislike));
         }
 
 
@@ -355,7 +371,9 @@ public class PostAdapter extends BaseAdapter {
         ibComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(activity, DetailPostActivity.class);
+                intent.putExtra("post", postModel);
+                activity.startActivityForResult(intent, 101);
             }
         });
         if (postModel.getCommented().equals("yes")) {
@@ -368,7 +386,7 @@ public class PostAdapter extends BaseAdapter {
         ibShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MainFragment.sharing(position);
             }
         });
         ////

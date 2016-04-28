@@ -1,9 +1,11 @@
 package com.heyoe.model;
 
+import java.io.Serializable;
+
 /**
  * Created by dell17 on 4/10/2016.
  */
-public class CommentModel {
+public class CommentModel implements Serializable{
     String fullname, avatar, comment, time;
 
     public String getFullname() {

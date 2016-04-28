@@ -162,10 +162,10 @@
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
         <ImageButton
-            android:id="@+id/ib_ipff_unlike"
+            android:id="@+id/ib_ipff_dislike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/btn_unlike"
+            android:src="@drawable/btn_dislike"
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
         <ImageButton

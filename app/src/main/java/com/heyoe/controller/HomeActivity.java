@@ -39,6 +39,7 @@ import com.heyoe.controller.fragments.NewPostFragment;
 import com.heyoe.controller.fragments.RequestFragment;
 import com.heyoe.controller.pushnotifications.GcmServiceManager;
 import com.heyoe.model.Constant;
+import com.heyoe.model.PostModel;
 import com.heyoe.utilities.Utils;
 
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener{
@@ -199,6 +200,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 //                        .replace(R.id.fragment_container, new FAQFragment())
 //                        .commit();
 //                searchItem.setVisible(false);
+                mActivity.startActivity(new Intent(mActivity, DetailPostActivity.class));
                 break;
             case 5:
                 showSignOutAlert();
@@ -328,7 +330,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constant.REQUEST_PLACE_PICKER
-                && resultCode == Activity.RESULT_OK) {
+                && resultCode == RESULT_OK) {
 
             // The user has selected a place. Extract the name and address.
             final Place place = PlacePicker.getPlace(data, this);
@@ -343,6 +345,23 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
+        switch (requestCode) {
+            case 101:
+                if (data != null) {
+                    PostModel postModel = (PostModel) data.getSerializableExtra("post");
+                    if (postModel != null) {
+                        MainFragment.updatePostFeed(postModel);
+                    }
+
+                }
+                break;
+            case 102:
+                MainFragment.updateSharedCount();
+                if (resultCode == 0) {
+
+                }
+                break;
         }
     }
 }

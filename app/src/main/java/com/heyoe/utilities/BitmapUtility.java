@@ -267,8 +267,7 @@ public class BitmapUtility {
 
         BitmapFactory.decodeFile(photopath, options);
         //////
-//        options.inSampleSize = 7;
-        options.inSampleSize = 2;
+        options.inSampleSize = 1;
         options.inJustDecodeBounds = false;
 
         //get bitmap with local path

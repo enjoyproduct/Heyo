@@ -50,12 +50,12 @@ public class API {
     public static String LIKE_POST = BASE_URL + "like_post";
     public static String SET_FAVORITE = BASE_URL + "set_favorite";
     public static String COMMENT_POST = BASE_URL + "comment_post";
-    public static String SHARED_POST = BASE_URL + "shared_post";
+    public static String SHARED_POST = BASE_URL + "share_post";
     public static String VIEWED_POST = BASE_URL + "viewed_post";
     public static String EDIT_PROFILE = BASE_URL + "edit_profile";
     public static String CHANGE_PASSWORD = BASE_URL + "change_password";
     public static String GET_LIKED_USERS = BASE_URL + "get_liked_users";
-    public static String GET_UNLIKED_USERS = BASE_URL + "get_unliked_users";
+    public static String GET_DISLIKED_USERS = BASE_URL + "get_disliked_users";
     public static String GET_COMMENTED_USERS = BASE_URL + "get_commented_users";
 
 }

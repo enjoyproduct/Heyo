@@ -36,7 +36,7 @@ import java.nio.charset.Charset;
  * 
  * <p>
  * This class is intended for reading input that strictly consists of lines,
- * such as line-based cache entries or cache journal. Unlike the
+ * such as line-based cache entries or cache journal. dislike the
  * {@link java.io.BufferedReader} which in conjunction with
  * {@link java.io.InputStreamReader} provides similar functionality, this class
  * uses different end-of-input reporting and a more restrictive definition of a
