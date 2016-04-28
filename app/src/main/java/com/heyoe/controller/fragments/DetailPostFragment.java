@@ -271,16 +271,12 @@ public class DetailPostFragment extends Fragment {
                                     like_count ++;
                                     postModel.setLike_count(String.valueOf(like_count));
 
-//                                    ibLike.setImageDrawable(getResources().getDrawable(R.drawable.btn_like_green));
-
                                 } else if (type.equals("dislike")){
                                     int dislike_count = Integer.parseInt(postModel.getDislike_count());
                                     dislike_count ++;
                                     postModel.setDislike_count(String.valueOf(dislike_count));
 
                                     postModel.setLike("dislike");
-
-//                                    ibDislike.setImageDrawable(getResources().getDrawable(R.drawable.btn_dislike_green));
 
                                 } else if (type.equals("cancel_like")){
                                     int like_count = Integer.parseInt(postModel.getLike_count());
@@ -292,8 +288,6 @@ public class DetailPostFragment extends Fragment {
 
                                     postModel.setLike("none");
 
-//                                    ibLike.setImageDrawable(getResources().getDrawable(R.drawable.btn_like));
-
                                 } else if (type.equals("cancel_dislike")){
                                     int dislike_count = Integer.parseInt(postModel.getDislike_count());
                                     dislike_count --;
@@ -303,15 +297,12 @@ public class DetailPostFragment extends Fragment {
                                     postModel.setDislike_count(String.valueOf(dislike_count));
 
                                     postModel.setLike("none");
-
-//                                    ibDislike.setImageDrawable(getResources().getDrawable(R.drawable.btn_dislike));
                                 }
                                 userAdpater.notifyDataSetChanged();
 
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
-//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
                         }catch (Exception e) {
                             e.printStackTrace();
@@ -378,17 +369,12 @@ public class DetailPostFragment extends Fragment {
                                 commentModel.setAvatar(Utils.getFromPreference(mActivity, Constant.AVATAR));
                                 commentModel.setTime(TimeUtility.getCurrentTimeStamp());
                                 postModel.getArrComments().add(0,commentModel);
-                                mArrComments.add(0, commentModel);
+//                                mArrComments.add(0, commentModel);
                                 userAdpater.notifyDataSetChanged();
-
-//                                ibComment.setImageDrawable(getResources().getDrawable(R.drawable.btn_comment_green));
-//                                ivCommentCounts.setImageDrawable(getResources().getDrawable(R.drawable.green_comment_count));
-//                                tvCommentCount.setText(String.valueOf(mArrComments.size()));
 
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
-//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
                         }catch (Exception e) {
                             e.printStackTrace();
@@ -451,9 +437,8 @@ public class DetailPostFragment extends Fragment {
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = convertView;
             if (position == 0) {
-                if (view == null) {
-                    view = mlayoutInflater.inflate(R.layout.item_detail_post, null);
-                }
+                view = mlayoutInflater.inflate(R.layout.item_detail_post, null);
+
                 ibFavorite = (ImageButton)view.findViewById(R.id.iv_ipff_favorite);
                 ibFavorite.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -664,9 +649,8 @@ public class DetailPostFragment extends Fragment {
                     }
                 });
             } else {
-                if (view == null) {
-                    view = mlayoutInflater.inflate(R.layout.item_comment, null);
-                }
+                view = mlayoutInflater.inflate(R.layout.item_comment, null);
+
                 TextView fullname;
                 TextView comment, date;
                 MyCircularImageView myCircularImageView;
@@ -699,6 +683,26 @@ public class DetailPostFragment extends Fragment {
             return view;
         }
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //for test
 //    private ArrayList<CommentModel> initializeCardItemList(){
 //
@@ -713,7 +717,7 @@ public class DetailPostFragment extends Fragment {
 //        }
 //        return arrayList;
 //    }
-}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //    private void setupRecyclerView(){

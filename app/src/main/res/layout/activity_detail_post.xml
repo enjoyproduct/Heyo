@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,35 +8,39 @@
     android:fitsSystemWindows="true"
     tools:context="com.heyoe.controller.DetailPostActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        >
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/toolbar_green">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            >
 
-            <RelativeLayout
-                android:layout_width="fill_parent"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-                <ImageButton
-                    android:id="@+id/ib_back"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
-                    android:layout_alignParentLeft="true"
-                    android:src="@drawable/abc_ic_ab_back_mtrl_am_alpha"
-                    android:background="@color/transparent"
-                    android:layout_centerVertical="true"
-                    />
-                <!--<TextView-->
+                android:background="@drawable/toolbar_green">
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                    <ImageButton
+                        android:id="@+id/ib_back"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_alignParentLeft="true"
+                        android:src="@drawable/abc_ic_ab_back_mtrl_am_alpha"
+                        android:background="@color/transparent"
+                        android:layout_centerVertical="true"
+                        />
+                    <!--<TextView-->
                     <!--android:id="@+id/tv_home_title"-->
                     <!--android:layout_width="wrap_content"-->
                     <!--android:layout_height="wrap_content"-->
@@ -47,17 +52,19 @@
                     <!--/>-->
 
 
-            </RelativeLayout>
+                </RelativeLayout>
 
-        </android.support.v7.widget.Toolbar>
+            </android.support.v7.widget.Toolbar>
 
-    </android.support.design.widget.AppBarLayout>
+        </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

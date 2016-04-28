@@ -58,6 +58,7 @@
                 <requestFocus/>
 
             </com.commonsware.cwac.richedit.RichEditText>
+            <!--youtube link-->
             <EditText
                 android:id="@+id/et_compose_youtube_url"
                 android:layout_width="match_parent"
@@ -70,15 +71,18 @@
             <!--image or video-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dimen_16dp"
                 >
+                <!--compose image-->
                 <ImageView
                     android:id="@+id/iv_compose"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:src="@drawable/default_tour"
                     />
+                <!--video play button-->
                 <ImageButton
                     android:id="@+id/ib_compose_play"
                     android:layout_width="wrap_content"

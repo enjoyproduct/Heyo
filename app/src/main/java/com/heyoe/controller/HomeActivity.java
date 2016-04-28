@@ -231,6 +231,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         alert.show();
     }
     private static void sign_out() {
+        Utils.saveToPreference(mActivity, Constant.DEVICE_TOKEN, "");
         Utils.saveToPreference(mActivity, Constant.USER_ID, "");
         Utils.saveToPreference(mActivity, Constant.EMAIL, "");
         Utils.saveToPreference(mActivity, Constant.PASSWORD, "");
@@ -344,11 +345,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+//            super.onActivityResult(requestCode, resultCode, data);
         }
         switch (requestCode) {
             case 101:
                 if (data != null) {
+//                    String test = data.getStringExtra("test");
                     PostModel postModel = (PostModel) data.getSerializableExtra("post");
                     if (postModel != null) {
                         MainFragment.updatePostFeed(postModel);

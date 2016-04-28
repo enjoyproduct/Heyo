@@ -15,6 +15,9 @@ import com.heyoe.controller.fragments.PrivacyPolicyFragment;
 import com.heyoe.controller.fragments.SigninFragment;
 import com.heyoe.controller.fragments.SignupFragment;
 import com.heyoe.controller.fragments.TermsOfUseFragment;
+import com.heyoe.controller.pushnotifications.GetNotificationRegID;
+import com.heyoe.model.Constant;
+import com.heyoe.utilities.Utils;
 
 public class SignActivity extends AppCompatActivity {
 
@@ -25,6 +28,11 @@ public class SignActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
+
+        if (Utils.getFromPreference(this, Constant.DEVICE_TOKEN).length() == 0) {
+            GetNotificationRegID getNotificationRegID = new GetNotificationRegID(this);
+            getNotificationRegID.registerInBackground();
+        }
 
         initVariable();
         initUI();

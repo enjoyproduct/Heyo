@@ -18,8 +18,8 @@
             <ImageView
                 android:id="@+id/iv_menu_avatar_bg"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/green_menu_banner"
+                android:layout_height="200dp"
+                android:background="@drawable/green_menu_banner9"
                 />
             <!--avatar-->
             <RelativeLayout
@@ -28,20 +28,20 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_above="@+id/rl_menu_name"
-                android:layout_marginBottom="@dimen/dimen_4dp"
+                android:layout_marginTop="16dp"
                 >
 
                 <ImageView
                     android:id="@+id/iv_menu_white_circle"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="85dp"
+                    android:layout_height="85dp"
                     android:src="@drawable/white_circle_border"
                     android:layout_centerInParent="true"
                     />
                 <com.heyoe.widget.MyCircularImageView
                     android:id="@+id/civ_menu_avatar"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/default_user"
                     android:layout_margin="@dimen/dimen_8dp"
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/iv_menu_avatar_bg"
-                android:layout_marginBottom="42dp"
+                android:layout_marginBottom="50dp"
                 >
                 <TextView
                     android:id="@+id/tv_menu_fullname"
@@ -64,7 +64,7 @@
                     android:layout_centerHorizontal="true"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:textSize="@dimen/txt_18sp"
+                    android:textSize="@dimen/txt_16sp"
                     />
                 <ImageView
                     android:id="@+id/iv_menu_celebrity"

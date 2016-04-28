@@ -48,6 +48,7 @@ public class DetailPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = getIntent();
                 intent.putExtra("post", DetailPostFragment.postModel);
+//                intent.putExtra("test", "test_value");
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -61,10 +62,11 @@ public class DetailPostActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = getIntent();
-        intent.putExtra("post", DetailPostFragment.postModel);
-        setResult(RESULT_OK, intent);
-        finish();
+//        Intent intent = new Intent();
+////        intent.putExtra("post", DetailPostFragment.postModel);
+//        intent.putExtra("test", "test_value");
+//        setResult(RESULT_OK, intent);
+//        finish();
 
     }
 

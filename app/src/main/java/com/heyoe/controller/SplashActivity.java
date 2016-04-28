@@ -29,10 +29,6 @@ public class SplashActivity extends AppCompatActivity {
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
 //        SocialUtility.printKeyHash(this);
-        if (Utils.getFromPreference(this, Constant.DEVICE_TOKEN).length() == 0) {
-            GetNotificationRegID getNotificationRegID = new GetNotificationRegID(this);
-            getNotificationRegID.registerInBackground();
-        }
 
 
         Handler handler = new Handler();

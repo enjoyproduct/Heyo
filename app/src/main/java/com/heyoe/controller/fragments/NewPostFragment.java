@@ -136,6 +136,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         photoPath = "";
         youtubePath = "";
         videoPath = "";
+        thumbPath = "";
     }
     private void initUI(View view) {
         myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_compose_avatar);
@@ -460,9 +461,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
                     FileUtility.deleteFile(photoPath);
                     photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+                    imageView.setImageBitmap(bitmap);
                     imageWidth = bitmap.getWidth();
                     imageHeight = bitmap.getHeight();
-                    imageView.setImageBitmap(bitmap);
+
 
                 }
                 break;
@@ -524,9 +526,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         Bitmap bitmap = BitmapUtility.adjustBitmap(thumbPath);
                         FileUtility.deleteFile(thumbPath);
                         thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
+                        imageView.setImageBitmap(bitmap);
                         imageWidth = bitmap.getWidth();
                         imageHeight = bitmap.getHeight();
-                        imageView.setImageBitmap(bitmap);
+
                     }
 
                 }
@@ -550,9 +553,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         Bitmap bitmap = BitmapUtility.adjustBitmap(thumbPath);
                         FileUtility.deleteFile(thumbPath);
                         thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
+                        imageView.setImageBitmap(bitmap);
                         imageWidth = bitmap.getWidth();
                         imageHeight = bitmap.getHeight();
-                        imageView.setImageBitmap(bitmap);
+
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     // User cancelled the video capture
@@ -856,9 +860,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
         FileUtility.deleteFile(photoPath);
         photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+        imageView.setImageBitmap(bitmap);
         imageWidth = bitmap.getWidth();
         imageHeight = bitmap.getHeight();
-        imageView.setImageBitmap(bitmap);
+
 
     }
     int imageWidth = 0 , imageHeight = 0;
