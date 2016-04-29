@@ -190,7 +190,7 @@
     <string name="Youtube_play_error">Cannoot play this video</string>
     <string name="title_activity_user_list">UserListActivity</string>
     <string name="title_activity_detail_post">DetailPostActivity</string>
-    <!--<string name=""></string>-->
+    <string name="wait_one_minute">You have to wait 1 minute before you can use this button again</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->

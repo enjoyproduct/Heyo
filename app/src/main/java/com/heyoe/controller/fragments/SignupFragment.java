@@ -520,9 +520,11 @@ public class SignupFragment extends Fragment {
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapUtility.adjustBitmap(avatarPath);
+        civAvatar.setImageBitmap(bitmap);
+
         FileUtility.deleteFile(avatarPath);
         avatarPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(avatarPath));
-        civAvatar.setImageBitmap(bitmap);
+
 
     }
 

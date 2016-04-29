@@ -28,6 +28,7 @@ import com.heyoe.model.PostModel;
 import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.TimeUtility;
 import com.heyoe.utilities.UIUtility;
+import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
@@ -68,9 +69,8 @@ public class PostAdapter extends BaseAdapter {
         final PostModel postModel = arrayList.get(position);
         View view = convertView;
         if (postModel.getFriendStatus().equals("active")) {
-            if (view == null) {
-                view = layoutInflater.inflate(R.layout.item_post_for_friend, null);
-            }
+            view = layoutInflater.inflate(R.layout.item_post_for_friend, null);
+
             ImageButton ibFavorite = (ImageButton)view.findViewById(R.id.iv_ipff_favorite);
             ibFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -168,11 +168,19 @@ public class PostAdapter extends BaseAdapter {
                 tvComments[i].setText(commentModel.getComment());
                 llComments[i].setVisibility(View.VISIBLE);
             }
+            TextView tvCheckoutAllComments = (TextView)view.findViewById(R.id.tv_ipff_checkout_all_comments);
+            tvCheckoutAllComments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity, DetailPostActivity.class);
+                    intent.putExtra("post", postModel);
+                    activity.startActivityForResult(intent, 101);
+                }
+            });
 
         } else {
-            if (view == null) {
-                view = layoutInflater.inflate(R.layout.item_post_for_nonfriend, null);
-            }
+            view = layoutInflater.inflate(R.layout.item_post_for_nonfriend, null);
+
             MyCircularImageView[] civFriends = new MyCircularImageView[3];
             civFriends[0] = (MyCircularImageView)view.findViewById(R.id.civ_ipff_friend_avatar1);
             civFriends[1] = (MyCircularImageView)view.findViewById(R.id.civ_ipff_friend_avatar2);
@@ -263,7 +271,14 @@ public class PostAdapter extends BaseAdapter {
 
 
         final ImageView ivMedia = (ImageView)view.findViewById(R.id.iv_ipff_media);
-
+        ivMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, DetailPostActivity.class);
+                intent.putExtra("post", postModel);
+                activity.startActivityForResult(intent, 101);
+            }
+        });
 
         String imageUrl = "";
         String videoUrl = "";
@@ -337,6 +352,8 @@ public class PostAdapter extends BaseAdapter {
                     } else if (postModel.getLike().equals("none")) {
                         MainFragment.setLike(position, "like");
                     }
+                } else {
+                    Utils.showToast(activity, activity.getResources().getString(R.string.wait_one_minute));
                 }
 
             }
@@ -351,6 +368,8 @@ public class PostAdapter extends BaseAdapter {
                     } else if (postModel.getLike().equals("none")) {
                         MainFragment.setLike(position, "dislike");
                     }
+                }else {
+                    Utils.showToast(activity, activity.getResources().getString(R.string.wait_one_minute));
                 }
 
             }

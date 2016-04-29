@@ -255,7 +255,7 @@ public class LikeUsersFragment extends Fragment {
             TextView tvName = (TextView)view.findViewById(R.id.tv_imf_friend_name);
             TextView tvAboutMe = (TextView)view.findViewById(R.id.tv_imf_aboutme);
             ImageButton ibAdd = (ImageButton)view.findViewById(R.id.ib_imf_add);
-            if (!arrFriends.get(position).getFriendStatus().equals("none")) {
+            if (!arrFriends.get(position).getFriendStatus().equals("none") || arrFriends.get(position).getUser_id().equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
                 ibAdd.setVisibility(View.GONE);
             } else {
                 ibAdd.setVisibility(View.VISIBLE);

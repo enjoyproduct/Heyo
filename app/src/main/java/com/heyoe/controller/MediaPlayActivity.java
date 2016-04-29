@@ -64,6 +64,10 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         VideoPlay videoPlay = new VideoPlay(this, videoView, url);
         videoPlay.playVideo();
     }
+
+
+
+
     private void initYoutube() {
         youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
         youTubeView.setVisibility(View.VISIBLE);
@@ -79,7 +83,8 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
             youTubePlayer.loadVideo(FileUtility.getFilenameFromPath(url));
 
             // Hiding player controls
-            youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+            youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+
         }
 
     }

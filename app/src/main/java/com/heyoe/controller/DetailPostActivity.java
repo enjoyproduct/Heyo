@@ -61,7 +61,7 @@ public class DetailPostActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
 //        Intent intent = new Intent();
 ////        intent.putExtra("post", DetailPostFragment.postModel);
 //        intent.putExtra("test", "test_value");

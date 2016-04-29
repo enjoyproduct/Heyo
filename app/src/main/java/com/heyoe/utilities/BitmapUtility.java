@@ -241,6 +241,7 @@ public class BitmapUtility {
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(path, options);
     }
+
     //////rotate bitmap accoring to it's orientation
     public static Bitmap adjustBitmap(String photopath) {////////////good
         Uri uri = Uri.parse(photopath);
@@ -267,7 +268,7 @@ public class BitmapUtility {
 
         BitmapFactory.decodeFile(photopath, options);
         //////
-        options.inSampleSize = 1;
+        options.inSampleSize = 3;
         options.inJustDecodeBounds = false;
 
         //get bitmap with local path
@@ -469,7 +470,9 @@ public class BitmapUtility {
             return;
         }
         File myDir = new File(destinationPath);
-        myDir.mkdirs();
+        if (!myDir.exists()) {
+            myDir.mkdirs();
+        }
         Random generator = new Random();
         ///generate random number
 //        int n = 10000;

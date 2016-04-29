@@ -273,6 +273,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                             String status = response.getString("status");
                             if (status.equals("200")) {
                                 Utils.showToast(mActivity, getResources().getString(R.string.post_success));
+                                UIUtility.hideSoftKeyboard(mActivity);
                                 HomeActivity.navigateTo(0);
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
@@ -459,11 +460,15 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 //                    Drawable drawable = new BitmapDrawable(getResources(), BitmapUtility.adjustBitmap(photoPath));
 
                     Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
-                    FileUtility.deleteFile(photoPath);
-                    photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+
                     imageView.setImageBitmap(bitmap);
+
                     imageWidth = bitmap.getWidth();
                     imageHeight = bitmap.getHeight();
+
+                    FileUtility.deleteFile(photoPath);
+                    photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+
 
 
                 }
@@ -524,11 +529,15 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
                         //adjust and resave thumbnail
                         Bitmap bitmap = BitmapUtility.adjustBitmap(thumbPath);
-                        FileUtility.deleteFile(thumbPath);
-                        thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
+
                         imageView.setImageBitmap(bitmap);
+
                         imageWidth = bitmap.getWidth();
                         imageHeight = bitmap.getHeight();
+
+                        FileUtility.deleteFile(thumbPath);
+                        thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
+
 
                     }
 
@@ -551,11 +560,15 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
                         //adjust and resave thumbnail
                         Bitmap bitmap = BitmapUtility.adjustBitmap(thumbPath);
-                        FileUtility.deleteFile(thumbPath);
-                        thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
+
                         imageView.setImageBitmap(bitmap);
+
                         imageWidth = bitmap.getWidth();
                         imageHeight = bitmap.getHeight();
+
+                        FileUtility.deleteFile(thumbPath);
+                        thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
+
 
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -858,11 +871,16 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
-        FileUtility.deleteFile(photoPath);
-        photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+
         imageView.setImageBitmap(bitmap);
+
         imageWidth = bitmap.getWidth();
         imageHeight = bitmap.getHeight();
+
+        FileUtility.deleteFile(photoPath);
+        photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+
+
 
 
     }

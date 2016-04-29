@@ -598,6 +598,8 @@ public class DetailPostFragment extends Fragment {
                             } else if (postModel.getLike().equals("none")) {
                                 setLike("like");
                             }
+                        } else {
+                            Utils.showToast(mActivity, mActivity.getResources().getString(R.string.wait_one_minute));
                         }
 
                     }
@@ -612,6 +614,8 @@ public class DetailPostFragment extends Fragment {
                             } else if (postModel.getLike().equals("none")) {
                                 setLike("dislike");
                             }
+                        } else {
+                            Utils.showToast(mActivity, mActivity.getResources().getString(R.string.wait_one_minute));
                         }
 
                     }

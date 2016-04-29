@@ -345,7 +345,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         } else {
-//            super.onActivityResult(requestCode, resultCode, data);
+            super.onActivityResult(requestCode, resultCode, data);
         }
         switch (requestCode) {
             case 101:

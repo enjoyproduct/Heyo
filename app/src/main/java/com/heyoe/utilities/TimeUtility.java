@@ -172,8 +172,7 @@ public class TimeUtility {
         int result = second;
         if (second < 0) {
             str = "0  " + context.getResources().getString(R.string.minutes_ago);
-        }
-        if((int)(result / 60) < 60){
+        } else if((int)(result / 60) < 60){
             str = String.valueOf((int) (result / 60)) + "  " + context.getResources().getString(R.string.minutes_ago);
 
         } else {
