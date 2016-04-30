@@ -178,6 +178,74 @@ public class PostAdapter extends BaseAdapter {
                 }
             });
 
+
+            ImageButton ibLike = (ImageButton)view.findViewById(R.id.ib_ipff_like);
+            ibLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("dislike")) {
+                        if (postModel.getLike().equals("like")) {
+                            MainFragment.setLike(position, "cancel_like");
+                        } else if (postModel.getLike().equals("none")) {
+                            MainFragment.setLike(position, "like");
+                        }
+                    } else {
+                        Utils.showToast(activity, activity.getResources().getString(R.string.wait_one_minute));
+                    }
+
+                }
+            });
+            ImageButton ibDislike = (ImageButton)view.findViewById(R.id.ib_ipff_dislike);
+            ibDislike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("like")) {
+                        if (postModel.getLike().equals("dislike")) {
+                            MainFragment.setLike(position, "cancel_dislike");
+                        } else if (postModel.getLike().equals("none")) {
+                            MainFragment.setLike(position, "dislike");
+                        }
+                    }else {
+                        Utils.showToast(activity, activity.getResources().getString(R.string.wait_one_minute));
+                    }
+
+                }
+            });
+            if (postModel.getLike().equals("like")) {
+                ibLike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_like_green));
+                ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_dislike));
+            } else if (postModel.getLike().equals("dislike")) {
+                ibLike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_like));
+                ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_dislike_green));
+            } else {
+                ibLike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_like));
+                ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_dislike));
+            }
+
+
+            ImageButton ibComment = (ImageButton)view.findViewById(R.id.ib_ipff_comment);
+            ibComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity, DetailPostActivity.class);
+                    intent.putExtra("post", postModel);
+                    activity.startActivityForResult(intent, 101);
+                }
+            });
+            if (postModel.getCommented().equals("yes")) {
+                ibComment.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_comment_green));
+            } else {
+                ibComment.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_comment));
+            }
+
+            ImageButton ibShare = (ImageButton)view.findViewById(R.id.ib_ipff_share);
+            ibShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MainFragment.sharing(position);
+                }
+            });
+            ////
         } else {
             view = layoutInflater.inflate(R.layout.item_post_for_nonfriend, null);
 
@@ -189,33 +257,66 @@ public class PostAdapter extends BaseAdapter {
             TextView tvBanner = (TextView)view.findViewById(R.id.tv_ipff_banner_text);
 
             ////make banner text ==start
-            int friendCount = postModel.getArrLiked_friends().size() > 3 ? 3 : postModel.getArrLiked_friends().size();
+            int friendCount = postModel.getArrLiked_friends().size();
 
-            String strBannerText = "";
+            String strBannerText = "<b>";
+            Long finalLikedDate = Long.parseLong(postModel.getArrLiked_friends().get(0).getTime());
             for (int i = 0; i < friendCount; i ++) {
-                civFriends[i].setVisibility(View.VISIBLE);
-                if (!postModel.getMedia_url().equals("")) {
-                    UrlRectangleImageViewHelper.setUrlDrawable(civFriends[i], API.BASE_AVATAR + postModel.getArrLiked_friends().get(i).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
-                        @Override
-                        public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
-                            if (!loadedFromCache) {
-                                ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
-                                scale.setDuration(10);
-                                scale.setInterpolator(new OvershootInterpolator());
-                                imageView.startAnimation(scale);
+                Long likedTime = Long.parseLong(postModel.getArrLiked_friends().get(i).getTime());
+                if (finalLikedDate > likedTime) {
+                    finalLikedDate = likedTime;
+                }
+                if (i < 3) {
+                    civFriends[i].setVisibility(View.VISIBLE);
+                    if (!postModel.getMedia_url().equals("")) {
+                        UrlRectangleImageViewHelper.setUrlDrawable(civFriends[i], API.BASE_AVATAR + postModel.getArrLiked_friends().get(i).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                            @Override
+                            public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                                if (!loadedFromCache) {
+                                    ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                                    scale.setDuration(10);
+                                    scale.setInterpolator(new OvershootInterpolator());
+                                    imageView.startAnimation(scale);
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        civFriends[i].setImageDrawable(activity.getResources().getDrawable(R.drawable.default_user));
+                    }
+
+                }
+                String fullname = postModel.getArrLiked_friends().get(i).getFullname();
+                String firstName = fullname.substring(0, fullname.indexOf(" "));
+
+                if (friendCount == 1) {
+                    strBannerText = "<b>" + firstName + " " + "</b>";
+                    break;
                 } else {
-                    civFriends[i].setImageDrawable(activity.getResources().getDrawable(R.drawable.default_user));
+                    String str = firstName + ", ";
+                    if (friendCount < 4) {
+                        if (i < friendCount - 1) {
+                            strBannerText = strBannerText + str;
+                        } else {
+                            strBannerText = strBannerText.substring(0, strBannerText.length() - 2) + "</b>" + " "
+                                    + activity.getResources().getString(R.string.and) + " "
+                                    + "<b>" + firstName + " " + "</b>";
+                            continue;
+                        }
+                    } else {
+                        if (i < 3) {
+                            strBannerText = strBannerText + str;
+                        } else {
+                            strBannerText = strBannerText.substring(0, strBannerText.length() - 2) + "</b>" + " "
+                                    + activity.getResources().getString(R.string.and) + " "
+                                    + "<b>" + String.valueOf(friendCount - 3) + " "+ activity.getResources().getString(R.string.people) + " " + "</b>";
+                            continue;
+                        }
+                    }
+
+
                 }
-                if (friendCount > 1 && i == friendCount - 1) {
-                    strBannerText = strBannerText.substring(0, strBannerText.length() - 2) + " "
-                            + activity.getResources().getString(R.string.and) + " "
-                            + "<b>" + postModel.getArrLiked_friends().get(i).getFullname() + " " + "</b>";
-                    continue;
-                }
-                String str = "<b>" + postModel.getArrLiked_friends().get(i).getFullname() + ", " + "</b>";
+
+
 
             }
             String strLikedMedia = "";
@@ -224,9 +325,11 @@ public class PostAdapter extends BaseAdapter {
             } else {
                 strLikedMedia = activity.getResources().getString(R.string.like_a_video_from);
             }
-            strBannerText = strBannerText + strLikedMedia
-                    + "<b>" + postModel.getPoster_fullname() + " * " + "</b>";
-            strBannerText = strBannerText + TimeUtility.countTime(activity, Long.parseLong(postModel.getPosted_date()));
+            strBannerText = strBannerText + strLikedMedia + " "
+                    + "<b>" + postModel.getPoster_fullname().substring(0, postModel.getPoster_fullname().indexOf(" ")) + " - " + "</b>";
+
+
+            strBannerText = strBannerText + TimeUtility.countTime(activity, finalLikedDate);
             //make banner text == end
 
             tvBanner.setText(Html.fromHtml(strBannerText));
@@ -342,73 +445,7 @@ public class PostAdapter extends BaseAdapter {
         TextView tvDescription = (TextView)view.findViewById(R.id.tv_ipff_description);
         tvDescription.setText(Html.fromHtml(postModel.getDescription()));
 
-        ImageButton ibLike = (ImageButton)view.findViewById(R.id.ib_ipff_like);
-        ibLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("dislike")) {
-                    if (postModel.getLike().equals("like")) {
-                        MainFragment.setLike(position, "cancel_like");
-                    } else if (postModel.getLike().equals("none")) {
-                        MainFragment.setLike(position, "like");
-                    }
-                } else {
-                    Utils.showToast(activity, activity.getResources().getString(R.string.wait_one_minute));
-                }
 
-            }
-        });
-        ImageButton ibDislike = (ImageButton)view.findViewById(R.id.ib_ipff_dislike);
-        ibDislike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("like")) {
-                    if (postModel.getLike().equals("dislike")) {
-                        MainFragment.setLike(position, "cancel_dislike");
-                    } else if (postModel.getLike().equals("none")) {
-                        MainFragment.setLike(position, "dislike");
-                    }
-                }else {
-                    Utils.showToast(activity, activity.getResources().getString(R.string.wait_one_minute));
-                }
-
-            }
-        });
-        if (postModel.getLike().equals("like")) {
-            ibLike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_like_green));
-            ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_dislike));
-        } else if (postModel.getLike().equals("dislike")) {
-            ibLike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_like));
-            ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_dislike_green));
-        } else {
-            ibLike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_like));
-            ibDislike.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_dislike));
-        }
-
-
-        ImageButton ibComment = (ImageButton)view.findViewById(R.id.ib_ipff_comment);
-        ibComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(activity, DetailPostActivity.class);
-                intent.putExtra("post", postModel);
-                activity.startActivityForResult(intent, 101);
-            }
-        });
-        if (postModel.getCommented().equals("yes")) {
-            ibComment.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_comment_green));
-        } else {
-            ibComment.setImageDrawable(activity.getResources().getDrawable(R.drawable.btn_comment));
-        }
-
-        ImageButton ibShare = (ImageButton)view.findViewById(R.id.ib_ipff_share);
-        ibShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainFragment.sharing(position);
-            }
-        });
-        ////
 
 
 

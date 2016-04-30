@@ -14,6 +14,7 @@ public class Constant {
     public static String ANDROID = "android";
     public static String DEVICE_TYPE = "device_type";
     public static String DEVICE_TOKEN = "device_token";
+    public static String DEVICE_ID = "device_id";
 
     public static String USER_ID = "user_id";
     public static String EMAIL = "email";
@@ -47,4 +48,9 @@ public class Constant {
     public static int REQUEST_PLACE_PICKER = 102;
 
 
+    public static String APP_ID = "39876";
+    public static String AUTH_KEY = "zYac8X4A2Zs3z9y";
+    public static String AUTH_SECRET = "OxhcUz3rrnSaeVJ";
+
+    public static String DEFAULT_PASSWORD = "135792468";
 }

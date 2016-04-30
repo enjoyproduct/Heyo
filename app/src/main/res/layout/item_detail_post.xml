@@ -51,15 +51,15 @@
             android:layout_height="wrap_content"
 
             android:textColor="@color/black"
-            android:textSize="@dimen/txt_12sp"
+            android:textSize="@dimen/txt_14sp"
             android:maxLines="3"
-            android:textStyle="bold"
             />
     </LinearLayout>
     <!--media-->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_8dp">
         <ImageView
             android:id="@+id/iv_ipff_media"
             android:layout_width="fill_parent"
@@ -95,6 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/dimen_12dp"
         >
         <ImageButton
             android:id="@+id/ib_ipff_like"
@@ -125,129 +126,129 @@
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
     </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_margin="@dimen/dimen_12dp"
-        android:background="@color/dark"/>
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0.5dp"-->
+        <!--android:layout_margin="@dimen/dimen_12dp"-->
+        <!--android:background="@color/dark"/>-->
     <!--social activity count-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/dimen_20dp"
-        android:gravity="center_vertical"
-        android:weightSum="5"
-        >
-        <!--like count-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_weight="1">
-            <ImageView
-                android:id="@+id/iv_ipff_like_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/like_count_empty"
-                />
-            <TextView
-                android:id="@+id/tv_ipff_like_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_marginLeft="14dp"
-                android:textStyle="bold"
-                android:text="0"/>
-        </LinearLayout>
-        <!--dislike count-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_weight="1">
-            <ImageView
-                android:id="@+id/iv_ipff_dislike_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/dislike_count_empty"
-                />
-            <TextView
-                android:id="@+id/tv_ipff_dislike_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_marginLeft="16dp"
-                android:textStyle="bold"
-                android:text="0"/>
-        </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:padding="@dimen/dimen_20dp"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:weightSum="5"-->
+        <!-->-->
+        <!--&lt;!&ndash;like count&ndash;&gt;-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:layout_weight="1">-->
+            <!--<ImageView-->
+                <!--android:id="@+id/iv_ipff_like_count"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/like_count_empty"-->
+                <!--/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_ipff_like_count"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:layout_marginLeft="14dp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:text="0"/>-->
+        <!--</LinearLayout>-->
+        <!--&lt;!&ndash;dislike count&ndash;&gt;-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:layout_weight="1">-->
+            <!--<ImageView-->
+                <!--android:id="@+id/iv_ipff_dislike_count"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/dislike_count_empty"-->
+                <!--/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_ipff_dislike_count"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:text="0"/>-->
+        <!--</LinearLayout>-->
 
-        <!--comments-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_weight="1">
-            <ImageView
-                android:id="@+id/iv_ipff_comments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/comment_count_empty"
-                />
-            <TextView
-                android:id="@+id/tv_ipff_comment_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_marginLeft="17dp"
-                android:textStyle="bold"
-                android:text="0"/>
-        </LinearLayout>
+        <!--&lt;!&ndash;comments&ndash;&gt;-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:layout_weight="1">-->
+            <!--<ImageView-->
+                <!--android:id="@+id/iv_ipff_comments"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/comment_count_empty"-->
+                <!--/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_ipff_comment_count"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:layout_marginLeft="17dp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:text="0"/>-->
+        <!--</LinearLayout>-->
 
-        <!--viewed count-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_weight="1">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/count_viewed"
-                />
-            <TextView
-                android:id="@+id/tv_ipff_viewed_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_marginLeft="18dp"
-                android:textStyle="bold"
-                android:text="0"/>
-        </LinearLayout>
-        <!--shared count-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_weight="1">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/count_shared"
-                />
-            <TextView
-                android:id="@+id/tv_ipff_shared_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_marginLeft="18dp"
-                android:textStyle="bold"
-                android:text="0"/>
-        </LinearLayout>
-    </LinearLayout>
+        <!--&lt;!&ndash;viewed count&ndash;&gt;-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:layout_weight="1">-->
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/count_viewed"-->
+                <!--/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_ipff_viewed_count"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:layout_marginLeft="18dp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:text="0"/>-->
+        <!--</LinearLayout>-->
+        <!--&lt;!&ndash;shared count&ndash;&gt;-->
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:layout_weight="1">-->
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/count_shared"-->
+                <!--/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/tv_ipff_shared_count"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/black"-->
+                <!--android:layout_marginLeft="18dp"-->
+                <!--android:textStyle="bold"-->
+                <!--android:text="0"/>-->
+        <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
 </LinearLayout>

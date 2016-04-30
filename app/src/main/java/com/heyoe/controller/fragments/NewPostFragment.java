@@ -39,6 +39,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.error.AuthFailureError;
@@ -49,6 +50,7 @@ import com.android.volley.error.ServerError;
 import com.android.volley.error.TimeoutError;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.CustomMultipartRequest;
+import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
 import com.commonsware.cwac.richedit.RichEditText;
 import com.google.android.gms.common.ConnectionResult;
@@ -62,6 +64,7 @@ import com.heyoe.R;
 import com.heyoe.controller.HomeActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
+import com.heyoe.model.UserModel;
 import com.heyoe.utilities.BitmapUtility;
 import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.UIUtility;
@@ -74,6 +77,7 @@ import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -81,6 +85,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -110,6 +116,9 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     private Activity mActivity;
     private String photoPath, videoPath, thumbPath, youtubePath;
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
+
+    private ArrayList<UserModel> arrFriends;
+
     public NewPostFragment() {
         // Required empty public constructor
     }
@@ -120,6 +129,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         View view =  inflater.inflate(R.layout.fragment_new_post, container, false);
         initVariable();
         initUI(view);
+        getFriends();
         return view;
     }
 
@@ -131,6 +141,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         } else {
             mAlbumStorageDirFactory = new BaseAlbumDirFactory();
         }
+        arrFriends = new ArrayList<>();
     }
     private void initMediaPath() {
         photoPath = "";
@@ -239,10 +250,97 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         imageView = (ImageView)view.findViewById(R.id.iv_compose);
         UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(mActivity), UIUtility.getScreenWidth(mActivity));
     }
+    private void getFriends() {
+        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_FRIEND_LIST, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                JSONArray jsonArray = response.getJSONArray("data");
+                                int userCount = jsonArray.length();
+                                for (int i = 0; i < userCount; i ++)  {
+
+                                    JSONObject userObject = jsonArray.getJSONObject(i);
+
+                                    String user_id = userObject.getString("user_id");
+                                    String fullname = userObject.getString("fullname");
+                                    String email = userObject.getString("email");
+                                    String city = userObject.getString("city");
+                                    String country = userObject.getString("country");
+                                    String birthday = userObject.getString("birthday");
+                                    String gender = userObject.getString("gender");
+                                    String celebrity = userObject.getString("celebrity");
+                                    String about_you = userObject.getString("about_you");
+                                    String friend_count = userObject.getString("friend_count");
+                                    String avatar = userObject.getString("avatar");
+                                    String header_photo_url = userObject.getString("header_photo");
+                                    String header_video_url = userObject.getString("header_video");
+
+
+                                    UserModel userModel = new UserModel();
+
+                                    userModel.setUser_id(user_id);
+                                    userModel.setFullname(fullname);
+                                    userModel.setEmail(email);
+                                    userModel.setCity(city);
+                                    userModel.setCountry(country);
+                                    userModel.setBirthday(birthday);
+                                    userModel.setGender(gender);
+                                    userModel.setCelebrity(celebrity);
+                                    userModel.setAbout_you(about_you);
+                                    userModel.setFriend_count(friend_count);
+                                    userModel.setAvatar(avatar);
+                                    userModel.setHeader_photo(header_photo_url);
+                                    userModel.setHeader_video(header_video_url);
+
+                                    String friend_status = userObject.getString("status");
+                                    if (friend_status.equals("active")) {
+                                        arrFriends.add(userModel);
+                                    } else {
+                                    }
+
+                                }
+
+
+
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
+    }
+
     String mediaType;
     String description;
     private boolean checkValue() {
         description = richEditor.getText().toString();
+        description = TextUtils.htmlEncode(richEditor.getText().toString());
+        description = Html.toHtml(richEditor.getText());
         if (photoPath.length() > 0) {
             mediaType = "post_photo";
             return true;
@@ -363,7 +461,11 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         final View dialogView = inflater.inflate(R.layout.dlg_tag_selection, null);
 //        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView)dialogView.findViewById(R.id.actv_tag_selection);
 //        ListView listView = (ListView)dialogView.findViewById(R.id.lv_tag_selection);
-        final ArrayList<String> arrayList = makeSampleData();
+        final ArrayList<String> arrayList = new ArrayList<>();
+        for (int i = 0; i < arrFriends.size(); i ++) {
+            String str = "@" +  arrFriends.get(i).getFullname();
+            arrayList.add(str);
+        }
         ArrayAdapter<String> searchAgentAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_list_item_1,arrayList);
 //        TagSelectionAutoCompleteAdapter searchAgentAdapter = new TagSelectionAutoCompleteAdapter(mActivity, R.layout.item_tag_selection, arrayList);
 //        listView.setAdapter(searchAgentAdapter);
@@ -428,7 +530,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             final CharSequence address = place.getAddress();
             String attributions = PlacePicker.getAttributions(data);
 
-            String str = "<b>" + name + "</b>";
+            String str = "<font color='#03a6a8'>"  + "<b>" + name + "</b></font>";
             richEditor.append(Html.fromHtml(str));
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -877,7 +979,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         imageWidth = bitmap.getWidth();
         imageHeight = bitmap.getHeight();
 
-        FileUtility.deleteFile(photoPath);
+//        FileUtility.deleteFile(photoPath);
         photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
 
 

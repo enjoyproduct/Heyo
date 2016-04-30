@@ -68,7 +68,7 @@ import java.util.Map;
  */
 public class SignupFragment extends Fragment {
 
-    private static final int from_gallary = 1;
+    private static final int from_gallery = 1;
     private static final int from_camera = 2;
 
     private static final String JPEG_FILE_PREFIX = "Heyoe__";
@@ -216,6 +216,8 @@ public class SignupFragment extends Fragment {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
                             }else  if (status.equals("401")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.email_registerd));
+                            }else  if (status.equals("402")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.email_registerd));
                             }
 
                         }catch (Exception e) {
@@ -250,6 +252,7 @@ public class SignupFragment extends Fragment {
         customMultipartRequest
                 .addStringPart(Constant.DEVICE_TYPE, Constant.ANDROID)
                 .addStringPart(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN))
+                .addStringPart(Constant.DEVICE_ID, Utils.getFromPreference(mActivity, Constant.DEVICE_ID))
                 .addStringPart(Constant.FULLNAME, userModel.getFullname())
                 .addStringPart(Constant.EMAIL, userModel.getEmail())
                 .addStringPart(Constant.PASSWORD, userModel.getPassword());
@@ -351,7 +354,7 @@ public class SignupFragment extends Fragment {
 
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case from_gallary:
+            case from_gallery:
                 if (resultCode == Activity.RESULT_OK) {
                     if (data != null) {
                         Uri selectedImage = data.getData();
@@ -406,7 +409,7 @@ public class SignupFragment extends Fragment {
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Gallary",
+        builder.setNegativeButton("Gallery",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         takePictureFromGallery();
@@ -431,7 +434,7 @@ public class SignupFragment extends Fragment {
     {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, from_gallary);
+        startActivityForResult(photoPickerIntent, from_gallery);
     }
     /////////////capture photo
     public void dispatchTakePictureIntent() {
@@ -519,10 +522,10 @@ public class SignupFragment extends Fragment {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapUtility.adjustBitmap(avatarPath);
+        Bitmap bitmap = BitmapUtility.adjustBitmapForAvatar(avatarPath);
         civAvatar.setImageBitmap(bitmap);
 
-        FileUtility.deleteFile(avatarPath);
+//        FileUtility.deleteFile(avatarPath);
         avatarPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(avatarPath));
 
 

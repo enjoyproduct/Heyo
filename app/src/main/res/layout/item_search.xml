@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_8dp"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        >
+        <com.heyoe.widget.MyCircularImageView
+            android:id="@+id/item_search_civ_photo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+        <TextView
+            android:id="@+id/item_search_fullname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="asdfasdf"
+            android:textColor="@color/black"
+            android:textSize="@dimen/txt_14sp"
+            android:layout_toRightOf="@+id/item_search_civ_photo"
+            android:layout_marginLeft="@dimen/dimen_12dp"
+            />
+        <RelativeLayout
+            android:id="@+id/rl_imf_social"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+            <ImageView
+                android:id="@+id/ib_search_add"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_plus_green"
+                android:layout_centerInParent="true"
+                android:padding="@dimen/dimen_12dp"
+                android:background="@color/transparent"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

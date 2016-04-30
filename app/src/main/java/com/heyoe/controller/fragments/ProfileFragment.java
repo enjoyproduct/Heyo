@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public class ProfileFragment extends Fragment implements View.OnClickListener{
     private Activity mActivity;
     private ArrayList<PostModel> mArrPost;
-    private ArrayList<PostModel> mArrBufferPost;
+//    private ArrayList<PostModel> mArrBufferPost;
     private ListView lvMain;
     private PullToRefreshListView mPullRefreshHomeListView;
     private PostAdapter mPostAdapter;
@@ -57,7 +57,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         isLast = false;
         offset = 0;
         mArrPost = new ArrayList<>();
-        mArrBufferPost = new ArrayList<>();
+//        mArrBufferPost = new ArrayList<>();
     }
     private void initUI(View view) {
 
@@ -96,17 +96,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     }
 
 
-    //for test
-    private ArrayList<PostModel> makeSamplePosts() {
-        ArrayList<PostModel> arrayList = new ArrayList<>();
-        for (int i = 0; i < 10; i ++) {
-            PostModel postModel = new PostModel();
-            arrayList.add(postModel);
 
-        }
-        return arrayList;
-
-    }
 
     @Override
     public void onClick(View v) {
@@ -119,6 +109,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         if (v == rlFriend) {
             ProfileActivity.navigateTo(3);
         }
+
+    }
+
+
+
+
+
+
+
+
+    //for test
+    private ArrayList<PostModel> makeSamplePosts() {
+        ArrayList<PostModel> arrayList = new ArrayList<>();
+        for (int i = 0; i < 10; i ++) {
+            PostModel postModel = new PostModel();
+            arrayList.add(postModel);
+
+        }
+        return arrayList;
 
     }
 }

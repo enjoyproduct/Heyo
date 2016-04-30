@@ -59,8 +59,8 @@ public class UIUtility {
 //        }
 //    }
     public static void showSoftKeyboard(Context context, EditText editText) {
-        InputMethodManager mImm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        mImm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+        InputMethodManager inputMethodManager = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
     }
     public static void hideSoftKeyboard(Activity activity) {
         if (keyboardShown(activity)) {
@@ -70,9 +70,9 @@ public class UIUtility {
 
     }
     public static boolean keyboardShown(Context mContext) {
-        InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        if (imm.isAcceptingText()) {
+        if (inputMethodManager.isAcceptingText()) {
             return true;
         } else {
             return false;

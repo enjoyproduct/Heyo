@@ -268,7 +268,7 @@ public class BitmapUtility {
 
         BitmapFactory.decodeFile(photopath, options);
         //////
-        options.inSampleSize = 3;
+        options.inSampleSize = 2;
         options.inJustDecodeBounds = false;
 
         //get bitmap with local path
@@ -279,7 +279,42 @@ public class BitmapUtility {
         saveBitmapToLocal(adjustedBitmap, photopath, photopath);
         return adjustedBitmap;
     }
+    public static Bitmap adjustBitmapForAvatar(String photopath) {////////////good
+        Uri uri = Uri.parse(photopath);
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(uri.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //get current rotation
+        int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        ///Convert exif rotation to degrees:
+        int rotationInDegrees = exifToDegrees(rotation);
+        ///Then use the image's actual rotation as a reference point to rotate the image using a Matrix
+        Matrix matrix = new Matrix();
+        if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
 
+        //get BitmapFactory option
+//        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(photopath, options);
+        //////
+        options.inSampleSize = 4;
+        options.inJustDecodeBounds = false;
+
+        //get bitmap with local path
+        Bitmap yourSelectedImage = BitmapFactory.decodeFile(photopath, options);
+        ////create a new rotated image
+        Bitmap adjustedBitmap = Bitmap.createBitmap(yourSelectedImage, 0, 0, yourSelectedImage.getWidth(), yourSelectedImage.getHeight(), matrix, true);
+        ///save adjusted bitmap
+        saveBitmapToLocal(adjustedBitmap, photopath, photopath);
+        return adjustedBitmap;
+    }
     public static int exifToDegrees(int exifOrientation) {
         if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
         else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }

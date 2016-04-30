@@ -128,12 +128,12 @@ public class MainFragment extends Fragment {
                             String status = response.getString("status");
                             if (status.equals("200")) {
                                 JSONArray jsonArray = response.getJSONArray("data");
-                                int userCount = jsonArray.length();
-                                if (userCount == 0) {
+                                int postCount = jsonArray.length();
+                                if (postCount == 0) {
                                     isLast = true;
                                 }
                                 offset ++;
-                                for (int i = 0; i < userCount; i ++)  {
+                                for (int i = 0; i < postCount; i ++)  {
 
                                     JSONObject postObject = jsonArray.getJSONObject(i);
                                     PostModel postModel = new PostModel();
@@ -195,10 +195,10 @@ public class MainFragment extends Fragment {
 
                                 mPostAdapter.notifyDataSetChanged();
 
-                            } else  if (status.equals("401")) {
-                                Utils.showOKDialog(mActivity, getResources().getString(R.string.email_unregistered));
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
-                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
                         }catch (Exception e) {
                             e.printStackTrace();

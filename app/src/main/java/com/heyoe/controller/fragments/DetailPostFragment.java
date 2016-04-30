@@ -75,12 +75,12 @@ public class DetailPostFragment extends Fragment {
     private FloatingActionButton floatingActionButton;
 
     ImageButton ibFavorite;
-    ImageView ivLikeCount, ivDislikeCount, ivCommentCounts;
-    TextView tvLikeCount ;
-    TextView tvDislikeCount;
-    TextView tvCommentCount;
-    TextView tvViewedCount;
-    static TextView tvSharedCount;
+//    ImageView ivLikeCount, ivDislikeCount, ivCommentCounts;
+//    TextView tvLikeCount ;
+//    TextView tvDislikeCount;
+//    TextView tvCommentCount;
+//    TextView tvViewedCount;
+//    static TextView tvSharedCount;
     ImageButton ibLike, ibDislike, ibComment;
 
 
@@ -144,7 +144,7 @@ public class DetailPostFragment extends Fragment {
                             int viewedCount = Integer.parseInt(postModel.getViewed_count());
                             viewedCount ++;
                             postModel.setViewed_count(String.valueOf(viewedCount));
-                            tvViewedCount.setText(String.valueOf(viewedCount));
+//                            tvViewedCount.setText(String.valueOf(viewedCount));
                         } else  if (status.equals("400")) {
                             Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                         } else if (status.equals("402")) {
@@ -320,7 +320,7 @@ public class DetailPostFragment extends Fragment {
     }
     public  void showCommentDlg() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle(Constant.INDECATOR);
+        builder.setTitle(mActivity.getResources().getString(R.string.type_comment_below));
         builder.setCancelable(true);
         View customView = layoutInflater.inflate(R.layout.custom_comment, null);
         final EditText etComment = (EditText)customView.findViewById(R.id.et_comment);
@@ -405,7 +405,7 @@ public class DetailPostFragment extends Fragment {
         int shardCount  = Integer.parseInt(postModel.getShared_count());
         shardCount ++;
         postModel.setShared_count(String.valueOf(shardCount));
-        tvSharedCount.setText(String.valueOf(shardCount));
+//        tvSharedCount.setText(String.valueOf(shardCount));
     }
     public class UserAdpater extends BaseAdapter {
 
@@ -450,56 +450,56 @@ public class DetailPostFragment extends Fragment {
                         }
                     }
                 });
-                ivLikeCount = (ImageView)view.findViewById(R.id.iv_ipff_like_count);
-                ivDislikeCount = (ImageView)view.findViewById(R.id.iv_ipff_dislike_count);
-                ivCommentCounts = (ImageView)view.findViewById(R.id.iv_ipff_comments);
-
-                ivLikeCount.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
-
-                ivDislikeCount.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
+//                ivLikeCount = (ImageView)view.findViewById(R.id.iv_ipff_like_count);
+//                ivDislikeCount = (ImageView)view.findViewById(R.id.iv_ipff_dislike_count);
+//                ivCommentCounts = (ImageView)view.findViewById(R.id.iv_ipff_comments);
+//
+//                ivLikeCount.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                    }
+//                });
+//
+//                ivDislikeCount.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//
+//                    }
+//                });
 
                 if (postModel.getFavorite().equals("favorite")) {
                     ibFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_star_white));
                 } else {
                     ibFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_star_empty));
                 }
-                if (postModel.getLike().equals("like")) {
-                    ivLikeCount.setImageDrawable(getResources().getDrawable(R.drawable.green_like_count));
-                    ivDislikeCount.setImageDrawable(getResources().getDrawable(R.drawable.dislike_count_empty));
-                } else if (postModel.getLike().equals("dislike")) {
-                    ivLikeCount.setImageDrawable(getResources().getDrawable(R.drawable.like_count_empty));
-                    ivDislikeCount.setImageDrawable(getResources().getDrawable(R.drawable.green_dislike_count));
-                } else {
-                    ivLikeCount.setImageDrawable(getResources().getDrawable(R.drawable.like_count_empty));
-                    ivDislikeCount.setImageDrawable(getResources().getDrawable(R.drawable.dislike_count_empty));
-                }
-
-                if (postModel.getCommented().equals("yes")) {
-                    ivCommentCounts.setImageDrawable(getResources().getDrawable(R.drawable.green_comment_count));
-                } else {
-                    ivCommentCounts.setImageDrawable(getResources().getDrawable(R.drawable.comment_count_empty));
-                }
-                tvLikeCount = (TextView)view.findViewById(R.id.tv_ipff_like_count);
-                tvDislikeCount = (TextView)view.findViewById(R.id.tv_ipff_dislike_count);
-                tvCommentCount = (TextView)view.findViewById(R.id.tv_ipff_comment_count);
-                tvViewedCount = (TextView)view.findViewById(R.id.tv_ipff_viewed_count);
-                tvSharedCount = (TextView)view.findViewById(R.id.tv_ipff_shared_count);
-
-                tvLikeCount.setText(postModel.getLike_count());
-                tvDislikeCount.setText(postModel.getDislike_count());
-                tvCommentCount.setText(String.valueOf(mArrComments.size()));
-                tvViewedCount.setText(postModel.getViewed_count());
-                tvSharedCount.setText(postModel.getShared_count());
+//                if (postModel.getLike().equals("like")) {
+//                    ivLikeCount.setImageDrawable(getResources().getDrawable(R.drawable.green_like_count));
+//                    ivDislikeCount.setImageDrawable(getResources().getDrawable(R.drawable.dislike_count_empty));
+//                } else if (postModel.getLike().equals("dislike")) {
+//                    ivLikeCount.setImageDrawable(getResources().getDrawable(R.drawable.like_count_empty));
+//                    ivDislikeCount.setImageDrawable(getResources().getDrawable(R.drawable.green_dislike_count));
+//                } else {
+//                    ivLikeCount.setImageDrawable(getResources().getDrawable(R.drawable.like_count_empty));
+//                    ivDislikeCount.setImageDrawable(getResources().getDrawable(R.drawable.dislike_count_empty));
+//                }
+//
+//                if (postModel.getCommented().equals("yes")) {
+//                    ivCommentCounts.setImageDrawable(getResources().getDrawable(R.drawable.green_comment_count));
+//                } else {
+//                    ivCommentCounts.setImageDrawable(getResources().getDrawable(R.drawable.comment_count_empty));
+//                }
+//                tvLikeCount = (TextView)view.findViewById(R.id.tv_ipff_like_count);
+//                tvDislikeCount = (TextView)view.findViewById(R.id.tv_ipff_dislike_count);
+//                tvCommentCount = (TextView)view.findViewById(R.id.tv_ipff_comment_count);
+//                tvViewedCount = (TextView)view.findViewById(R.id.tv_ipff_viewed_count);
+//                tvSharedCount = (TextView)view.findViewById(R.id.tv_ipff_shared_count);
+//
+//                tvLikeCount.setText(postModel.getLike_count());
+//                tvDislikeCount.setText(postModel.getDislike_count());
+//                tvCommentCount.setText(String.valueOf(mArrComments.size()));
+//                tvViewedCount.setText(postModel.getViewed_count());
+//                tvSharedCount.setText(postModel.getShared_count());
 
 
                 MyCircularImageView myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_ipff_avatar);

@@ -59,7 +59,7 @@
     <string name="weeks_ago"> weeks ago</string>
     <string name="monthes_ago"> monthes ago</string>
     <string name="years_ago"> years ago</string>
-    <!--<string name=""></string>-->
+    <string name="people">people</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
@@ -105,6 +105,8 @@
     <string name="more_friends">more friends</string>
     <string name="requests">requests</string>
     <string name="invited_friends">invite friends</string>
+    <string name="open_drawer">Open</string>
+    <string name="close_drawer">Close</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
@@ -142,7 +144,7 @@
     <string name="choose_avatar">Choose picture from</string>
     <string name="choose_video">Choose video from</string>
     <string name="take_more_media">Please take media</string>
-    <!--<string name=""></string>-->
+    <string name="type_comment_below">Type your comment below</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
@@ -191,7 +193,7 @@
     <string name="title_activity_user_list">UserListActivity</string>
     <string name="title_activity_detail_post">DetailPostActivity</string>
     <string name="wait_one_minute">You have to wait 1 minute before you can use this button again</string>
-    <!--<string name=""></string>-->
+    <string name="qb_signup_failed">QB signup failed</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->

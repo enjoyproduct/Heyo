@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?actionBarSize"
     android:background="@drawable/toolbar_green">
 
     <RelativeLayout
@@ -11,15 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginRight="@dimen/dimen_16dp">
-        <ImageButton
-            android:id="@+id/ib_menu"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/navigation_icon"
-            android:background="@color/transparent"
-            android:layout_centerVertical="true"
-           />
+
         <TextView
             android:id="@+id/tv_home_title"
             android:layout_width="wrap_content"
@@ -29,34 +21,31 @@
             android:textAlignment="center"
             android:layout_centerInParent="true"
             android:layout_marginLeft="@dimen/dimen_20dp"
-            android:text="asdfasdfasdfasdfa"
+            android:text=""
             />
-        <!--<AutoCompleteTextView-->
-            <!--android:id="@+id/sv_menu"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="32dp"-->
-            <!--android:layout_marginRight="@dimen/dimen_8dp"-->
-            <!--android:layout_toRightOf="@+id/ib_menu"-->
-            <!--android:layout_toLeftOf="@+id/ib_menu_new_compose"-->
-            <!--android:background="@drawable/round_corner_bg_white_2"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:drawableStart="@drawable/ic_search_white_small"-->
-            <!--android:textColor="@color/black"-->
-            <!--android:singleLine="true"-->
-            <!--android:maxLength="50"-->
-            <!-->-->
+        <org.liuyichen.dribsearch.DribSearchView
+            android:id="@+id/dribSearchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            app:breadth="2"
+            app:search_color="#fff"/>
 
-        <!--</AutoCompleteTextView>-->
-        <!--<ImageButton-->
-            <!--android:id="@+id/ib_menu_new_compose"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="right"-->
-            <!--android:src="@drawable/ic_pen"-->
-            <!--android:background="@color/transparent"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--/>-->
+
+        <AutoCompleteTextView
+            android:id="@+id/sv_menu"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:singleLine="true"
+            android:maxLength="50"
+            android:background="@color/transparent"
+            android:visibility="gone"
+            >
+        </AutoCompleteTextView>
+
 
 
     </RelativeLayout>
