@@ -260,6 +260,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put(Constant.DEVICE_ID, Utils.getFromPreference(mActivity, Constant.DEVICE_ID));
         params.put("email", email);
         params.put("fullname", fullname);
 
@@ -288,6 +289,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 String avatar = jsonObject.getString("avatar");
                                 String header_photo_url = jsonObject.getString("header_photo");
                                 String header_video_url = jsonObject.getString("header_video");
+                                String qb_id = jsonObject.getString("qb_id");
 
                                 Utils.saveToPreference(mActivity, Constant.USER_ID, user_id);
                                 Utils.saveToPreference(mActivity, Constant.EMAIL, email);
@@ -303,6 +305,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 Utils.saveToPreference(mActivity, Constant.AVATAR, avatar);
                                 Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, header_photo_url);
                                 Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, header_video_url);
+                                Utils.saveToPreference(mActivity, Constant.QB_ID, qb_id);
 
                                 startActivity(new Intent(mActivity, HomeActivity.class));
                                 mActivity.finish();
@@ -347,83 +350,80 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
     }
     ///Sign in
     private void signin() {
+        Utils.showProgress(mActivity);
 
-        {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("email", email);
+        params.put("password", password);
 
-            Utils.showProgress(mActivity);
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.SINGIN, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                JSONObject jsonObject = response.getJSONObject("data");
 
-            Map<String, String> params = new HashMap<String, String>();
-            params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
-            params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
-            params.put("email", email);
-            params.put("password", password);
+                                String user_id = jsonObject.getString("user_id");
+                                String fullname = jsonObject.getString("fullname");
+                                String email = jsonObject.getString("email");
+                                String password = jsonObject.getString("password");
+                                String city = jsonObject.getString("city");
+                                String country = jsonObject.getString("country");
+                                String birthday = jsonObject.getString("birthday");
+                                String gender = jsonObject.getString("gender");
+                                String celebrity = jsonObject.getString("celebrity");
+                                String about_me = jsonObject.getString("about_you");
+                                String media_count = jsonObject.getString("post_count");
+                                String friend_count = jsonObject.getString("friend_count");
+                                String avatar = jsonObject.getString("avatar");
+                                String header_photo_url = jsonObject.getString("header_photo");
+                                String header_video_url = jsonObject.getString("header_video");
+                                String qb_id = jsonObject.getString("qb_id");
 
-            CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.SINGIN, params,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Utils.hideProgress();
-                            try {
-                                String status = response.getString("status");
-                                if (status.equals("200")) {
-                                    JSONObject jsonObject = response.getJSONObject("data");
+                                Utils.saveToPreference(mActivity, Constant.USER_ID, user_id);
+                                Utils.saveToPreference(mActivity, Constant.EMAIL, email);
+                                Utils.saveToPreference(mActivity, Constant.PASSWORD, password);
+                                Utils.saveToPreference(mActivity, Constant.FULLNAME, fullname);
+                                Utils.saveToPreference(mActivity, Constant.CITY, city);
+                                Utils.saveToPreference(mActivity, Constant.COUNTRY, country);
+                                Utils.saveToPreference(mActivity, Constant.BIRTHDAY, birthday);
+                                Utils.saveToPreference(mActivity, Constant.GENDER, gender);
+                                Utils.saveToPreference(mActivity, Constant.CELEBRITY, celebrity);
+                                Utils.saveToPreference(mActivity, Constant.ABOUT_ME, about_me);
+                                Utils.saveToPreference(mActivity, Constant.MEDIA_COUNT, media_count);
+                                Utils.saveToPreference(mActivity, Constant.FRIEND_COUNT, friend_count);
+                                Utils.saveToPreference(mActivity, Constant.AVATAR, avatar);
+                                Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, header_photo_url);
+                                Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, header_video_url);
+                                Utils.saveToPreference(mActivity, Constant.QB_ID, qb_id);
 
-                                    String user_id = jsonObject.getString("user_id");
-                                    String fullname = jsonObject.getString("fullname");
-                                    String email = jsonObject.getString("email");
-                                    String password = jsonObject.getString("password");
-                                    String city = jsonObject.getString("city");
-                                    String country = jsonObject.getString("country");
-                                    String birthday = jsonObject.getString("birthday");
-                                    String gender = jsonObject.getString("gender");
-                                    String celebrity = jsonObject.getString("celebrity");
-                                    String about_me = jsonObject.getString("about_you");
-                                    String media_count = jsonObject.getString("post_count");
-                                    String friend_count = jsonObject.getString("friend_count");
-                                    String avatar = jsonObject.getString("avatar");
-                                    String header_photo_url = jsonObject.getString("header_photo");
-                                    String header_video_url = jsonObject.getString("header_video");
-
-                                    Utils.saveToPreference(mActivity, Constant.USER_ID, user_id);
-                                    Utils.saveToPreference(mActivity, Constant.EMAIL, email);
-                                    Utils.saveToPreference(mActivity, Constant.PASSWORD, password);
-                                    Utils.saveToPreference(mActivity, Constant.FULLNAME, fullname);
-                                    Utils.saveToPreference(mActivity, Constant.CITY, city);
-                                    Utils.saveToPreference(mActivity, Constant.COUNTRY, country);
-                                    Utils.saveToPreference(mActivity, Constant.BIRTHDAY, birthday);
-                                    Utils.saveToPreference(mActivity, Constant.GENDER, gender);
-                                    Utils.saveToPreference(mActivity, Constant.CELEBRITY, celebrity);
-                                    Utils.saveToPreference(mActivity, Constant.ABOUT_ME, about_me);
-                                    Utils.saveToPreference(mActivity, Constant.MEDIA_COUNT, media_count);
-                                    Utils.saveToPreference(mActivity, Constant.FRIEND_COUNT, friend_count);
-                                    Utils.saveToPreference(mActivity, Constant.AVATAR, avatar);
-                                    Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, header_photo_url);
-                                    Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, header_video_url);
-
-
-                                    startActivity(new Intent(mActivity, HomeActivity.class));
-                                    getActivity().finish();
-                                } else  if (status.equals("401")) {
-                                    Utils.showOKDialog(mActivity, getResources().getString(R.string.email_unregistered));
-                                } else if (status.equals("402")) {
-                                    Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
-                                }
-                            }catch (Exception e) {
-                                e.printStackTrace();
+                                startActivity(new Intent(mActivity, HomeActivity.class));
+                                getActivity().finish();
+                            } else  if (status.equals("401")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.email_unregistered));
+                            } else if (status.equals("402")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Utils.hideProgress();
-                            Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-            RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
-            requestQueue.add(signinRequest);
-        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
 
     }
 

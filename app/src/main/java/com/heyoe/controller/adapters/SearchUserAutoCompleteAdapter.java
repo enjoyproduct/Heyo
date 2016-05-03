@@ -1,6 +1,7 @@
 package com.heyoe.controller.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.heyoe.R;
 import com.heyoe.controller.HomeActivity;
+import com.heyoe.controller.ProfileActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
@@ -32,9 +34,11 @@ public class SearchUserAutoCompleteAdapter extends ArrayAdapter<UserModel> {
     private ArrayList<UserModel> itemsAll;
     private ArrayList<UserModel> suggestions;
     private int viewResourceId;
+    Context mContext;
 
     public SearchUserAutoCompleteAdapter(Context context, int viewResourceId, ArrayList<UserModel> items) {
         super(context, viewResourceId, items);
+        this.mContext = context;
         this.items = items;
         this.itemsAll = (ArrayList<UserModel>) items.clone();
         this.suggestions = new ArrayList<UserModel>();
@@ -47,11 +51,18 @@ public class SearchUserAutoCompleteAdapter extends ArrayAdapter<UserModel> {
             LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = vi.inflate(viewResourceId, null);
         }
-        UserModel userModel = items.get(position);
+        final UserModel userModel = items.get(position);
         if (userModel != null) {
             TextView name = (TextView) v.findViewById(R.id.item_search_fullname);
             name.setText(userModel.getFullname());
-
+            name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                    intent.putExtra("user_id", userModel.getUser_id());
+                    mContext.startActivity(intent);
+                }
+            });
             MyCircularImageView circularImageView  = (MyCircularImageView)v.findViewById(R.id.item_search_civ_photo);
             if (!userModel.getAvatar().equals("")) {
                 UrlImageViewHelper.setUrlDrawable(circularImageView, API.BASE_AVATAR + userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
@@ -68,6 +79,14 @@ public class SearchUserAutoCompleteAdapter extends ArrayAdapter<UserModel> {
             } else {
                 circularImageView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.default_user));
             }
+            circularImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ProfileActivity.class);
+                    intent.putExtra("user_id", userModel.getUser_id());
+                    mContext.startActivity(intent);
+                }
+            });
             ImageView ibAdd = (ImageView)v.findViewById(R.id.ib_search_add);
 //            ibAdd.setOnClickListener(new View.OnClickListener() {
 //                @Override

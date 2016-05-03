@@ -515,9 +515,24 @@ public class RequestFragment extends Fragment {
             } else {
                 myCircularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
             }
+            myCircularImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+                    mActivity.startActivity(intent);
+                }
+            });
             TextView tvFullname = (TextView)view.findViewById(R.id.tv_ia_irr_fullname);
             tvFullname.setText(userModel.getFullname());
-
+            tvFullname.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+                    mActivity.startActivity(intent);
+                }
+            });
 
             ImageButton ibReject = (ImageButton)view.findViewById(R.id.ib_reject);
             ImageButton ibAccept = (ImageButton)view.findViewById(R.id.ib_accept);
@@ -607,9 +622,24 @@ public class RequestFragment extends Fragment {
             } else {
                 myCircularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
             }
+            myCircularImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+                    mActivity.startActivity(intent);
+                }
+            });
             TextView tvFullname = (TextView)view.findViewById(R.id.tv_irc_fullname);
             tvFullname.setText(userModel.getFullname());
-
+            tvFullname.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+                    mActivity.startActivity(intent);
+                }
+            });
             return view;
         }
     }

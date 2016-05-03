@@ -27,8 +27,8 @@
             android:id="@+id/dribSearchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             app:breadth="2"
             app:search_color="#fff"/>
 

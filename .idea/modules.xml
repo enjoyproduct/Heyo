@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Heyoe.iml" filepath="$PROJECT_DIR$/Heyoe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Q-municate_core/Q-municate_core.iml" filepath="$PROJECT_DIR$/Q-municate_core/Q-municate_core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Q-municate_db/Q-municate_db.iml" filepath="$PROJECT_DIR$/Q-municate_db/Q-municate_db.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dribSearch/dribSearch.iml" filepath="$PROJECT_DIR$/dribSearch/dribSearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/pullToRefreshLibrary/pullToRefreshLibrary.iml" filepath="$PROJECT_DIR$/pullToRefreshLibrary/pullToRefreshLibrary.iml" />

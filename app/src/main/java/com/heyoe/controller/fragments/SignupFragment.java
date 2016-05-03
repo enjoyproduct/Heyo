@@ -211,6 +211,7 @@ public class SignupFragment extends Fragment {
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
+                                FileUtility.deleteFile(avatarPath);
                                 signin();
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
@@ -305,6 +306,7 @@ public class SignupFragment extends Fragment {
                                 String avatar = jsonObject.getString("avatar");
                                 String header_photo_url = jsonObject.getString("header_photo");
                                 String header_video_url = jsonObject.getString("header_video");
+                                String qb_id = jsonObject.getString("qb_id");
 
                                 Utils.saveToPreference(mActivity, Constant.USER_ID, user_id);
                                 Utils.saveToPreference(mActivity, Constant.EMAIL, email);
@@ -321,7 +323,7 @@ public class SignupFragment extends Fragment {
                                 Utils.saveToPreference(mActivity, Constant.AVATAR, avatar);
                                 Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, header_photo_url);
                                 Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, header_video_url);
-
+                                Utils.saveToPreference(mActivity, Constant.QB_ID, qb_id);
 
                                 startActivity(new Intent(mActivity, HomeActivity.class));
                                 getActivity().finish();
@@ -368,14 +370,7 @@ public class SignupFragment extends Fragment {
                         avatarPath = cursor.getString(columnIndex);
                         cursor.close();
 
-//
-//                    //convert bitmap to drawable
-//                    Drawable d = Drawable.createFromPath(avatarPath);
-////                    ImageView ivUser = (ImageView)findViewById(R.id.iv_register_user);
-//                    Drawable drawable = new BitmapDrawable(getResources(), BitmapUtility.adjustBitmap(avatarPath));
-
                         Bitmap bitmap = BitmapUtility.adjustBitmap(avatarPath);
-                        FileUtility.deleteFile(avatarPath);
                         avatarPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(avatarPath));
 
                         civAvatar.setImageBitmap(bitmap);

@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Created by dell17 on 4/10/2016.
  */
 public class UserModel implements Serializable {
+
     String user_id;
     String fullname;
     String email;
@@ -21,7 +22,45 @@ public class UserModel implements Serializable {
     String header_video;
     String gender;
     String time;
+    String qb_id;
+
+    public String getDialog_id() {
+        return dialog_id;
+    }
+
+    public void setDialog_id(String dialog_id) {
+        this.dialog_id = dialog_id;
+    }
+
+    String dialog_id;
+
+    public String getQb_id() {
+        return qb_id;
+    }
+
+    public void setQb_id(String qb_id) {
+        this.qb_id = qb_id;
+    }
+
     String friendStatus;
+    boolean online;
+    int unreadMsgCount;
+
+    public int getUnreadMsgCount() {
+        return unreadMsgCount;
+    }
+
+    public void setUnreadMsgCount(int unreadMsgCount) {
+        this.unreadMsgCount = unreadMsgCount;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
 
     public String getFriendStatus() {
         return friendStatus;

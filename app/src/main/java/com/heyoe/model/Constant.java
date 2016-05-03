@@ -51,6 +51,9 @@ public class Constant {
     public static String APP_ID = "39876";
     public static String AUTH_KEY = "zYac8X4A2Zs3z9y";
     public static String AUTH_SECRET = "OxhcUz3rrnSaeVJ";
+    public static String ACCOUNT_KEY = "5Vv8WGbhPpqHqtyoXs7i";
 
     public static String DEFAULT_PASSWORD = "135792468";
+
+    public static String QB_ID = "qb_id";
 }

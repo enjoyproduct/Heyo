@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <com.heyoe.widget.MyCircularImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:id="@+id/civUser"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bubble_right"
+        android:layout_marginRight="8dp"
+        android:layout_alignParentRight="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_16sp"
+            android:textColor="#000000"
+            android:text="I hope to see you soon."
+            android:id="@+id/tvMessage"
+            android:maxWidth="200dp"
+            android:layout_marginRight="@dimen/dimen_12dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/txt_12sp"
+            android:textColor="#ffffff"
+            android:text="7:10 PM"
+            android:id="@+id/tvTime"
+            android:layout_toRightOf="@+id/tvMessage"
+            android:layout_alignBottom="@+id/tvMessage"
+
+            />
+
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

@@ -20,6 +20,7 @@ import com.heyoe.controller.fragments.TermsOfUseFragment;
 import com.heyoe.controller.pushnotifications.GetNotificationRegID;
 import com.heyoe.model.Constant;
 import com.heyoe.utilities.Utils;
+import com.quickblox.core.QBSettings;
 
 public class SignActivity extends AppCompatActivity {
 
@@ -39,7 +40,9 @@ public class SignActivity extends AppCompatActivity {
             String deviceID = ((TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
             Utils.saveToPreference(this, Constant.DEVICE_ID, deviceID);
         }
-
+        //INIT QB SDK
+        QBSettings.getInstance().init(this, Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Constant.ACCOUNT_KEY);
 
         initVariable();
         initUI();

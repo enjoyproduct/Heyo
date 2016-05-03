@@ -3,6 +3,7 @@ package com.heyoe.controller.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,6 +33,8 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
+import com.heyoe.controller.ChatActivity;
+import com.heyoe.controller.ProfileActivity;
 import com.heyoe.controller.adapters.MediaAdapter;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
@@ -39,15 +43,34 @@ import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
-
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBGroupChatManager;
+import com.quickblox.chat.QBPrivateChatManager;
+import com.quickblox.chat.QBRoster;
+import com.quickblox.chat.listeners.QBRosterListener;
+import com.quickblox.chat.listeners.QBSubscriptionListener;
+import com.quickblox.chat.model.QBDialog;
+import com.quickblox.chat.model.QBPresence;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.request.QBPagedRequestBuilder;
+import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,6 +87,7 @@ public class MyFriendFragment extends Fragment {
     private ArrayList<UserModel> arrBlockedUsers;
     private Button btnFriend, btnBlocked;
     private int state;
+    private int chattingFriendNum;
 
     public MyFriendFragment() {
         // Required empty public constructor
@@ -78,6 +102,7 @@ public class MyFriendFragment extends Fragment {
         initVariables();
         initUI(view);
         getFriends();
+
         return view;
     }
     private void initVariables() {
@@ -87,6 +112,7 @@ public class MyFriendFragment extends Fragment {
         arrActiveUsers = new ArrayList<>();
         arrBlockedUsers = new ArrayList<>();
         state = 0;
+        chattingFriendNum = 0;
     }
     private void initUI(View view) {
         btnFriend = (Button)view.findViewById(R.id.btn_my_friend);
@@ -134,11 +160,30 @@ public class MyFriendFragment extends Fragment {
 
             }
         });
+        mPullRefreshHomeListView.setOnPullEventListener(new PullToRefreshBase.OnPullEventListener<ListView>() {
+            @Override
+            public void onPullEvent(PullToRefreshBase<ListView> refreshView, PullToRefreshBase.State state, PullToRefreshBase.Mode direction) {
+                if (state == PullToRefreshBase.State.RELEASE_TO_REFRESH && direction == PullToRefreshBase.Mode.PULL_FROM_START) {
+                    getFriends();
+                }
+            }
+        });
         lvHome = mPullRefreshHomeListView.getRefreshableView();
+        lvHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+            }
+        });
+
+        friendAdapter = new FriendAdapter(arrActiveUsers);
+        lvHome.setAdapter(friendAdapter);
     }
     private void getFriends() {
         Utils.showProgress(mActivity);
+
+        arrActiveUsers.clear();
+        arrBlockedUsers.clear();
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
@@ -150,7 +195,7 @@ public class MyFriendFragment extends Fragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Utils.hideProgress();
+//                        Utils.hideProgress();
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
@@ -173,7 +218,8 @@ public class MyFriendFragment extends Fragment {
                                     String avatar = userObject.getString("avatar");
                                     String header_photo_url = userObject.getString("header_photo");
                                     String header_video_url = userObject.getString("header_video");
-
+                                    String qb_id = userObject.getString("qb_id");
+                                    String online_status = userObject.getString("online_status");
 
                                     UserModel userModel = new UserModel();
 
@@ -190,6 +236,13 @@ public class MyFriendFragment extends Fragment {
                                     userModel.setAvatar(avatar);
                                     userModel.setHeader_photo(header_photo_url);
                                     userModel.setHeader_video(header_video_url);
+                                    userModel.setQb_id(qb_id);
+                                    if (online_status.equals("on")) {
+                                        userModel.setOnline(true);
+                                    } else {
+                                        userModel.setOnline(false);
+                                    }
+
 
                                     String friend_status = userObject.getString("status");
                                     if (friend_status.equals("active")) {
@@ -199,9 +252,10 @@ public class MyFriendFragment extends Fragment {
                                     }
 
                                 }
+                                createSession();
 
-                                friendAdapter = new FriendAdapter(arrActiveUsers);
-                                lvHome.setAdapter(friendAdapter);
+//                                friendAdapter = new FriendAdapter(arrActiveUsers);
+//                                lvHome.setAdapter(friendAdapter);
 
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
@@ -401,6 +455,8 @@ public class MyFriendFragment extends Fragment {
 
             final ImageView ivNav = (ImageView)view.findViewById(R.id.iv_if_close_swipe);
             final ImageView ivChat = (ImageView)view.findViewById(R.id.iv_if_chat);
+            final TextView tvUnreadMsgCount = (TextView)view.findViewById(R.id.tv_if_unreadmsgcount);
+
             ivNav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -410,7 +466,10 @@ public class MyFriendFragment extends Fragment {
             swipeLayout.findViewById(R.id.clear_chat_history).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(mActivity, "clear_chat_history", Toast.LENGTH_SHORT).show();
+
+                    if (!arrActiveUsers.get(position).getDialog_id().equals("0")) {
+                        deleteDialog(arrActiveUsers.get(position).getDialog_id());
+                    }
                     mItemManger.closeAllItems();
                 }
             });
@@ -440,6 +499,7 @@ public class MyFriendFragment extends Fragment {
                 @Override
                 public void onOpen(SwipeLayout layout) {
                     ivChat.setVisibility(View.GONE);
+                    tvUnreadMsgCount.setVisibility(View.GONE);
                     ivNav.setVisibility(View.VISIBLE);
                 }
 
@@ -452,6 +512,7 @@ public class MyFriendFragment extends Fragment {
                 public void onClose(SwipeLayout layout) {
 
                     ivChat.setVisibility(View.VISIBLE);
+                    tvUnreadMsgCount.setVisibility(View.VISIBLE);
                     ivNav.setVisibility(View.GONE);
                 }
 
@@ -470,9 +531,9 @@ public class MyFriendFragment extends Fragment {
         }
 
         @Override
-        public void fillValues(int position, View convertView) {
+        public void fillValues(final int position, View convertView) {
 
-            UserModel userModel = arrFriends.get(position);
+            final UserModel userModel = arrFriends.get(position);
             MyCircularImageView myCircularImageView = (MyCircularImageView)convertView.findViewById(R.id.civ_if_avatar);
             if (!userModel.getAvatar().equals("")) {
                 UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
@@ -489,19 +550,50 @@ public class MyFriendFragment extends Fragment {
             } else {
                 myCircularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
             }
+            myCircularImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+                    intent.putExtra("user_id", userModel.getUser_id());
+                    mActivity.startActivity(intent);
+                }
+            });
+
             TextView tvFullname = (TextView)convertView.findViewById(R.id.tv_if_fullname);
             tvFullname.setText(userModel.getFullname());
-            TextView tvLastMsg = (TextView)convertView.findViewById(R.id.tv_if_last_msg);
+            tvFullname.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+                    intent.putExtra("user_id", userModel.getUser_id());
+                    mActivity.startActivity(intent);
+                }
+            });
+//            TextView tvLastMsg = (TextView)convertView.findViewById(R.id.tv_if_last_msg);
 
             ImageView ivChat = (ImageView)convertView.findViewById(R.id.iv_if_chat);
             ivChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    chattingFriendNum = position;
+                    Intent intent = new Intent(mActivity, ChatActivity.class);
+                    intent.putExtra("userModel", arrActiveUsers.get(position));
+                    intent.putExtra("me", user);
+                    mActivity.startActivity(intent);
                 }
             });
             ImageView ivCloseNav = (ImageView)convertView.findViewById(R.id.iv_if_close_swipe);
 
+            TextView tvUnreadMsgCount = (TextView)convertView.findViewById(R.id.tv_if_unreadmsgcount);
+            tvUnreadMsgCount.setVisibility(View.VISIBLE);
+            tvUnreadMsgCount.setText(String.valueOf(userModel.getUnreadMsgCount()));
+
+            ImageView ivOnline = (ImageView)convertView.findViewById(R.id.iv_if_online);
+            if (userModel.isOnline()) {
+                ivOnline.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_green_circle));
+            } else {
+                ivOnline.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_grey_circle));
+            }
         }
 
 
@@ -633,56 +725,184 @@ public class MyFriendFragment extends Fragment {
 
     }
 
-//    private ArrayList<QBUser> arrUsers;
-//    private QBPrivateChatManager privateChatManager;
-//    private QBChatService chatService;
-//    private QBUser user;
-//
-//    private void createSession()
-//    {
-//        chatService = QBChatService.getInstance();
-//        user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
-//        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
-//        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
-//            @Override
-//            public void onSuccess(QBSession qbSession, Bundle bundle) {
-//                Utils.hideProgress();
-//
-//                user.setId(qbSession.getUserId());
-//
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (state == 0) {
+//            arrActiveUsers.get(chattingFriendNum).setUnreadMsgCount(0);
+//            friendAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private ArrayList<QBUser> arrUsers;
+    private QBPrivateChatManager privateChatManager;
+    private QBChatService chatService;
+    private QBUser user;
+
+    private void createSession()
+    {
+//        Utils.showProgress(mActivity);
+        chatService = QBChatService.getInstance();
+        user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
+        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+
+                user.setId(qbSession.getUserId());
+
 //                fetchUserList();
-//            }
+                getDialogs();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.hideProgress();
+
+                Utils.showToast(mActivity, e.getLocalizedMessage());
+            }
+        });
+    }
+    private void getDialogs()
+    {
+        QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
+        QBChatService.getChatDialogs(null, requestGetBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
+            @Override
+            public void onSuccess(ArrayList<QBDialog> qbDialogs, Bundle bundle) {
+
+                Utils.hideProgress();
+
+                ArrayList<QBDialog> arr = qbDialogs;
+                for(int i = 0; i < arrActiveUsers.size(); i ++) {
+                    arrActiveUsers.get(i).setUnreadMsgCount(0);
+                    arrActiveUsers.get(i).setDialog_id("0");
+                    for (QBDialog dialog : arr) {
+                        if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrActiveUsers.get(i).getQb_id()))) {
+                            ///get unread message count and dialog id
+                            arrActiveUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
+                            arrActiveUsers.get(i).setDialog_id(dialog.getDialogId());
+
+
+                            break;
+                        }
+                    }
+                    ///get online status
+//                    QBRoster chatRoster = QBChatService.getInstance().getRoster(QBRoster.SubscriptionMode.mutual, subscriptionListener);
+//                    chatRoster.addRosterListener(rosterListener);
+//                    QBPresence presence = chatRoster.getPresence(Integer.parseInt(arrActiveUsers.get(i).getQb_id()));
+//                    if (presence == null) {
+//                        // No user in your roster
+//                        break;
+//                    }
 //
-//            @Override
-//            public void onError(QBResponseException e) {
-//                Utils.hideProgress();
-//
-//                Utils.showToast(mActivity, e.getLocalizedMessage());
-//            }
-//        });
-//    }
-//
-//    private void fetchUserList()
-//    {   Utils.showProgress(mActivity);
-//        QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
-//        pagedRequestBuilder.setPage(1);
-//        pagedRequestBuilder.setPerPage(100);
-//        arrUsers = new ArrayList<>();
-//
-//        QBUsers.getUsers(pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
-//            @Override
-//            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-//                Utils.hideProgress();
-//                arrUsers = qbUsers;
-//                arrUsers.remove(0);
-//
-//            }
-//
-//            @Override
-//            public void onError(QBResponseException e) {
-//                Utils.hideProgress();
-//                Utils.showToast(mActivity, e.getLocalizedMessage());
-//            }
-//        });
-//    }
+//                    if (presence.getType() == QBPresence.Type.online) {
+//                        // User is online
+//                        arrActiveUsers.get(i).setOnline(true);
+//                    }else{
+//                        // User is offline
+//                        arrActiveUsers.get(i).setOnline(false);
+//                    }
+
+                }
+                friendAdapter.notifyDataSetChanged();
+                mPullRefreshHomeListView.onRefreshComplete();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.hideProgress();
+            }
+        });
+    }
+    private void deleteDialog(String dialogId) {
+        QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
+        groupChatManager.deleteDialog(dialogId, new QBEntityCallback<Void>() {
+
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                Toast.makeText(mActivity, "Cleared chat history successfully", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(QBResponseException errors) {
+
+            }
+        });
+    }
+    QBRosterListener rosterListener = new QBRosterListener() {
+        @Override
+        public void entriesDeleted(Collection<Integer> userIds) {
+
+        }
+
+        @Override
+        public void entriesAdded(Collection<Integer> userIds) {
+
+        }
+
+        @Override
+        public void entriesUpdated(Collection<Integer> userIds) {
+
+        }
+
+        @Override
+        public void presenceChanged(QBPresence presence) {
+
+        }
+    };
+
+    QBSubscriptionListener subscriptionListener = new QBSubscriptionListener() {
+        @Override
+        public void subscriptionRequested(int userId) {
+
+        }
+    };
+
+
+
+
+    private void fetchUserList()
+    {   Utils.showProgress(mActivity);
+        QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
+        pagedRequestBuilder.setPage(1);
+        pagedRequestBuilder.setPerPage(100);
+
+        arrUsers = new ArrayList<>();
+
+
+
+
+
+        QBUsers.getUsers(pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
+            @Override
+            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
+                Utils.hideProgress();
+                arrUsers = qbUsers;
+                arrUsers.remove(0);
+                for (int i = 0; i < arrActiveUsers.size(); i ++) {
+                    for (int j = 0; j < arrUsers.size(); j ++) {
+                        if (arrUsers.get(j).getEmail().equals(arrActiveUsers.get(i).getEmail())) {
+
+                            break;
+                        }
+                    }
+                }
+                for (int i = 0; i < arrBlockedUsers.size(); i ++) {
+                    for (int j = 0; j < arrUsers.size(); j ++) {
+                        if (arrUsers.get(j).getEmail().equals(arrActiveUsers.get(i).getEmail())) {
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.hideProgress();
+                Utils.showToast(mActivity, e.getLocalizedMessage());
+            }
+        });
+    }
 }

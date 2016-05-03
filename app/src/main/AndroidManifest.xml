@@ -130,7 +130,18 @@
         <activity
             android:name=".controller.DetailPostActivity"
             android:label="@string/title_activity_detail_post"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".controller.ChatActivity"
+            android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <!--QuickBlox service and receiver-->
+        <service
+            android:name="com.quickblox.q_municate_core.service.QBService"
+            android:icon="@mipmap/ic_launcher" />
+
+
+
     </application>
 
 </manifest>

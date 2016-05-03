@@ -334,8 +334,12 @@ public class PostAdapter extends BaseAdapter {
 
             tvBanner.setText(Html.fromHtml(strBannerText));
 
+
             //add friend
             ImageButton ibAddFriend = (ImageButton)view.findViewById(R.id.ib_ipff_add_friend);
+            if (postModel.getPoster_celebrity().equals("yes")) {
+                    ibAddFriend.setVisibility(View.GONE);
+            }
             if (postModel.getFriendStatus().equals("waiting")) {
                 ibAddFriend.setImageDrawable(activity.getResources().getDrawable(R.drawable.sandglass));
             } else {
@@ -355,11 +359,13 @@ public class PostAdapter extends BaseAdapter {
         myCircularImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.startActivity(new Intent(activity, ProfileActivity.class));
+                Intent intent = new Intent(activity, ProfileActivity.class);
+                intent.putExtra("user_id", postModel.getPoster_id());
+                activity.startActivity(intent);
             }
         });
         if (!postModel.getPoster_avatar().equals("")) {
-            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + postModel.getPoster_avatar(), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
+            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + postModel.getPoster_avatar(), R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
                 public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                     if (!loadedFromCache) {
@@ -438,7 +444,14 @@ public class PostAdapter extends BaseAdapter {
         });
         TextView tvName = (TextView)view.findViewById(R.id.tv_ipff_fullname);
         tvName.setText(postModel.getPoster_fullname());
-
+        tvName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, ProfileActivity.class);
+                intent.putExtra("user_id", postModel.getPoster_id());
+                activity.startActivity(intent);
+            }
+        });
         TextView tvPostedDate = (TextView)view.findViewById(R.id.tv_ipff_date);
         tvPostedDate.setText(TimeUtility.countTime(activity, Long.parseLong(postModel.getPosted_date()) ));
 

@@ -30,4 +30,7 @@
     <color name="fb_font_color">#34267d</color>
     <color name="main_background">#e2e2e2</color>
     <color name="bound_gray">#646464</color>
+    <color name="add_dialog_color">#424242</color>
+    <color name="normal_pressed_color">#e7e7e7</color>
+    <color name="normal_non_color">#00ffffff</color>
 </resources>

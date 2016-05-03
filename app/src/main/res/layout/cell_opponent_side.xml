@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+   >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_16dp"
+        android:gravity="bottom">
+        <com.heyoe.widget.MyCircularImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/civUser"
+            android:src="@drawable/default_user"
+            />
+
+        <RelativeLayout
+            android:id="@+id/ll_cps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bubble_left"
+            android:layout_marginLeft="8dp"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:text=""
+                android:id="@+id/tvMessage"
+                android:maxWidth="200dp"
+                android:layout_marginRight="@dimen/dimen_12dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/txt_12sp"
+                android:textColor="#ffffff"
+                android:text="07:10"
+                android:id="@+id/tvTime"
+                android:singleLine="true"
+                android:layout_toRightOf="@+id/tvMessage"
+                android:layout_alignBottom="@+id/tvMessage"
+                />
+
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+
+</RelativeLayout>

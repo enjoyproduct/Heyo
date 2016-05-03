@@ -202,8 +202,8 @@ public class HomeActivity extends AppCompatActivity implements
                     sendFriendRequest(position);
                 } else {
                     Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user", arrAllUsers.get(position));
-                    startActivity(intent);
+                    intent.putExtra("user_id", arrAllUsers.get(position).getUser_id());
+//                    startActivity(intent);
                 }
 
             }
@@ -320,6 +320,9 @@ public class HomeActivity extends AppCompatActivity implements
         alert.show();
     }
     private static void sign_out() {
+
+        setOffline();
+
         Utils.saveToPreference(mActivity, Constant.DEVICE_TOKEN, "");
         Utils.saveToPreference(mActivity, Constant.USER_ID, "");
         Utils.saveToPreference(mActivity, Constant.EMAIL, "");
@@ -340,6 +343,7 @@ public class HomeActivity extends AppCompatActivity implements
         Utils.saveToPreference(mActivity, Constant.FB_NAME, "");
         Utils.saveToPreference(mActivity, Constant.FB_EMAIL, "");
         Utils.saveToPreference(mActivity, Constant.FB_PHOTO, "");
+
 
         mActivity.startActivity(new Intent(mActivity, SignActivity.class));
         ((HomeActivity)mActivity).finish();
@@ -542,4 +546,46 @@ public class HomeActivity extends AppCompatActivity implements
         actionBarDrawerToggle.syncState();
     }
 
+    @Override
+    protected void onDestroy() {
+        if (Utils.getFromPreference(mActivity, Constant.USER_ID).length() > 0) {
+            setOffline();
+        }
+        super.onDestroy();
+
+    }
+    public static void setOffline() {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.SET_OFFLINE, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
+    }
 }

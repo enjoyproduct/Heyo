@@ -2,37 +2,72 @@ package com.heyoe.controller.fragments;
 
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.CustomRequest;
+import com.android.volley.toolbox.Volley;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
+import com.heyoe.controller.DetailPostActivity;
+import com.heyoe.controller.MediaPlayActivity;
 import com.heyoe.controller.ProfileActivity;
-import com.heyoe.controller.adapters.PostAdapter;
+import com.heyoe.controller.UserListActivity;
+import com.heyoe.model.API;
+import com.heyoe.model.CommentModel;
+import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
+import com.heyoe.utilities.FileUtility;
+import com.heyoe.utilities.TimeUtility;
+import com.heyoe.utilities.UIUtility;
+import com.heyoe.utilities.Utils;
+import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
+import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
+import com.heyoe.widget.MyCircularImageView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ProfileFragment extends Fragment implements View.OnClickListener{
+public class ProfileFragment extends Fragment {
     private Activity mActivity;
+    private String userId;
+    private UserModel userModel;
     private ArrayList<PostModel> mArrPost;
+    private ProfileAdapter mProfileAdapter;
 //    private ArrayList<PostModel> mArrBufferPost;
     private ListView lvMain;
     private PullToRefreshListView mPullRefreshHomeListView;
-    private PostAdapter mPostAdapter;
 
-    private RelativeLayout rlInfo, rlMedia, rlFriend;
+
 
     int offset;
     boolean isLast;
@@ -50,6 +85,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         initVariable();
         initUI(view);
+        getProfile();
         return view;
     }
     private void initVariable() {
@@ -57,19 +93,520 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         isLast = false;
         offset = 0;
         mArrPost = new ArrayList<>();
-//        mArrBufferPost = new ArrayList<>();
+        userModel = new UserModel();
+        userId = mActivity.getIntent().getStringExtra("user_id");
+
+    }
+    private void getProfile() {
+        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("user_id", userId);
+        params.put("offset", String.valueOf(offset));
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_PROFILE, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                if (offset == 0) {
+
+
+
+                                    JSONObject jsonObject = response.getJSONObject("data");
+
+                                    String user_id = jsonObject.getString("user_id");
+                                    String fullname = jsonObject.getString("fullname");
+                                    String email = jsonObject.getString("email");
+                                    String password = jsonObject.getString("password");
+                                    String city = jsonObject.getString("city");
+                                    String country = jsonObject.getString("country");
+                                    String birthday = jsonObject.getString("birthday");
+                                    String gender = jsonObject.getString("gender");
+                                    String celebrity = jsonObject.getString("celebrity");
+                                    String about_me = jsonObject.getString("about_you");
+                                    String media_count = jsonObject.getString("post_count");
+                                    String friend_count = jsonObject.getString("friend_count");
+                                    String avatar = jsonObject.getString("avatar");
+                                    String header_photo_url = jsonObject.getString("header_photo");
+                                    String header_video_url = jsonObject.getString("header_video");
+                                    String qb_id = jsonObject.getString("qb_id");
+                                    String online_status = jsonObject.getString("online_status");
+
+                                    userModel.setUser_id(user_id);
+                                    userModel.setFullname(fullname);
+                                    userModel.setEmail(email);
+                                    userModel.setPassword(password);
+                                    userModel.setCity(city);
+                                    userModel.setCountry(country);
+                                    userModel.setBirthday(birthday);
+                                    userModel.setGender(gender);
+                                    userModel.setCelebrity(celebrity);
+                                    userModel.setAbout_you(about_me);
+                                    userModel.setAvatar(avatar);
+                                    userModel.setMedia_count(media_count);
+                                    userModel.setFriend_count(friend_count);
+                                    userModel.setHeader_photo(header_photo_url);
+                                    userModel.setHeader_video(header_video_url);
+                                    userModel.setQb_id(qb_id);
+
+                                    ProfileActivity.userModel = userModel;
+                                }
+
+
+                                JSONArray jsonArray = response.getJSONArray("posts");
+                                int postCount = jsonArray.length();
+                                if (postCount == 0) {
+                                    isLast = true;
+                                }
+                                offset ++;
+                                for (int i = 0; i < postCount; i ++)  {
+
+                                    JSONObject postObject = jsonArray.getJSONObject(i);
+                                    PostModel postModel = new PostModel();
+                                    postModel.setPost_id(postObject.getString("post_id"));
+                                    postModel.setPosted_date(postObject.getString("posted_date"));
+                                    postModel.setPoster_id(postObject.getString("poster_id"));
+                                    postModel.setPoster_fullname(postObject.getString("poster_fullname"));
+                                    postModel.setPoster_avatar(postObject.getString("poster_avatar"));
+                                    postModel.setPoster_celebrity(postObject.getString("poster_celebrity"));
+                                    postModel.setMedia_type(postObject.getString("media_type"));
+                                    postModel.setMedia_url(postObject.getString("media_url"));
+                                    postModel.setLike_count(postObject.getString("like_count"));
+                                    postModel.setDislike_count(postObject.getString("dislike_count"));
+                                    postModel.setComment_count(postObject.getString("comment_count"));
+                                    postModel.setShared_count(postObject.getString("shared_count"));
+                                    postModel.setViewed_count(postObject.getString("viewed_count"));
+                                    postModel.setLike(postObject.getString("like"));
+                                    postModel.setDescription(postObject.getString("description"));
+                                    postModel.setCommented(postObject.getString("commented"));
+                                    postModel.setFavorite(postObject.getString("favorite"));
+                                    postModel.setImageWidth(Integer.parseInt(postObject.getString("width")));
+                                    postModel.setImageHeight(Integer.parseInt(postObject.getString("height")));
+
+                                    JSONArray jsonArrComments = postObject.getJSONArray("comments");
+                                    ArrayList<CommentModel> arrComments = new ArrayList<>();
+                                    for (int j = 0; j < jsonArrComments.length(); j ++) {
+
+                                        JSONObject jsonComment = jsonArrComments.getJSONObject(j);
+                                        CommentModel commentModel = new CommentModel();
+
+                                        commentModel.setFullname(jsonComment.getString("fullname"));
+                                        commentModel.setAvatar(jsonComment.getString("avatar"));
+                                        commentModel.setComment(jsonComment.getString("comment"));
+                                        commentModel.setTime(jsonComment.getString("date"));
+
+                                        arrComments.add(commentModel);
+                                    }
+                                    postModel.setArrComments(arrComments);
+
+                                    postModel.setClickedTime((long) 0);
+                                    mArrPost.add(postModel);
+
+                                }
+                                if (offset == 1) {
+                                    lvMain.setAdapter(mProfileAdapter);
+                                } else {
+                                    mProfileAdapter.notifyDataSetChanged();
+                                }
+
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
+    }
+
+    private class ProfileAdapter extends BaseAdapter {
+        ArrayList<PostModel> arrayList;
+        public ProfileAdapter(ArrayList<PostModel> arrayList) {
+            this.arrayList = arrayList;
+        }
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = null;
+            if (position == 0) {
+                view = mActivity.getLayoutInflater().inflate(R.layout.item_profile, null);
+                RelativeLayout rlInfo, rlMedia, rlFriend;
+                rlInfo = (RelativeLayout)view.findViewById(R.id.rl_profile_info);
+                rlMedia = (RelativeLayout)view.findViewById(R.id.rl_profile_media);
+                rlFriend = (RelativeLayout)view.findViewById(R.id.rl_profile_friend);
+
+                rlInfo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ProfileActivity.pushFragment(1);
+                    }
+                });
+                rlMedia.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ProfileActivity.pushFragment(2);
+                    }
+                });
+                rlFriend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ProfileActivity.pushFragment(3);
+                    }
+                });
+                TextView tvFullname = (TextView)view.findViewById(R.id.tv_profile_fullname);
+                TextView tvFriendCount = (TextView)view.findViewById(R.id.tv_profile_friends_count);
+                ImageButton ibPlayVideo = (ImageButton)view.findViewById(R.id.ib_profile_play);
+                ibPlayVideo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+                ImageView ivCelebrity = (ImageView)view.findViewById(R.id.iv_profile_celebrity);
+
+                ImageView ivMedia = (ImageView)view.findViewById(R.id.iv_profile_media);
+                if (!userModel.getHeader_photo().equals("")) {
+                    UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, API.BASE_HEADER_PHOTO + userModel.getHeader_photo(), R.drawable.post3, new UrlImageViewCallback() {
+                        @Override
+                        public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                            if (!loadedFromCache) {
+                                ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                                scale.setDuration(10);
+                                scale.setInterpolator(new OvershootInterpolator());
+                                imageView.startAnimation(scale);
+                            }
+                        }
+                    });
+                }
+                MyCircularImageView avatar = (MyCircularImageView)view.findViewById(R.id.civ_profile_avatar);
+                if (!userModel.getAvatar().equals("")) {
+                    UrlRectangleImageViewHelper.setUrlDrawable(avatar, API.BASE_AVATAR + userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                        @Override
+                        public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                            if (!loadedFromCache) {
+                                ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                                scale.setDuration(10);
+                                scale.setInterpolator(new OvershootInterpolator());
+                                imageView.startAnimation(scale);
+                            }
+                        }
+                    });
+                }
+
+                tvFullname.setText(userModel.getFullname());
+                tvFriendCount.setText(userModel.getFriend_count());
+                if (userModel.getCelebrity().equals("yes")) {
+                    ivCelebrity.setVisibility(View.VISIBLE);
+                } else {
+                    ivCelebrity.setVisibility(View.INVISIBLE);
+                }
+
+            } else {
+                view = mActivity.getLayoutInflater().inflate(R.layout.item_post_for_friend, null);
+                final PostModel postModel = arrayList.get(position - 1);
+                final ImageButton ibFavorite = (ImageButton)view.findViewById(R.id.iv_ipff_favorite);
+                ibFavorite.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (postModel.getFavorite().equals("favorite")) {
+//                            MainFragment.setFavorite(position, false);
+                        } else {
+//                            MainFragment.setFavorite(position, true);
+                        }
+                    }
+                });
+                ImageView ivLikeCount = (ImageView)view.findViewById(R.id.iv_ipff_like_count);
+                ImageView ivDislikeCount = (ImageView)view.findViewById(R.id.iv_ipff_dislike_count);
+                ImageView ivComments = (ImageView)view.findViewById(R.id.iv_ipff_comments);
+
+                ivLikeCount.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mActivity, UserListActivity.class);
+                        intent.putExtra("type", "like");
+                        intent.putExtra("post", postModel);
+                        mActivity.startActivity(intent);
+                    }
+                });
+
+                ivDislikeCount.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mActivity, UserListActivity.class);
+                        intent.putExtra("type", "dislike");
+                        intent.putExtra("post", postModel);
+                        mActivity.startActivity(intent);
+                    }
+                });
+                ivComments.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mActivity, DetailPostActivity.class);
+                        intent.putExtra("post", postModel);
+                        mActivity.startActivityForResult(intent, 101);
+                    }
+                });
+                TextView tvLikeCount = (TextView)view.findViewById(R.id.tv_ipff_like_count);
+                TextView tvDislike = (TextView)view.findViewById(R.id.tv_ipff_dislike_count);
+
+                TextView[] tvNames = new TextView[3];
+                tvNames[0] = (TextView)view.findViewById(R.id.tv_ipff_name1);
+                tvNames[1] = (TextView)view.findViewById(R.id.tv_ipff_name2);
+                tvNames[2] = (TextView)view.findViewById(R.id.tv_ipff_name3);
+
+                TextView[]  tvComments = new TextView[3];
+                tvComments[0] = (TextView)view.findViewById(R.id.tv_ipff_comment1);
+                tvComments[1] = (TextView)view.findViewById(R.id.tv_ipff_comment2);
+                tvComments[2] = (TextView)view.findViewById(R.id.tv_ipff_comment3);
+
+                LinearLayout[] llComments = new LinearLayout[3];
+                llComments[0] = (LinearLayout)view.findViewById(R.id.ll_ipff_comment1);
+                llComments[1] = (LinearLayout)view.findViewById(R.id.ll_ipff_comment2);
+                llComments[2] = (LinearLayout)view.findViewById(R.id.ll_ipff_comment3);
+
+                TextView tvViewedCount = (TextView)view.findViewById(R.id.tv_ipff_viewed_count);
+                TextView tvSharedCount = (TextView)view.findViewById(R.id.tv_ipff_shared_count);
+
+                if (postModel.getFavorite().equals("favorite")) {
+                    ibFavorite.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_favorite_star_white));
+                } else {
+                    ibFavorite.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_favorite_star_empty));
+                }
+                if (postModel.getLike().equals("like")) {
+                    ivLikeCount.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.green_like_count));
+                    ivDislikeCount.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.dislike_count_empty));
+                } else if (postModel.getLike().equals("dislike")) {
+                    ivLikeCount.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.like_count_empty));
+                    ivDislikeCount.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.green_dislike_count));
+                } else {
+                    ivLikeCount.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.like_count_empty));
+                    ivDislikeCount.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.dislike_count_empty));
+                }
+
+                if (postModel.getCommented().equals("yes")) {
+                    ivComments.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.green_comment_count));
+                } else {
+                    ivComments.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.comment_count_empty));
+                }
+
+                tvLikeCount.setText(postModel.getLike_count());
+                tvDislike.setText(postModel.getDislike_count());
+                tvViewedCount.setText(postModel.getViewed_count());
+                tvSharedCount.setText(postModel.getShared_count());
+
+                int commentCount = postModel.getArrComments().size() > 3 ? 3 : postModel.getArrComments().size();
+                for (int i = 0; i < commentCount; i ++) {
+                    CommentModel commentModel = postModel.getArrComments().get(i);
+                    tvNames[i].setText(commentModel.getFullname());
+                    tvComments[i].setText(commentModel.getComment());
+                    llComments[i].setVisibility(View.VISIBLE);
+                }
+                TextView tvCheckoutAllComments = (TextView)view.findViewById(R.id.tv_ipff_checkout_all_comments);
+                tvCheckoutAllComments.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mActivity, DetailPostActivity.class);
+                        intent.putExtra("post", postModel);
+                        mActivity.startActivityForResult(intent, 101);
+                    }
+                });
+
+
+                ImageButton ibLike = (ImageButton)view.findViewById(R.id.ib_ipff_like);
+                ibLike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("dislike")) {
+                            if (postModel.getLike().equals("like")) {
+//                                MainFragment.setLike(position, "cancel_like");
+                            } else if (postModel.getLike().equals("none")) {
+//                                MainFragment.setLike(position, "like");
+                            }
+                        } else {
+                            Utils.showToast(mActivity, mActivity.getResources().getString(R.string.wait_one_minute));
+                        }
+
+                    }
+                });
+                ImageButton ibDislike = (ImageButton)view.findViewById(R.id.ib_ipff_dislike);
+                ibDislike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("like")) {
+                            if (postModel.getLike().equals("dislike")) {
+//                                MainFragment.setLike(position, "cancel_dislike");
+                            } else if (postModel.getLike().equals("none")) {
+//                                MainFragment.setLike(position, "dislike");
+                            }
+                        }else {
+                            Utils.showToast(mActivity, mActivity.getResources().getString(R.string.wait_one_minute));
+                        }
+
+                    }
+                });
+                if (postModel.getLike().equals("like")) {
+                    ibLike.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.btn_like_green));
+                    ibDislike.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.btn_dislike));
+                } else if (postModel.getLike().equals("dislike")) {
+                    ibLike.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.btn_like));
+                    ibDislike.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.btn_dislike_green));
+                } else {
+                    ibLike.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.btn_like));
+                    ibDislike.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.btn_dislike));
+                }
+
+
+                ImageButton ibComment = (ImageButton)view.findViewById(R.id.ib_ipff_comment);
+                ibComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mActivity, DetailPostActivity.class);
+                        intent.putExtra("post", postModel);
+                        mActivity.startActivityForResult(intent, 101);
+                    }
+                });
+                if (postModel.getCommented().equals("yes")) {
+                    ibComment.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.btn_comment_green));
+                } else {
+                    ibComment.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.btn_comment));
+                }
+
+                ImageButton ibShare = (ImageButton)view.findViewById(R.id.ib_ipff_share);
+                ibShare.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+//                        MainFragment.sharing(position);
+                    }
+                });
+
+                MyCircularImageView myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_ipff_avatar);
+
+                if (!postModel.getPoster_avatar().equals("")) {
+                    UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + postModel.getPoster_avatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                        @Override
+                        public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                            if (!loadedFromCache) {
+                                ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                                scale.setDuration(10);
+                                scale.setInterpolator(new OvershootInterpolator());
+                                imageView.startAnimation(scale);
+                            }
+                        }
+                    });
+                }
+
+
+                final ImageView ivMedia = (ImageView)view.findViewById(R.id.iv_ipff_media);
+                ivMedia.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mActivity, DetailPostActivity.class);
+                        intent.putExtra("post", postModel);
+                        mActivity.startActivityForResult(intent, 101);
+                    }
+                });
+
+                String imageUrl = "";
+                String videoUrl = "";
+                if (postModel.getImageWidth() != 0 && postModel.getImageHeight() != 0) {
+                    double ratio = ((double)postModel.getImageHeight() / (double)postModel.getImageWidth());
+                    double height = ratio * UIUtility.getScreenWidth(mActivity);
+                    UIUtility.setImageViewSize(ivMedia, UIUtility.getScreenWidth(mActivity), (int)height);
+                } else {
+                    double height = (int)( UIUtility.getScreenWidth(mActivity) * 0.75);
+                    UIUtility.setImageViewSize(ivMedia, UIUtility.getScreenWidth(mActivity),(int) height);
+                }
+                if (postModel.getMedia_type().equals("post_photo")) {
+                    imageUrl = API.BASE_POST_PHOTO + postModel.getMedia_url();
+
+                } else if (postModel.getMedia_type().equals("post_video")){
+                    imageUrl = API.BASE_THUMBNAIL + postModel.getMedia_url().substring(0, postModel.getMedia_url().length() - 3) + "jpg";
+                    videoUrl = API.BASE_POST_VIDEO + postModel.getMedia_url();
+                } else if (postModel.getMedia_type().equals("youtube")) {
+                    imageUrl = API.BASE_YOUTUB_PREFIX + FileUtility.getFilenameFromPath(postModel.getMedia_url()) + API.BASE_YOUTUB_SURFIX;
+                    videoUrl = postModel.getMedia_url();
+                }
+                if (!postModel.getMedia_url().equals("")) {
+                    UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, imageUrl, R.drawable.default_tour, new UrlImageViewCallback() {
+                        @Override
+                        public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                            if (!loadedFromCache) {
+
+                                ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                                scale.setDuration(500);
+                                scale.setInterpolator(new OvershootInterpolator());
+                                imageView.startAnimation(scale);
+
+
+                            }
+                        }
+                    });
+                }
+
+                ImageButton ibPlay = (ImageButton)view.findViewById(R.id.ib_ipff_play);
+                if (postModel.getMedia_type().equals("post_photo")) {
+                    ibPlay.setVisibility(View.GONE);
+                } else {
+                    ibPlay.setVisibility(View.VISIBLE);
+                }
+                final String finalVideoUrl = videoUrl;
+                ibPlay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mActivity, MediaPlayActivity.class);
+                        intent.putExtra("url", finalVideoUrl);
+                        intent.putExtra("type", postModel.getMedia_type());
+                        mActivity.startActivity(intent);
+                    }
+                });
+                TextView tvName = (TextView)view.findViewById(R.id.tv_ipff_fullname);
+                tvName.setText(postModel.getPoster_fullname());
+
+                TextView tvPostedDate = (TextView)view.findViewById(R.id.tv_ipff_date);
+                tvPostedDate.setText(TimeUtility.countTime(mActivity, Long.parseLong(postModel.getPosted_date()) ));
+
+                TextView tvDescription = (TextView)view.findViewById(R.id.tv_ipff_description);
+                tvDescription.setText(Html.fromHtml(postModel.getDescription()));
+            }
+            return view;
+        }
+
+        @Override
+        public int getCount() {
+            return arrayList.size() + 1;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return arrayList.get(position - 1);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
     }
     private void initUI(View view) {
 
-        rlInfo = (RelativeLayout)view.findViewById(R.id.rl_profile_info);
-        rlMedia = (RelativeLayout)view.findViewById(R.id.rl_profile_media);
-        rlFriend = (RelativeLayout)view.findViewById(R.id.rl_profile_friend);
-        rlInfo.setOnClickListener(this);
-        rlMedia.setOnClickListener(this);
-        rlFriend.setOnClickListener(this);
-
         ///create listview
-        mPullRefreshHomeListView = (PullToRefreshListView)view.findViewById(R.id.lv_profile_myposts);
+        mPullRefreshHomeListView = (PullToRefreshListView)view.findViewById(R.id.lv_profile);
         mPullRefreshHomeListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
 
             @Override
@@ -84,8 +621,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         lvMain = mPullRefreshHomeListView.getRefreshableView();
 
 
-        mPostAdapter = new PostAdapter(getActivity(), makeSamplePosts());
-        lvMain.setAdapter(mPostAdapter);
+        mProfileAdapter = new ProfileAdapter(mArrPost);
+
 
     }
 
@@ -94,27 +631,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         super.onAttach(activity);
 
     }
-
-
-
-
-    @Override
-    public void onClick(View v) {
-        if (v == rlInfo) {
-            ProfileActivity.navigateTo(1);
-        }
-        if (v == rlMedia) {
-            ProfileActivity.navigateTo(2);
-        }
-        if (v == rlFriend) {
-            ProfileActivity.navigateTo(3);
-        }
-
-    }
-
-
-
-
 
 
 

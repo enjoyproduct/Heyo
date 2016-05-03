@@ -2,6 +2,7 @@ package com.heyoe.controller.fragments;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
+import com.heyoe.controller.ProfileActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.model.UserModel;
@@ -249,7 +251,23 @@ public class MoreFriendFragment extends Fragment {
             }else {
                 myCircularImageView.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
             }
+            myCircularImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+                    mActivity.startActivity(intent);
+                }
+            });
             TextView tvName = (TextView)view.findViewById(R.id.tv_imf_friend_name);
+            tvName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+                    mActivity.startActivity(intent);
+                }
+            });
             TextView tvAboutMe = (TextView)view.findViewById(R.id.tv_imf_aboutme);
             ImageButton ibAdd = (ImageButton)view.findViewById(R.id.ib_imf_add);
             tvName.setText(arrFriends.get(position).getFullname());

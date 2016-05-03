@@ -260,8 +260,6 @@ public class BitmapUtility {
         if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
 
         //get BitmapFactory option
-//        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-
         final BitmapFactory.Options options = new BitmapFactory.Options();
 
         options.inJustDecodeBounds = true;
@@ -275,8 +273,7 @@ public class BitmapUtility {
         Bitmap yourSelectedImage = BitmapFactory.decodeFile(photopath, options);
         ////create a new rotated image
         Bitmap adjustedBitmap = Bitmap.createBitmap(yourSelectedImage, 0, 0, yourSelectedImage.getWidth(), yourSelectedImage.getHeight(), matrix, true);
-        ///save adjusted bitmap
-        saveBitmapToLocal(adjustedBitmap, photopath, photopath);
+
         return adjustedBitmap;
     }
     public static Bitmap adjustBitmapForAvatar(String photopath) {////////////good
@@ -296,24 +293,26 @@ public class BitmapUtility {
         if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
 
         //get BitmapFactory option
-//        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-
         final BitmapFactory.Options options = new BitmapFactory.Options();
-
         options.inJustDecodeBounds = true;
 
         BitmapFactory.decodeFile(photopath, options);
         //////
-        options.inSampleSize = 4;
+        options.inSampleSize = 2;
         options.inJustDecodeBounds = false;
 
         //get bitmap with local path
         Bitmap yourSelectedImage = BitmapFactory.decodeFile(photopath, options);
         ////create a new rotated image
         Bitmap adjustedBitmap = Bitmap.createBitmap(yourSelectedImage, 0, 0, yourSelectedImage.getWidth(), yourSelectedImage.getHeight(), matrix, true);
-        ///save adjusted bitmap
-        saveBitmapToLocal(adjustedBitmap, photopath, photopath);
-        return adjustedBitmap;
+
+        ///down size bitmap
+        if (adjustedBitmap.getWidth() > 400 || adjustedBitmap.getHeight() > 400) {
+            Bitmap downsized = downSizeBitmap(adjustedBitmap, 400);  ///downsize to 100dp
+            return downsized;
+        } else {
+            return adjustedBitmap;
+        }
     }
     public static int exifToDegrees(int exifOrientation) {
         if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
@@ -469,7 +468,7 @@ public class BitmapUtility {
 
         return bmOverlay;
     }
-    public static String saveBitmap(Bitmap bitmap, String destinationPath, String fileName) {
+    public static String saveBitmap(Bitmap bitmap, String destinationPath, String fileName) {///good
         if (bitmap == null || destinationPath.length() == 0) {
             return "";
         }

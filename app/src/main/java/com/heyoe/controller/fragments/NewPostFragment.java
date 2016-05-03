@@ -372,6 +372,15 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                             if (status.equals("200")) {
                                 Utils.showToast(mActivity, getResources().getString(R.string.post_success));
                                 UIUtility.hideSoftKeyboard(mActivity);
+
+                                if (mediaType.equals("post_video")) {
+                                    FileUtility.deleteFile(videoPath);
+                                    FileUtility.deleteFile(thumbPath);
+
+                                } else if (mediaType.equals("post_photo")) {
+                                    FileUtility.deleteFile(photoPath);
+                                }
+
                                 HomeActivity.navigateTo(0);
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
@@ -555,12 +564,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     photoPath = cursor.getString(columnIndex);
                     cursor.close();
 
-
-                    //convert bitmap to drawable
-//                    Drawable d = Drawable.createFromPath(photoPath);
-////                    ImageView ivUser = (ImageView)findViewById(R.id.iv_register_user);
-//                    Drawable drawable = new BitmapDrawable(getResources(), BitmapUtility.adjustBitmap(photoPath));
-
                     Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
 
                     imageView.setImageBitmap(bitmap);
@@ -568,7 +571,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     imageWidth = bitmap.getWidth();
                     imageHeight = bitmap.getHeight();
 
-                    FileUtility.deleteFile(photoPath);
                     photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
 
 
@@ -775,6 +777,11 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
         // set the video image quality to high
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+
+        // set max time limit
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
+//        or
+//        intent.putExtra("android.intent.extra.durationLimit", 30000);
 
         // start the Video Capture Intent
         startActivityForResult(intent, take_video_from_camera);
