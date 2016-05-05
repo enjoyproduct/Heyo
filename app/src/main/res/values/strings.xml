@@ -153,8 +153,8 @@
     <string name="input_new_password">Please input new password</string>
     <string name="input_confirm_password_again">Please input confirm password again</string>
     <string name="wait_one_minute">You have to wait 1 minute before you can use this button again</string>
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
+    <string name="confirm_header_photo">Do you want set this photo as profile header</string>
+    <string name="confirm_header_video">Do you want set this video as profile header</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
@@ -197,7 +197,8 @@
     <string name="accept_success">Congratulate having a friend</string>
     <string name="Youtube_play_error">Cannoot play this video</string>
     <string name="qb_signup_failed">QB signup failed</string>
-
+    <string name="success">success</string>
+    <string name="user_not_exist">user not exists</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
@@ -212,10 +213,6 @@
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-
-
 
 
     <string-array name="gender">

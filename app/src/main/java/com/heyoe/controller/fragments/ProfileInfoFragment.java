@@ -305,6 +305,15 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
                                 Utils.saveToPreference(mActivity, Constant.GENDER, gender);
                                 Utils.saveToPreference(mActivity, Constant.CELEBRITY, celebrity);
 
+                                ProfileActivity.userModel.setFullname(fullname);
+                                ProfileActivity.userModel.setCity(city);
+                                ProfileActivity.userModel.setCountry(country);
+                                ProfileActivity.userModel.setEmail(email);
+                                ProfileActivity.userModel.setBirthday(birthday);
+                                ProfileActivity.userModel.setGender(gender);
+                                ProfileActivity.userModel.setCelebrity(celebrity);
+
+                                ProfileFragment.setCelebrity();
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -338,6 +347,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
+                                ProfileActivity.userModel.setAbout_you(etAboutMe.getText().toString().trim());
                                 Utils.saveToPreference(mActivity, Constant.ABOUT_ME, etAboutMe.getText().toString().trim());
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
@@ -373,6 +383,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
+                                ProfileActivity.userModel.setPassword(etNewPass.getText().toString());
                                 Utils.saveToPreference(mActivity, Constant.PASSWORD, etNewPass.getText().toString());
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));

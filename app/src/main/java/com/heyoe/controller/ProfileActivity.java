@@ -17,6 +17,7 @@ import com.android.volley.error.VolleyError;
 import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
 import com.heyoe.R;
+import com.heyoe.controller.fragments.FriendListFragment;
 import com.heyoe.controller.fragments.MediaFragment;
 import com.heyoe.controller.fragments.ProfileFragment;
 import com.heyoe.controller.fragments.ProfileInfoFragment;
@@ -40,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static TextView tvTitle;
     private static ImageButton ibAddFriend;
 
-    private String userId;
+    public static String userId;
     String friend_status;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,9 +197,9 @@ public class ProfileActivity extends AppCompatActivity {
                         .commit();
                 break;
             case 3:
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, new FriendFragment())
-//                        .commit();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, new FriendListFragment())
+                        .commit();
                 break;
 
         }

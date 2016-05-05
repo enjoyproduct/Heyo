@@ -2,11 +2,21 @@ package com.heyoe.controller.fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +34,21 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.NetworkError;
+import com.android.volley.error.NoConnectionError;
+import com.android.volley.error.ParseError;
+import com.android.volley.error.ServerError;
+import com.android.volley.error.TimeoutError;
 import com.android.volley.error.VolleyError;
+import com.android.volley.request.CustomMultipartRequest;
 import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
 import com.heyoe.controller.DetailPostActivity;
+import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.MediaPlayActivity;
 import com.heyoe.controller.ProfileActivity;
 import com.heyoe.controller.UserListActivity;
@@ -39,10 +57,14 @@ import com.heyoe.model.CommentModel;
 import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
+import com.heyoe.utilities.BitmapUtility;
 import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.TimeUtility;
 import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
+import com.heyoe.utilities.camera.AlbumStorageDirFactory;
+import com.heyoe.utilities.camera.BaseAlbumDirFactory;
+import com.heyoe.utilities.camera.FroyoAlbumDirFactory;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
@@ -50,7 +72,11 @@ import com.heyoe.widget.MyCircularImageView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,9 +84,23 @@ import java.util.Map;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment {
-    private Activity mActivity;
+
+    private static final int take_photo_from_gallery = 1;
+    private static final int take_photo_from_camera = 2;
+    private static final int take_video_from_gallery = 3;
+    private static final int take_video_from_camera = 4;
+
+    private static final String JPEG_FILE_PREFIX = "Heyoe_header_photo_";
+    private static final String JPEG_FILE_SUFFIX = ".jpg";
+    private static final String VIDEO_FILE_PREFIX = "Heyoe_header_video_";
+    private static final String VIDEO_FILE_SUFFIX = ".mp4";
+
+    private String photoPath, videoPath;
+    private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
+
+    private static Activity mActivity;
     private String userId;
-    private UserModel userModel;
+    private static UserModel userModel;
     private ArrayList<PostModel> mArrPost;
     private ProfileAdapter mProfileAdapter;
 //    private ArrayList<PostModel> mArrBufferPost;
@@ -96,7 +136,33 @@ public class ProfileFragment extends Fragment {
         userModel = new UserModel();
         userId = mActivity.getIntent().getStringExtra("user_id");
 
+        initMediaPath();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
+        } else {
+            mAlbumStorageDirFactory = new BaseAlbumDirFactory();
+        }
     }
+    private void initMediaPath() {
+        photoPath = "";
+        videoPath = "";
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+    public static void setCelebrity() {
+        if (ivCelebrity != null && isMe()) {
+            if (Utils.getFromPreference(mActivity, Constant.CELEBRITY).equals("yes")) {
+                ivCelebrity.setVisibility(View.VISIBLE);
+            } else {
+                ivCelebrity.setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
     private void getProfile() {
         Utils.showProgress(mActivity);
 
@@ -235,6 +301,94 @@ public class ProfileFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
+    private void uploadHeaderMedia(final int type) {
+        Utils.showProgress(mActivity);
+        CustomMultipartRequest customMultipartRequest = new CustomMultipartRequest(API.SET_HEADER_MEDIA,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                Utils.showToast(mActivity, getResources().getString(R.string.success));
+
+                                String headerMediaUrl = response.getString("data");
+                                if (type == 2) {
+                                    Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, headerMediaUrl);
+                                    FileUtility.deleteFile(videoPath);
+
+                                } else if (type == 1) {
+                                    Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, headerMediaUrl);
+                                    FileUtility.deleteFile(photoPath);
+                                }
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            }else  if (status.equals("401")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.user_not_exist));
+                            }
+
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            Toast.makeText(mActivity, "TimeoutError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof AuthFailureError) {
+                            //TODO
+                            Toast.makeText(mActivity, "AuthFailureError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ServerError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ServerError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof NetworkError) {
+                            //TODO
+                            Toast.makeText(mActivity, "NetworkError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ParseError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ParseError", Toast.LENGTH_LONG).show();
+                        } else {
+                            //TODO
+                            Toast.makeText(mActivity, "UnknownError", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+        customMultipartRequest
+                .addStringPart(Constant.DEVICE_TYPE, Constant.ANDROID)
+                .addStringPart(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN))
+                .addStringPart("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+
+
+        if (type == 2) {
+            customMultipartRequest.addVideoPart("media_type", "header_video");
+            customMultipartRequest.addVideoPart("header_video", videoPath);
+
+        } else if (type == 1) {
+            customMultipartRequest.addVideoPart("media_type", "header_photo");
+            customMultipartRequest.addStringPart("width", String.valueOf(imageWidth));
+            customMultipartRequest.addStringPart("height", String.valueOf(imageHeight));
+            customMultipartRequest.addImagePart("header_photo", photoPath);
+        }
+
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(customMultipartRequest);
+    }
+
+    private static boolean isMe() {
+        if (userModel.getUser_id().equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    ImageView ivMedia;
+    ImageButton ibPlayVideo;
+    static ImageView ivCelebrity;
 
     private class ProfileAdapter extends BaseAdapter {
         ArrayList<PostModel> arrayList;
@@ -271,16 +425,25 @@ public class ProfileFragment extends Fragment {
                 });
                 TextView tvFullname = (TextView)view.findViewById(R.id.tv_profile_fullname);
                 TextView tvFriendCount = (TextView)view.findViewById(R.id.tv_profile_friends_count);
-                ImageButton ibPlayVideo = (ImageButton)view.findViewById(R.id.ib_profile_play);
+                ibPlayVideo = (ImageButton)view.findViewById(R.id.ib_profile_play);
                 ibPlayVideo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        if (isMe()) {
+                            showVideoChooseDialog();
+                        } else {
+                            if (userModel.getHeader_video().length() > 0) {
+                                Intent intent = new Intent(mActivity, MediaPlayActivity.class);
+                                intent.putExtra("url", API.BASE_HEADER_VIDEO +  userModel.getHeader_video());
+                                intent.putExtra("type", "header_video");
+                                startActivity(intent);
+                            }
+                        }
                     }
                 });
-                ImageView ivCelebrity = (ImageView)view.findViewById(R.id.iv_profile_celebrity);
 
-                ImageView ivMedia = (ImageView)view.findViewById(R.id.iv_profile_media);
+
+                ivMedia = (ImageView)view.findViewById(R.id.iv_profile_media);
                 if (!userModel.getHeader_photo().equals("")) {
                     UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, API.BASE_HEADER_PHOTO + userModel.getHeader_photo(), R.drawable.post3, new UrlImageViewCallback() {
                         @Override
@@ -294,6 +457,14 @@ public class ProfileFragment extends Fragment {
                         }
                     });
                 }
+                ivMedia.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (isMe()) {
+                            showPictureChooseDialog();
+                        }
+                    }
+                });
                 MyCircularImageView avatar = (MyCircularImageView)view.findViewById(R.id.civ_profile_avatar);
                 if (!userModel.getAvatar().equals("")) {
                     UrlRectangleImageViewHelper.setUrlDrawable(avatar, API.BASE_AVATAR + userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
@@ -311,11 +482,14 @@ public class ProfileFragment extends Fragment {
 
                 tvFullname.setText(userModel.getFullname());
                 tvFriendCount.setText(userModel.getFriend_count());
+
+                ivCelebrity = (ImageView)view.findViewById(R.id.iv_profile_celebrity);
                 if (userModel.getCelebrity().equals("yes")) {
                     ivCelebrity.setVisibility(View.VISIBLE);
                 } else {
                     ivCelebrity.setVisibility(View.INVISIBLE);
                 }
+
 
             } else {
                 view = mActivity.getLayoutInflater().inflate(R.layout.item_post_for_friend, null);
@@ -571,7 +745,11 @@ public class ProfileFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(mActivity, MediaPlayActivity.class);
                         intent.putExtra("url", finalVideoUrl);
-                        intent.putExtra("type", postModel.getMedia_type());
+                        if (postModel.getMedia_type().equals("post_video")) {
+                            intent.putExtra("type", "video");
+                        } else {
+                            intent.putExtra("type", "youtube");
+                        }
                         mActivity.startActivity(intent);
                     }
                 });
@@ -612,38 +790,386 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onLastItemVisible() {
                 if (!isLast) {
-//                    defaluteFetchTrip(currentCategory, GlobalVariable.getInstance().currentCountryName);
+                    getProfile();
                 }
                 mPullRefreshHomeListView.onRefreshComplete();
-
             }
         });
         lvMain = mPullRefreshHomeListView.getRefreshableView();
-
-
         mProfileAdapter = new ProfileAdapter(mArrPost);
-
-
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case take_photo_from_gallery:
+                if (resultCode == Activity.RESULT_OK) {
+
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                    Cursor cursor = mActivity.getContentResolver().query(
+                            selectedImage, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    initMediaPath();
+                    photoPath = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
+                    ivMedia.setImageBitmap(bitmap);
+                    imageWidth = bitmap.getWidth();
+                    imageHeight = bitmap.getHeight();
+                    photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+
+                    if (photoPath.length() > 0) {
+                        askToUploadHeaderMedia(2);
+                    }
 
 
-
-    //for test
-    private ArrayList<PostModel> makeSamplePosts() {
-        ArrayList<PostModel> arrayList = new ArrayList<>();
-        for (int i = 0; i < 10; i ++) {
-            PostModel postModel = new PostModel();
-            arrayList.add(postModel);
-
+                }
+                break;
+            case take_photo_from_camera: {
+                if (resultCode == Activity.RESULT_OK) {
+                    setPic();
+                    if (photoPath.length() > 0) {
+                        askToUploadHeaderMedia(2);
+                    }
+                }
+                break;
+            }
+            case take_video_from_gallery:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri selectedVideoUri = data.getData();
+                    String[] filePathColumn = {MediaStore.Video.VideoColumns.DATA};
+                    videoPath = getVideoPath(selectedVideoUri);
+                    if (videoPath != null && videoPath.length() > 0) {
+                        askToUploadHeaderMedia(2);
+                    }
+                }
+                break;
+            case take_video_from_camera:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (videoPath.length() > 0) {
+                        askToUploadHeaderMedia(2);
+                    }
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    // User cancelled the video capture
+                    Toast.makeText(mActivity, "User cancelled the video capture.",Toast.LENGTH_LONG).show();
+                } else {
+                    // Video capture failed, advise user
+                    Toast.makeText(mActivity, "Video capture failed.",Toast.LENGTH_LONG).show();
+                }
+                break;
         }
-        return arrayList;
-
     }
+
+    public String getVideoPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = mActivity.managedQuery(uri, projection, null, null, null);
+        if (cursor != null) {
+            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
+    }
+    public void askToUploadHeaderMedia(final int type) {
+        String msg = "";
+        switch (type) {
+            case 1:
+                msg = getResources().getString(R.string.confirm_header_photo);
+                break;
+            case 2:
+                msg = getResources().getString(R.string.confirm_header_video);
+                break;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        builder.setMessage(msg);
+        builder.setCancelable(true);
+        builder.setPositiveButton("Set",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        uploadHeaderMedia(type);
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton("Discard",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (type == 1) {
+                            ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.post3));
+                        }
+                        dialog.cancel();
+                    }
+                });
+
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+    //    choose video
+    private void showVideoChooseDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        builder.setMessage(getResources().getString(R.string.choose_video));
+        builder.setCancelable(true);
+        builder.setPositiveButton("Camera",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        captureVideoFromCamera();
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton("Gallery",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        takeVideoFromGallery();
+                        dialog.cancel();
+                    }
+                });
+
+        builder.setNeutralButton("Play",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (userModel.getHeader_video().length() > 0) {
+                            Intent intent = new Intent(mActivity, MediaPlayActivity.class);
+                            intent.putExtra("url", API.BASE_HEADER_VIDEO +  userModel.getHeader_video());
+                            intent.putExtra("type", "header_video");
+                            startActivity(intent);
+                        }
+
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    private void takeVideoFromGallery()
+    {
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.putExtra("return-data", true);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Video"), take_video_from_gallery);
+    }
+    private Uri fileUri;
+    private void captureVideoFromCamera() {
+// create new Intentwith with Standard Intent action that can be
+        // sent to have the camera application capture an video and return it.
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+
+        // create a file to save the video
+        fileUri = getOutputMediaFileUri();
+        initMediaPath();
+        videoPath = fileUri.getPath();
+        // set the image file name
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,fileUri);
+
+        // set the video image quality to high
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+
+        // set max time limit
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
+//        or
+//        intent.putExtra("android.intent.extra.durationLimit", 30000);
+
+        // start the Video Capture Intent
+        startActivityForResult(intent, take_video_from_camera);
+    }
+    /** Create a file Uri for saving an image or video */
+    private Uri getOutputMediaFileUri(){
+
+        return Uri.fromFile(getOutputMediaFile());
+    }
+    /** Create a File for saving an image or video */
+    private File getOutputMediaFile(){
+
+        // Check that the SDCard is mounted
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "HeyoeVideo");
+
+
+        // Create the storage directory(MyCameraVideo) if it does not exist
+        if (! mediaStorageDir.exists()){
+
+            if (! mediaStorageDir.mkdirs()){
+
+
+                Toast.makeText(mActivity, "Failed to create directory HeyoeVideo.",
+                        Toast.LENGTH_LONG).show();
+
+                Log.d("MyCameraVideo", "Failed to create directory HeyoeVideo.");
+                return null;
+            }
+        }
+
+
+        // Create a media file name
+
+        // For unique file name appending current timeStamp with file name
+        java.util.Date date= new java.util.Date();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(date.getTime());
+
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                VIDEO_FILE_PREFIX + timeStamp + VIDEO_FILE_SUFFIX);
+
+
+        return mediaFile;
+    }
+
+
+
+
+    ///photo choose dialog
+    public void showPictureChooseDialog(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        builder.setMessage(getResources().getString(R.string.choose_avatar));
+        builder.setCancelable(true);
+        builder.setPositiveButton("Camera",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dispatchTakePictureIntent();
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton("gallery",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        takePictureFromGallery();
+                        dialog.cancel();
+                    }
+                });
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int arg1) {
+                dialog.cancel();
+
+            }
+        });
+//        dialog.setCancelable(true);
+//        dialog.setCanceledOnTouchOutside(false);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    //////////////////take a picture from gallery
+    private void takePictureFromGallery()
+    {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, take_photo_from_gallery);
+
+//        Intent intent = new Intent(mActivity, TakeMediaActivity.class);
+//        intent.putExtra("mediaType", 0);
+//        startActivity(intent);
+    }
+    /////////////capture photo
+    public void dispatchTakePictureIntent() {
+//        Intent intent = new Intent(mActivity, TakeMediaActivity.class);
+//        intent.putExtra("mediaType", 1);
+//        startActivity(intent);
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File f = null;
+        try {
+            f = setUpPhotoFile();
+            initMediaPath();
+            photoPath = f.getAbsolutePath();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        } catch (IOException e) {
+            e.printStackTrace();
+            f = null;
+            photoPath = "";
+        }
+        startActivityForResult(takePictureIntent, take_photo_from_camera);
+    }
+    private File setUpPhotoFile() throws IOException {
+
+        File f = createImageFile();
+        initMediaPath();
+        photoPath = f.getAbsolutePath();
+        return f;
+    }
+    private File createImageFile() throws IOException {
+
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+        File albumF = getAlbumDir();
+        File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+        return imageF;
+    }
+    private File getAlbumDir() {
+
+        File storageDir = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            storageDir = mAlbumStorageDirFactory.getAlbumStorageDir("AllyTours");
+            if (storageDir != null) {
+                if (! storageDir.mkdirs()) {
+                    if (! storageDir.exists()){
+                        Log.d("CameraSample", "failed to create directory");
+                        return null;
+                    }
+                }
+            }
+        } else {
+            Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+        }
+        return storageDir;
+    }
+    private void setPic() {
+        if (photoPath == null) {
+            return;
+        }
+
+		/* There isn't enough memory to open up more than a couple camera photos */
+		/* So pre-scale the target bitmap into which the file is decoded */
+
+		/* Get the size of the ImageView */
+        int targetW = ivMedia.getWidth();
+        int targetH = ivMedia.getWidth();
+
+		/* Get the size of the image */
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(photoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+		/* Figure out which way needs to be reduced less */
+        int scaleFactor = 1;
+        if ((targetW > 0) && (targetH > 0)) {
+            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        }
+
+		/* Set bitmap options to scale the image decode target */
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
+
+        ivMedia.setImageBitmap(bitmap);
+
+        imageWidth = bitmap.getWidth();
+        imageHeight = bitmap.getHeight();
+
+        photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+    }
+    int imageWidth = 0 , imageHeight = 0;
 }

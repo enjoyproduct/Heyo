@@ -1,16 +1,26 @@
 package com.heyoe.controller;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.FloatMath;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -22,6 +32,8 @@ import com.google.android.youtube.player.YouTubePlayerView;
 import com.heyoe.R;
 import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.VideoPlay;
+import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
+import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 
 public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -29,6 +41,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
 
     private YouTubePlayerView youTubeView;
     private VideoView videoView;
+    private ImageView imageView;
     String url;
     String type;
 
@@ -52,12 +65,100 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         type = getIntent().getStringExtra("type");
         if (type.equals("youtube")) {
             initYoutube();
-        } else {
+        } else if (type.equals("video")){
             initVideoview();
+        } else if (type.equals("photo")) {
+            initImageView();
         }
 
 
     }
+    private ScaleGestureDetector scaleGestureDetector;
+    private Matrix matrix = new Matrix();
+    Matrix savedMatrix = new Matrix();
+    PointF startPoint = new PointF();
+    PointF midPoint = new PointF();
+    float oldDist = 1f;
+    static final int NONE = 0;
+    static final int DRAG = 1;
+    static final int ZOOM = 2;
+
+    int mode = NONE;
+    private void initImageView() {
+        imageView = (ImageView)findViewById(R.id.imageview);
+        imageView.setVisibility(View.VISIBLE);
+        if (!url.equals("")) {
+            UrlRectangleImageViewHelper.setUrlDrawable(imageView, url, R.drawable.default_tour, new UrlImageViewCallback() {
+                @Override
+                public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                    if (!loadedFromCache) {
+                        ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                        scale.setDuration(500);
+                        scale.setInterpolator(new OvershootInterpolator());
+                        imageView.startAnimation(scale);
+                    }
+                }
+            });
+        }
+
+        imageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                ImageView view = (ImageView) v;
+                System.out.println("matrix=" + savedMatrix.toString());
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        savedMatrix.set(matrix);
+                        startPoint.set(event.getX(), event.getY());
+                        mode = DRAG;
+                        break;
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        oldDist = spacing(event);
+                        if (oldDist > 10f) {
+                            savedMatrix.set(matrix);
+                            midPoint(midPoint, event);
+                            mode = ZOOM;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        break;
+                    case MotionEvent.ACTION_POINTER_UP:
+                        mode = NONE;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (mode == DRAG) {
+                            matrix.set(savedMatrix);
+                            matrix.postTranslate(event.getX() - startPoint.x, event.getY() - startPoint.y);
+                        } else if (mode == ZOOM) {
+                            float newDist = spacing(event);
+                            if (newDist > 10f) {
+                                matrix.set(savedMatrix);
+                                float scale = newDist / oldDist;
+                                matrix.postScale(scale, scale, midPoint.x, midPoint.y);
+                            }
+                        }
+                        break;
+                }
+                view.setImageMatrix(matrix);
+                return true;
+            }
+
+            @SuppressLint("FloatMath")
+            private float spacing(MotionEvent event) {
+                float x = event.getX(0) - event.getX(1);
+                float y = event.getY(0) - event.getY(1);
+                return FloatMath.sqrt(x * x + y * y);
+            }
+
+            private void midPoint(PointF point, MotionEvent event) {
+                float x = event.getX(0) + event.getX(1);
+                float y = event.getY(0) + event.getY(1);
+                point.set(x / 2, y / 2);
+            }
+        });
+    }
+
+
     private void initVideoview() {
         videoView = (VideoView)findViewById(R.id.videoview);
         videoView.setVisibility(View.VISIBLE);

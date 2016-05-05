@@ -83,7 +83,7 @@ public class Utils {
                         dialog.cancel();
                     }
                 });
-//        builder1.setNegativeButton("No",
+//        builder.setNegativeButton("No",
 //                new DialogInterface.OnClickListener() {
 //                    public void onClick(DialogInterface dialog, int id) {
 //                        dialog.cancel();

@@ -272,6 +272,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dimen_16dp"
                     android:layout_alignParentRight="true"
+                    android:track="@drawable/switch_track_selector"
+                    android:thumb="@drawable/switch_thumb_selector"
                     />
             </RelativeLayout>
             <TextView
@@ -308,7 +310,7 @@
             <!--about you-->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="wrap_content"
                 android:background="@color/grey_light"
                 >
 
@@ -320,10 +322,9 @@
                     android:text=""
                     android:textSize="@dimen/txt_18sp"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/dimen_16dp"
-                    android:layout_marginRight="@dimen/dimen_16dp"
+                    android:layout_margin="@dimen/dimen_16dp"
                     android:background="@color/transparent"
-                    android:maxLength="200"/>
+                    android:maxLength="2000"/>
             </RelativeLayout>
             <TextView
                 android:layout_width="fill_parent"

@@ -21,6 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
+import com.heyoe.controller.ProfileActivity;
 import com.heyoe.controller.adapters.FavoriteAdapter;
 import com.heyoe.controller.adapters.MediaAdapter;
 import com.heyoe.model.API;
@@ -29,6 +30,7 @@ import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.Utils;
+import com.heyoe.widget.grid.StaggeredGridView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ public class MediaFragment extends Fragment {
 
     private Activity mActivity;
     private ArrayList<PostModel> mArrPost;
+//    private StaggeredGridView gridView;
     private GridView gridView;
     private MediaAdapter mMediaAdpater;
     private Button btnVideo, btnPhoto;
@@ -76,7 +79,7 @@ public class MediaFragment extends Fragment {
         mArrPost = new ArrayList<>();
     }
     private void initUI(View view) {
-        gridView = (GridView)view.findViewById(R.id.gv_media);
+        gridView = (GridView)view.findViewById(R.id.grid_view);
         btnPhoto = (Button)view.findViewById(R.id.btn_media_photos);
         btnVideo = (Button)view.findViewById(R.id.btn_media_videos);
 
@@ -125,7 +128,7 @@ public class MediaFragment extends Fragment {
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
-        params.put("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("user_id", ProfileActivity.userId);
         params.put("media_type", media_type);
         params.put("offset", String.valueOf(offset));
 
@@ -146,7 +149,9 @@ public class MediaFragment extends Fragment {
                                 for (int i = 0; i < postCount; i ++)  {
 
                                     JSONObject postObject = jsonArray.getJSONObject(i);
+
                                     PostModel postModel = new PostModel();
+
                                     postModel.setPost_id(postObject.getString("id"));
                                     postModel.setPosted_date(postObject.getString("date"));
                                     postModel.setPoster_id(postObject.getString("poster_id"));

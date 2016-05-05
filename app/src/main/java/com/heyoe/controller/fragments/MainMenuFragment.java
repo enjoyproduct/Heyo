@@ -82,6 +82,7 @@ public class MainMenuFragment extends Fragment {
                 Intent intent = new Intent(mActivity, ProfileActivity.class);
                 intent.putExtra("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
                 mActivity.startActivity(intent);
+                HomeActivity.mDrawerLayout.closeDrawers();
             }
         });
         if (!Utils.getFromPreference(mActivity, Constant.AVATAR).equals("")) {

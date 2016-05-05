@@ -88,6 +88,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         initVariables();
         initUI();
+        setOffline("on");
         getAllUsers();
     }
     private void initVariables() {
@@ -160,10 +161,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.home_drawerlayout);
-        mainMenuFragment = new MainMenuFragment();
-        fragmentManager.beginTransaction()
-                .replace(R.id.main_menu_container, mainMenuFragment)
-                .commit();
+
 
         ivMain = (ImageView)findViewById(R.id.iv_home_main);
         ivFriends = (ImageView)findViewById(R.id.iv_home_friend);
@@ -208,6 +206,15 @@ public class HomeActivity extends AppCompatActivity implements
 
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mainMenuFragment = new MainMenuFragment();
+        fragmentManager.beginTransaction()
+                .replace(R.id.main_menu_container, mainMenuFragment)
+                .commit();
     }
 
     private static void setTitle(String title) {
@@ -321,7 +328,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
     private static void sign_out() {
 
-        setOffline();
+        setOffline("off");
 
         Utils.saveToPreference(mActivity, Constant.DEVICE_TOKEN, "");
         Utils.saveToPreference(mActivity, Constant.USER_ID, "");
@@ -549,17 +556,18 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         if (Utils.getFromPreference(mActivity, Constant.USER_ID).length() > 0) {
-            setOffline();
+            setOffline("off");
         }
         super.onDestroy();
 
     }
-    public static void setOffline() {
+    public static void setOffline(String status) {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
         params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("status", status);
 
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.SET_OFFLINE, params,
                 new Response.Listener<JSONObject>() {

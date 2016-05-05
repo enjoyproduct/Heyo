@@ -98,6 +98,8 @@ public class MoreFriendFragment extends Fragment {
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
         params.put("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("offset", String.valueOf(offset));
+
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_NON_FRIENDS, params,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -107,6 +109,10 @@ public class MoreFriendFragment extends Fragment {
                             if (status.equals("200")) {
                                 JSONArray jsonArray = response.getJSONArray("data");
                                 int userCount = jsonArray.length();
+                                if (userCount == 0) {
+                                    isLast = true;
+                                }
+                                offset ++;
                                 for (int i = 0; i < userCount; i ++)  {
 
                                     JSONObject userObject = jsonArray.getJSONObject(i);

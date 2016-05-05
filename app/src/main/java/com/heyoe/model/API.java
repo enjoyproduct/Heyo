@@ -57,6 +57,6 @@ public class API {
     public static String GET_MY_POSTS = BASE_URL + "get_my_posts";
     public static String GET_LIKED_USERS = BASE_URL + "get_liked_users";
     public static String GET_DISLIKED_USERS = BASE_URL + "get_disliked_users";
-    public static String GET_FRIEND_STATUS = BASE_URL + "get_friend_status";
-
+    public static String GET_FRIEND_STATUS = BASE_URL + "get_friend_state";
+    public static String SET_HEADER_MEDIA = BASE_URL + "set_header_media";
 }

@@ -575,7 +575,11 @@ public class DetailPostFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(mActivity, MediaPlayActivity.class);
                         intent.putExtra("url", finalVideoUrl);
-                        intent.putExtra("type", postModel.getMedia_type());
+                        if (postModel.getMedia_type().equals("post_video")) {
+                            intent.putExtra("type", "video");
+                        } else {
+                            intent.putExtra("type", "youtube");
+                        }
                         startActivity(intent);
                     }
                 });

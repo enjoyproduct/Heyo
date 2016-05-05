@@ -189,7 +189,7 @@ public class MyFriendFragment extends Fragment {
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
         params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
-
+        params.put("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
 
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_FRIEND_LIST, params,
                 new Response.Listener<JSONObject>() {

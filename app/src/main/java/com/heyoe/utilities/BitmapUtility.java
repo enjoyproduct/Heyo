@@ -52,7 +52,7 @@ public class BitmapUtility {
         int height = bitmap.getHeight();
 
         float scaleWidth = ((float) reqSize) / width;
-        float scaleHeight = ((float) reqSize) / height;
+        float scaleHeight = ((float) reqSize) / width;
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
@@ -86,7 +86,6 @@ public class BitmapUtility {
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, options);
         //////
-//        options.inSampleSize = 7;
         options.inSampleSize = bounds;
         options.inJustDecodeBounds = false;
         Bitmap bitmap = BitmapFactory.decodeFile(path, options);
@@ -266,7 +265,7 @@ public class BitmapUtility {
 
         BitmapFactory.decodeFile(photopath, options);
         //////
-        options.inSampleSize = 2;
+        options.inSampleSize = 1;
         options.inJustDecodeBounds = false;
 
         //get bitmap with local path
@@ -274,7 +273,13 @@ public class BitmapUtility {
         ////create a new rotated image
         Bitmap adjustedBitmap = Bitmap.createBitmap(yourSelectedImage, 0, 0, yourSelectedImage.getWidth(), yourSelectedImage.getHeight(), matrix, true);
 
-        return adjustedBitmap;
+        if (adjustedBitmap.getWidth() > 1200 || adjustedBitmap.getHeight() > 1200) {
+            Bitmap downsized = downSizeBitmap(adjustedBitmap, 1200);  ///downsize to 100dp
+            return downsized;
+        } else {
+            return adjustedBitmap;
+        }
+
     }
     public static Bitmap adjustBitmapForAvatar(String photopath) {////////////good
         Uri uri = Uri.parse(photopath);
@@ -298,7 +303,7 @@ public class BitmapUtility {
 
         BitmapFactory.decodeFile(photopath, options);
         //////
-        options.inSampleSize = 2;
+        options.inSampleSize = 1;
         options.inJustDecodeBounds = false;
 
         //get bitmap with local path

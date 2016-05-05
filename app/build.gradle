@@ -26,8 +26,8 @@ android {
         applicationId "com.heyoe"
         minSdkVersion 17
         targetSdkVersion 22
-        versionCode 15
-        versionName "2.4"
+        versionCode 17
+        versionName "2.6"
         multiDexEnabled true
     }
     buildTypes {
@@ -49,7 +49,7 @@ android {
 }
 
 dependencies {
-    provided  fileTree(include: ['*.jar'], dir: 'libs')
+    provided fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile project(':volleylibrary')
     compile project(':swipe_layout_library')
@@ -61,28 +61,28 @@ dependencies {
     }
     //    compile 'com.android.support:support-v4:22.2.1'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
+
+    compile project(':dribSearch')
+    compile('com.balysv.materialmenu:material-menu-toolbar:1.5.1') {
+        exclude group: 'com.nineoldandroids'
+    }
+
+    compile('com.quickblox:quickblox-android-sdk-chat:2.5.1@aar') {
+        transitive = true
+    }
+//    compile 'com.quickblox:quickblox-android-sdk-messages:2.5.1@aar'
+    //    compile "com.quickblox:quickblox-android-sdk-customobjects:2.5.1@aar"
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:design:22.2.1'
     compile 'com.android.support:percent:22.2.0'
     compile 'com.android.support:cardview-v7:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.google.android.gms:play-services:8.3.0'
     compile 'com.commonsware.cwac:richedit:0.5.+'
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:multidex:1.0.0'
-
-    compile project(':dribSearch')
-    compile ('com.balysv.materialmenu:material-menu-toolbar:1.5.1') {
-        exclude group: 'com.nineoldandroids'
-    }
-
     compile 'com.quickblox:quickblox-android-sdk-core:2.5.1@aar'
-    compile('com.quickblox:quickblox-android-sdk-chat:2.5.1@aar') {
-        transitive = true
-    }
-//    compile 'com.quickblox:quickblox-android-sdk-messages:2.5.1@aar'
     compile 'com.quickblox:quickblox-android-sdk-content:2.5.1@aar'
-//    compile "com.quickblox:quickblox-android-sdk-customobjects:2.5.1@aar"
 }
 

@@ -53,13 +53,14 @@
             android:textColor="@color/black"
             android:textSize="@dimen/txt_14sp"
             android:maxLines="3"
+            android:layout_marginTop="@dimen/dimen_8dp"
             />
     </LinearLayout>
     <!--media-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_8dp">
+        android:layout_marginTop="@dimen/dimen_16dp">
         <ImageView
             android:id="@+id/iv_ipff_media"
             android:layout_width="fill_parent"
@@ -88,7 +89,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_margin="@dimen/dimen_12dp"
+        android:layout_marginLeft="@dimen/dimen_12dp"
+        android:layout_marginRight="@dimen/dimen_12dp"
+        android:layout_marginBottom="@dimen/dimen_12dp"
+        android:layout_marginTop="@dimen/dimen_24dp"
         android:background="@color/dark"/>
     <!--social icons-->
     <LinearLayout

@@ -426,16 +426,17 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         customMultipartRequest.addStringPart("width", String.valueOf(imageWidth));
         customMultipartRequest.addStringPart("height", String.valueOf(imageHeight));
 
+
         if (mediaType.equals("post_video")) {
             customMultipartRequest.addVideoPart("post_video", videoPath);
             customMultipartRequest.addImagePart("thumb", thumbPath);
 
         } else if (mediaType.equals("post_photo")) {
             customMultipartRequest.addImagePart("post_photo", photoPath);
+            customMultipartRequest.addImagePart("thumb", thumbPath);
 
         } else if (mediaType.equals("youtube")) {
             customMultipartRequest.addStringPart("media", youtubePath);
-
             customMultipartRequest.addStringPart("width", "0");
             customMultipartRequest.addStringPart("height", "0");
         }
@@ -496,15 +497,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         AlertDialog alert = builder.create();
         alert.show();
     }
-    //    for test
-    private ArrayList<String> makeSampleData() {
-        ArrayList<String> arrayList  = new ArrayList<>();
-        for (int i = 0; i < 30; i ++) {
-            String str = "@" +  "Test User - " + String.valueOf(i);
-            arrayList.add(str);
-        }
-        return arrayList;
-    }
+
 //    get google place
     public void onCheckinClick() {
         // Construct an intent for the place picker
@@ -573,7 +566,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
                     photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
 
-
+                    //crop thumbnail
+                    Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(bitmap, bitmap.getWidth(), bitmap.getWidth());
+                    // save croped thumbnail
+                    thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
 
                 }
                 break;
@@ -583,7 +579,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     etYotubeUrl.setVisibility(View.GONE);
                     imageView.setVisibility(View.VISIBLE);
 
-                    handleBigCameraPhoto();
+                    setPic();
                 }
                 break;
             }
@@ -715,7 +711,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("gallery",
+        builder.setNegativeButton("Gallery",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         etYotubeUrl.setVisibility(View.GONE);
@@ -857,7 +853,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("gallery",
+        builder.setNegativeButton("Gallery",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         takePictureFromGallery();
@@ -943,16 +939,12 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         return storageDir;
     }
 
-    ///process result of captured photo
-    private void handleBigCameraPhoto() {
 
-        if (photoPath != null) {
-            setPic();
-//            galleryAddPic();
-        }
-    }
 
     private void setPic() {
+        if (photoPath == null) {
+            return;
+        }
 
 		/* There isn't enough memory to open up more than a couple camera photos */
 		/* So pre-scale the target bitmap into which the file is decoded */
@@ -986,12 +978,12 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         imageWidth = bitmap.getWidth();
         imageHeight = bitmap.getHeight();
 
-//        FileUtility.deleteFile(photoPath);
         photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
 
-
-
-
+        //crop thumbnail
+        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(bitmap, bitmap.getWidth(), bitmap.getWidth());
+        // save croped thumbnail
+        thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
     }
     int imageWidth = 0 , imageHeight = 0;
 

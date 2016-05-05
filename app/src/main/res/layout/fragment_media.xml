@@ -2,6 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     tools:context="com.heyoe.controller.fragments.MediaFragment">
 
 
@@ -36,13 +38,15 @@
 
         </LinearLayout>
         <GridView
-            android:id="@+id/gv_media"
+            android:id="@+id/grid_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:numColumns="3">
-
-        </GridView>
-
+            android:numColumns="3" />
+        <!--<com.heyoe.widget.grid.StaggeredGridView-->
+            <!--android:id="@+id/grid_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--app:column_count="2" />-->
     </LinearLayout>
 
 </LinearLayout>
