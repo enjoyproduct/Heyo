@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -183,10 +184,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 //        setupNavigationDrawer(toolbar);
 
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, new MainFragment())
-                .commit();
-
+        navigateTo(0);
     }
     private void initAutoCompleteTextView() {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity ,android.R.layout.simple_list_item_1, makeSampleData());
@@ -224,8 +222,12 @@ public class HomeActivity extends AppCompatActivity implements
     public static void navigateTo(int num) {
         switch (num) {
             case 0:
+                Fragment fragment = new MainFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isFavorite", false);
+                fragment.setArguments(bundle);
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new MainFragment())
+                        .replace(R.id.fragment_container, fragment)
                         .commit();
                 dribSearchView.setVisibility(View.VISIBLE);
                 setTitle("");
@@ -264,8 +266,12 @@ public class HomeActivity extends AppCompatActivity implements
     public static void menuNavigateTo(int num) {
         switch (num) {
             case 0:
+                Fragment fragment = new MainFragment();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("isFavorite", true);
+                fragment.setArguments(bundle);
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new FavoriteFragment())
+                        .replace(R.id.fragment_container, fragment)
                         .commit();
                 dribSearchView.setVisibility(View.INVISIBLE);
                 setTitle(mActivity.getResources().getString(R.string.favorite));

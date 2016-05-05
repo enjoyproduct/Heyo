@@ -56,6 +56,8 @@ public class MainFragment extends Fragment {
     int offset;
     boolean isLast;
 
+    boolean isFavorite;
+    String api;
     public MainFragment() {
         // Required empty public constructor
     }
@@ -79,6 +81,12 @@ public class MainFragment extends Fragment {
         isLast = false;
         offset = 0;
         mArrPost = new ArrayList<>();
+        isFavorite = getArguments().getBoolean("isFavorite");
+        if (isFavorite) {
+            api = API.GET_ALL_FAVORITE_POSTS;
+        } else {
+            api = API.GET_ALL_POSTS;
+        }
 //        mArrBufferPost = new ArrayList<>();
     }
 
@@ -101,16 +109,6 @@ public class MainFragment extends Fragment {
         lvMain.setAdapter(mPostAdapter);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-    }
 
     private void getAllPosts() {
         Utils.showProgress(mActivity);
@@ -121,7 +119,7 @@ public class MainFragment extends Fragment {
         params.put("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
         params.put("offset", String.valueOf(offset));
 
-        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_ALL_POSTS, params,
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, api, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

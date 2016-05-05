@@ -56,8 +56,13 @@ public class BitmapUtility {
 
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap resizedBitmap = null;
+        try {
+            resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, false);
         return resizedBitmap;
 
 		/*if(bitmap.getWidth() < reqSize) {
@@ -271,7 +276,13 @@ public class BitmapUtility {
         //get bitmap with local path
         Bitmap yourSelectedImage = BitmapFactory.decodeFile(photopath, options);
         ////create a new rotated image
-        Bitmap adjustedBitmap = Bitmap.createBitmap(yourSelectedImage, 0, 0, yourSelectedImage.getWidth(), yourSelectedImage.getHeight(), matrix, true);
+        Bitmap adjustedBitmap = null;
+        try {
+            ////create a new rotated image
+            adjustedBitmap = Bitmap.createBitmap(yourSelectedImage, 0, 0, yourSelectedImage.getWidth(), yourSelectedImage.getHeight(), matrix, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (adjustedBitmap.getWidth() > 1200 || adjustedBitmap.getHeight() > 1200) {
             Bitmap downsized = downSizeBitmap(adjustedBitmap, 1200);  ///downsize to 100dp
@@ -308,9 +319,15 @@ public class BitmapUtility {
 
         //get bitmap with local path
         Bitmap yourSelectedImage = BitmapFactory.decodeFile(photopath, options);
-        ////create a new rotated image
-        Bitmap adjustedBitmap = Bitmap.createBitmap(yourSelectedImage, 0, 0, yourSelectedImage.getWidth(), yourSelectedImage.getHeight(), matrix, true);
+        Bitmap adjustedBitmap = null;
+        try {
+            ////create a new rotated image
+            adjustedBitmap = Bitmap.createBitmap(yourSelectedImage, 0, 0, yourSelectedImage.getWidth(), yourSelectedImage.getHeight(), matrix, true);
 
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         ///down size bitmap
         if (adjustedBitmap.getWidth() > 400 || adjustedBitmap.getHeight() > 400) {
             Bitmap downsized = downSizeBitmap(adjustedBitmap, 400);  ///downsize to 100dp
@@ -431,48 +448,41 @@ public class BitmapUtility {
             return null;
         }
     }
-    private Bitmap cropAndGivePointedShape(Bitmap originalBitmap)
-    {
-        Bitmap bmOverlay = Bitmap.createBitmap(originalBitmap.getWidth(),
-                originalBitmap.getHeight(),
-                Bitmap.Config.ARGB_8888);
+    public static Bitmap cropBitmapCenter(Bitmap bitmap) {/////very good
 
-        Paint p = new Paint();
-        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-        Canvas canvas = new Canvas(bmOverlay);
-        canvas.drawBitmap(originalBitmap, 0, 0, null);
-        canvas.drawRect(0, 0, 20, 20, p);
+        Bitmap resultBitmap = null;
+        if (bitmap.getWidth() >= bitmap.getHeight()){
 
-        Point a = new Point(0, 20);
-        Point b = new Point(20, 20);
-        Point c = new Point(0, 40);
+            try {
+                resultBitmap = Bitmap.createBitmap(
+                        bitmap,
+                        bitmap.getWidth()/2 - bitmap.getHeight()/2,
+                        0,
+                        bitmap.getHeight(),
+                        bitmap.getHeight()
+                );
 
-        Path path = new Path();
-        path.setFillType(Path.FillType.EVEN_ODD);
-        path.lineTo(b.x, b.y);
-        path.lineTo(c.x, c.y);
-        path.lineTo(a.x, a.y);
-        path.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        canvas.drawPath(path, p);
+        }else {
+            try {
+                resultBitmap = Bitmap.createBitmap(
+                        bitmap,
+                        0,
+                        bitmap.getHeight() / 2 - bitmap.getWidth() / 2,
+                        bitmap.getWidth(),
+                        bitmap.getWidth()
+                );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-        a = new Point(0, 40);
-        b = new Point(0, 60);
-        c = new Point(20, 60);
-
-        path = new Path();
-        path.setFillType(Path.FillType.EVEN_ODD);
-        path.lineTo(b.x, b.y);
-        path.lineTo(c.x, c.y);
-        path.lineTo(a.x, a.y);
-        path.close();
-
-        canvas.drawPath(path, p);
-
-        canvas.drawRect(0, 60, 20, originalBitmap.getHeight(), p);
-
-        return bmOverlay;
+        }
+        return resultBitmap;
     }
+
     public static String saveBitmap(Bitmap bitmap, String destinationPath, String fileName) {///good
         if (bitmap == null || destinationPath.length() == 0) {
             return "";

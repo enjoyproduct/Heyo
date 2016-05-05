@@ -182,8 +182,6 @@ public class ProfileFragment extends Fragment {
                             if (status.equals("200")) {
                                 if (offset == 0) {
 
-
-
                                     JSONObject jsonObject = response.getJSONObject("data");
 
                                     String user_id = jsonObject.getString("user_id");
@@ -316,16 +314,18 @@ public class ProfileFragment extends Fragment {
                                 String headerMediaUrl = response.getString("data");
                                 if (type == 2) {
                                     Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, headerMediaUrl);
+                                    userModel.setHeader_video(headerMediaUrl);
                                     FileUtility.deleteFile(videoPath);
 
                                 } else if (type == 1) {
                                     Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, headerMediaUrl);
+                                    userModel.setHeader_photo(headerMediaUrl);
                                     FileUtility.deleteFile(photoPath);
                                 }
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             }else  if (status.equals("401")) {
-                                Utils.showOKDialog(mActivity, getResources().getString(R.string.user_not_exist));
+                                Utils.showOKDialog(mActivity, response.getString("reason"));
                             }
 
                         }catch (Exception e) {
@@ -364,11 +364,11 @@ public class ProfileFragment extends Fragment {
 
 
         if (type == 2) {
-            customMultipartRequest.addVideoPart("media_type", "header_video");
+            customMultipartRequest.addStringPart("media_type", "header_video");
             customMultipartRequest.addVideoPart("header_video", videoPath);
 
         } else if (type == 1) {
-            customMultipartRequest.addVideoPart("media_type", "header_photo");
+            customMultipartRequest.addStringPart("media_type", "header_photo");
             customMultipartRequest.addStringPart("width", String.valueOf(imageWidth));
             customMultipartRequest.addStringPart("height", String.valueOf(imageHeight));
             customMultipartRequest.addImagePart("header_photo", photoPath);
@@ -829,7 +829,7 @@ public class ProfileFragment extends Fragment {
                     photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
 
                     if (photoPath.length() > 0) {
-                        askToUploadHeaderMedia(2);
+                        askToUploadHeaderMedia(1);
                     }
 
 
@@ -839,7 +839,7 @@ public class ProfileFragment extends Fragment {
                 if (resultCode == Activity.RESULT_OK) {
                     setPic();
                     if (photoPath.length() > 0) {
-                        askToUploadHeaderMedia(2);
+                        askToUploadHeaderMedia(1);
                     }
                 }
                 break;
@@ -871,16 +871,20 @@ public class ProfileFragment extends Fragment {
     }
 
     public String getVideoPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = mActivity.managedQuery(uri, projection, null, null, null);
-        if (cursor != null) {
-            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } else
-            return null;
+
+        Cursor cursor = mActivity.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
+        cursor.close();
+
+        cursor = mActivity.getContentResolver().query(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Video.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+        cursor.close();
+
+        return path;
     }
     public void askToUploadHeaderMedia(final int type) {
         String msg = "";

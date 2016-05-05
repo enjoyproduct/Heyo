@@ -198,7 +198,8 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
             case 3:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new FriendListFragment())
+                        .add(R.id.fragment_container, new FriendListFragment())
+                        .addToBackStack("friend")
                         .commit();
                 break;
 

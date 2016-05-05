@@ -567,7 +567,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
 
                     //crop thumbnail
-                    Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(bitmap, bitmap.getWidth(), bitmap.getWidth());
+                    Bitmap cropBitmap = BitmapUtility.cropBitmapCenter(bitmap);
+//                    Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(bitmap, bitmap.getWidth(), bitmap.getWidth());
                     // save croped thumbnail
                     thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
 
@@ -589,41 +590,17 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     etYotubeUrl.setVisibility(View.GONE);
                     imageView.setVisibility(View.VISIBLE);
 
-                    ///////  1  ////////
                     Uri selectedVideoUri = data.getData();
-                    String[] filePathColumn = {MediaStore.Video.VideoColumns.DATA};
-//
-//                    Cursor cursor = mActivity.getContentResolver().query(
-//                            selectedVideoUri, filePathColumn, null, null, null);
-//                    cursor.moveToFirst();
-//
-//                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                    videoPath = cursor.getString(columnIndex);
-//                    cursor.close();
 
-                    // MEDIA GALLERY
                     videoPath = getVideoPath(selectedVideoUri);
-//                    videoView.setVideoURI(selectedVideoUri);
-//                    videoView.setVisibility(View.VISIBLE);
 
-                    //////////////////   2   //////////////
-//                    Cursor cursorq = mActivity.getContentResolver().query(
-//                            selectedVideoUri, filePathColumn, null, null, null);
-//                    if (cursorq == null) {
-//                        initMediaPath();
-//                        videoPath = selectedVideoUri.getPath();
-//                    } else {
-//                        cursorq.moveToFirst();
-//                        int idx = cursorq.getColumnIndex(MediaStore.Video.VideoColumns.DATA);
-//                        initMediaPath();
-//                        videoPath  = cursorq.getString(idx);
-//                    }
                     if (videoPath != null) {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.MINI_KIND);
 
                         ibPlay.setVisibility(View.VISIBLE);
                         //crop thumbnail
-                        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(thumbnail, thumbnail.getWidth(), thumbnail.getWidth());
+                        Bitmap cropBitmap = BitmapUtility.cropBitmapCenter(thumbnail);
+//                        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(thumbnail, thumbnail.getWidth(), thumbnail.getWidth());
                         // save croped thumbnail
                         thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
 
@@ -635,7 +612,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         imageWidth = bitmap.getWidth();
                         imageHeight = bitmap.getHeight();
 
-                        FileUtility.deleteFile(thumbPath);
                         thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
 
 
@@ -654,7 +630,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
                         ibPlay.setVisibility(View.VISIBLE);
                         //crop thumbnail
-                        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(thumbnail, thumbnail.getWidth(), thumbnail.getWidth());
+                        Bitmap cropBitmap = BitmapUtility.cropBitmapCenter(thumbnail);
+//                        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(thumbnail, thumbnail.getWidth(), thumbnail.getWidth());
                         // save croped thumbnail
                         thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
 
@@ -666,7 +643,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         imageWidth = bitmap.getWidth();
                         imageHeight = bitmap.getHeight();
 
-                        FileUtility.deleteFile(thumbPath);
+//                        FileUtility.deleteFile(thumbPath);
                         thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
 
 
@@ -683,16 +660,20 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     }
 
     public String getVideoPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = mActivity.managedQuery(uri, projection, null, null, null);
-        if (cursor != null) {
-            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } else
-            return null;
+
+        Cursor cursor = mActivity.getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
+        cursor.close();
+
+        cursor = mActivity.getContentResolver().query(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Video.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+        cursor.close();
+
+        return path;
     }
 
 
@@ -981,7 +962,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
 
         //crop thumbnail
-        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(bitmap, bitmap.getWidth(), bitmap.getWidth());
+        Bitmap cropBitmap = BitmapUtility.cropBitmapCenter(bitmap);
+//        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(bitmap, bitmap.getWidth(), bitmap.getWidth());
         // save croped thumbnail
         thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
     }

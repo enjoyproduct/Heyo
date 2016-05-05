@@ -27,7 +27,7 @@ public class FavoriteFragment extends Fragment {
     private ArrayList<PostModel> mArrBufferPost;
     private ListView lvMain;
     private PullToRefreshListView mPullRefreshHomeListView;
-    private FavoriteAdapter mFavoriteAdpater;
+    private static PostAdapter mPostAdapter;
 
     int offset;
     boolean isLast;
@@ -70,8 +70,8 @@ public class FavoriteFragment extends Fragment {
         lvMain = mPullRefreshHomeListView.getRefreshableView();
 
 
-        mFavoriteAdpater = new FavoriteAdapter(getActivity(), makeSamplePosts());
-        lvMain.setAdapter(mFavoriteAdpater);
+//        mPostAdapter = new PostAdapter(getActivity(), makeSamplePosts());
+//        lvMain.setAdapter(mPostAdapter);
 
     }
 
@@ -82,16 +82,6 @@ public class FavoriteFragment extends Fragment {
     }
 
 
-    //for test
-    private ArrayList<PostModel> makeSamplePosts() {
-        ArrayList<PostModel> arrayList = new ArrayList<>();
-        for (int i = 0; i < 10; i ++) {
-            PostModel postModel = new PostModel();
-            arrayList.add(postModel);
 
-        }
-        return arrayList;
-
-    }
 
 }

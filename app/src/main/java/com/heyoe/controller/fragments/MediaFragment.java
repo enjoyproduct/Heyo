@@ -19,6 +19,7 @@ import com.android.volley.error.VolleyError;
 import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshGridView;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
 import com.heyoe.controller.ProfileActivity;
@@ -47,7 +48,9 @@ public class MediaFragment extends Fragment {
     private Activity mActivity;
     private ArrayList<PostModel> mArrPost;
 //    private StaggeredGridView gridView;
+    private PullToRefreshGridView pullToRefreshGridView;
     private GridView gridView;
+
     private MediaAdapter mMediaAdpater;
     private Button btnVideo, btnPhoto;
 
@@ -79,7 +82,21 @@ public class MediaFragment extends Fragment {
         mArrPost = new ArrayList<>();
     }
     private void initUI(View view) {
-        gridView = (GridView)view.findViewById(R.id.grid_view);
+        pullToRefreshGridView = (PullToRefreshGridView)view.findViewById(R.id.grid_view);
+        pullToRefreshGridView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
+
+            @Override
+            public void onLastItemVisible() {
+                if (!isLast) {
+                    getMyPosts();
+                }
+                pullToRefreshGridView.onRefreshComplete();
+            }
+        });
+        gridView = pullToRefreshGridView.getRefreshableView();
+        mMediaAdpater = new MediaAdapter(mActivity, mArrPost);
+        gridView.setAdapter(mMediaAdpater);
+
         btnPhoto = (Button)view.findViewById(R.id.btn_media_photos);
         btnVideo = (Button)view.findViewById(R.id.btn_media_videos);
 
@@ -117,8 +134,7 @@ public class MediaFragment extends Fragment {
 
             }
         });
-        mMediaAdpater = new MediaAdapter(mActivity, mArrPost);
-        gridView.setAdapter(mMediaAdpater);
+
     }
 
     private void getMyPosts() {
