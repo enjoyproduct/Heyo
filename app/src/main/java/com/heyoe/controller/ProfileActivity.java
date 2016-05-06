@@ -1,6 +1,7 @@
 package com.heyoe.controller;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
 import com.heyoe.R;
 import com.heyoe.controller.fragments.FriendListFragment;
+import com.heyoe.controller.fragments.MainFragment;
 import com.heyoe.controller.fragments.MediaFragment;
 import com.heyoe.controller.fragments.ProfileFragment;
 import com.heyoe.controller.fragments.ProfileInfoFragment;
@@ -225,5 +227,27 @@ public class ProfileActivity extends AppCompatActivity {
         popFragment();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 101:
+                if (data != null) {
+                    PostModel postModel = (PostModel) data.getSerializableExtra("post");
+                    if (postModel != null) {
+                        if (resultCode == RESULT_OK) {
+                            ProfileFragment.updatePostFeed(postModel);
+                        }
+                        if (resultCode == 40) {
+                            ProfileFragment.deletePost(postModel);
+                        }
 
+                    }
+
+                }
+
+                break;
+
+        }
+    }
 }

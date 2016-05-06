@@ -263,6 +263,7 @@ public class MyFriendFragment extends Fragment {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
                         }catch (Exception e) {
+                            Utils.hideProgress();
                             e.printStackTrace();
                         }
                     }
@@ -787,22 +788,6 @@ public class MyFriendFragment extends Fragment {
                             break;
                         }
                     }
-                    ///get online status
-//                    QBRoster chatRoster = QBChatService.getInstance().getRoster(QBRoster.SubscriptionMode.mutual, subscriptionListener);
-//                    chatRoster.addRosterListener(rosterListener);
-//                    QBPresence presence = chatRoster.getPresence(Integer.parseInt(arrActiveUsers.get(i).getQb_id()));
-//                    if (presence == null) {
-//                        // No user in your roster
-//                        break;
-//                    }
-//
-//                    if (presence.getType() == QBPresence.Type.online) {
-//                        // User is online
-//                        arrActiveUsers.get(i).setOnline(true);
-//                    }else{
-//                        // User is offline
-//                        arrActiveUsers.get(i).setOnline(false);
-//                    }
 
                 }
                 friendAdapter.notifyDataSetChanged();

@@ -5,21 +5,21 @@ package com.heyoe.model;
  */
 public class API {
 
-    public static String BASE_URL = "http://www.heyoe.com/heyoe/index.php/api/";
-    public static String BASE_AVATAR = "http://www.heyoe.com/heyoe/assets/images/avatars/";
-    public static String BASE_HEADER_PHOTO = "http://www.heyoe.com/heyoe/assets/images/header_photo/";
-    public static String BASE_POST_PHOTO = "http://www.heyoe.com/heyoe/assets/images/post_photo/";
-    public static String BASE_THUMBNAIL = "http://www.heyoe.com/heyoe/assets/images/thumb/";
-    public static String BASE_HEADER_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/header_video/";
-    public static String BASE_POST_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/post_video/";
+//    public static String BASE_URL = "http://www.heyoe.com/heyoe/index.php/api/";
+//    public static String BASE_AVATAR = "http://www.heyoe.com/heyoe/assets/images/avatars/";
+//    public static String BASE_HEADER_PHOTO = "http://www.heyoe.com/heyoe/assets/images/header_photo/";
+//    public static String BASE_POST_PHOTO = "http://www.heyoe.com/heyoe/assets/images/post_photo/";
+//    public static String BASE_THUMBNAIL = "http://www.heyoe.com/heyoe/assets/images/thumb/";
+//    public static String BASE_HEADER_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/header_video/";
+//    public static String BASE_POST_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/post_video/";
 
-//    public static String BASE_URL = "http://192.168.2.17/heyoe/index.php/api/";
-//    public static String BASE_AVATAR = "http://192.168.2.17/heyoe/assets/images/avatars/";
-//    public static String BASE_HEADER_PHOTO = "http://192.168.2.17/heyoe/assets/images/header_photo/";
-//    public static String BASE_POST_PHOTO = "http://192.168.2.17/heyoe/assets/images/post_photo/";
-//    public static String BASE_THUMBNAIL = "http://192.168.2.17/heyoe/assets/images/thumb/";
-//    public static String BASE_HEADER_VIDEO = "http://192.168.2.17/heyoe/assets/videos/header_video/";
-//    public static String BASE_POST_VIDEO = "http://192.168.2.17/heyoe/assets/videos/post_video/";
+    public static String BASE_URL = "http://192.168.2.17/heyoe/index.php/api/";
+    public static String BASE_AVATAR = "http://192.168.2.17/heyoe/assets/images/avatars/";
+    public static String BASE_HEADER_PHOTO = "http://192.168.2.17/heyoe/assets/images/header_photo/";
+    public static String BASE_POST_PHOTO = "http://192.168.2.17/heyoe/assets/images/post_photo/";
+    public static String BASE_THUMBNAIL = "http://192.168.2.17/heyoe/assets/images/thumb/";
+    public static String BASE_HEADER_VIDEO = "http://192.168.2.17/heyoe/assets/videos/header_video/";
+    public static String BASE_POST_VIDEO = "http://192.168.2.17/heyoe/assets/videos/post_video/";
 
 
     public static String BASE_YOUTUB_PREFIX = "http://i1.ytimg.com/vi/";
@@ -42,6 +42,7 @@ public class API {
     public static String GET_ALL_FAVORITE_POSTS = BASE_URL + "get_all_favorite_posts";
     public static String GET_PROFILE = BASE_URL + "get_profile";
     public static String DELETE_MY_POST = BASE_URL + "delete_my_post";
+    public static String EDIT_MY_POST = BASE_URL + "edit_my_post";
     public static String GET_FRIEND_LIST = BASE_URL + "get_friend_list";
     public static String BLOCK_FRIEND = BASE_URL + "block_friend";
     public static String DELETE_FRIEND = BASE_URL + "delete_friend";

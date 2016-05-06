@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -79,6 +80,8 @@ public class HomeActivity extends AppCompatActivity implements
     private static Activity mActivity;
 
     private static ArrayList<UserModel> arrAllUsers;
+
+    private static int currentFragmentNum;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +99,7 @@ public class HomeActivity extends AppCompatActivity implements
         fragmentManager = getSupportFragmentManager();
         mActivity = this;
         arrAllUsers = new ArrayList<>();
+
     }
 
     private void initUI() {
@@ -231,6 +235,7 @@ public class HomeActivity extends AppCompatActivity implements
                         .commit();
                 dribSearchView.setVisibility(View.VISIBLE);
                 setTitle("");
+                currentFragmentNum = 0;
                 break;
             case 1:
                 fragmentManager.beginTransaction()
@@ -238,13 +243,19 @@ public class HomeActivity extends AppCompatActivity implements
                         .commit();
                 dribSearchView.setVisibility(View.VISIBLE);
                 setTitle("");
+                currentFragmentNum = 1;
                 break;
             case 2:
+                Bundle bundle1 = new Bundle();
+                bundle1.putBoolean("isEdit", false);
+                NewPostFragment fragobj = new NewPostFragment();
+                fragobj.setArguments(bundle1);
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new NewPostFragment())
+                        .replace(R.id.fragment_container, fragobj)
                         .commit();
                 dribSearchView.setVisibility(View.VISIBLE);
                 setTitle("");
+                currentFragmentNum = 2;
                 break;
             case 3:
                 fragmentManager.beginTransaction()
@@ -252,6 +263,7 @@ public class HomeActivity extends AppCompatActivity implements
                         .commit();
                 dribSearchView.setVisibility(View.VISIBLE);
                 setTitle("");
+                currentFragmentNum = 3;
                 break;
             case 4:
                 fragmentManager.beginTransaction()
@@ -259,6 +271,7 @@ public class HomeActivity extends AppCompatActivity implements
                         .commit();
                 dribSearchView.setVisibility(View.VISIBLE);
                 setTitle("");
+                currentFragmentNum = 4;
                 break;
         }
     }
@@ -275,7 +288,7 @@ public class HomeActivity extends AppCompatActivity implements
                         .commit();
                 dribSearchView.setVisibility(View.INVISIBLE);
                 setTitle(mActivity.getResources().getString(R.string.favorite));
-
+                currentFragmentNum = 5;
                 break;
             case 1:
                 fragmentManager.beginTransaction()
@@ -283,6 +296,7 @@ public class HomeActivity extends AppCompatActivity implements
                         .commit();
                 dribSearchView.setVisibility(View.INVISIBLE);
                 setTitle(mActivity.getResources().getString(R.string.requests));
+                currentFragmentNum = 6;
                 break;
             case 2:
                 fragmentManager.beginTransaction()
@@ -290,6 +304,7 @@ public class HomeActivity extends AppCompatActivity implements
                         .commit();
                 dribSearchView.setVisibility(View.INVISIBLE);
                 setTitle(mActivity.getResources().getString(R.string.more_friends));
+                currentFragmentNum = 7;
                 break;
             case 3:
                 fragmentManager.beginTransaction()
@@ -297,12 +312,14 @@ public class HomeActivity extends AppCompatActivity implements
                         .commit();
                 dribSearchView.setVisibility(View.INVISIBLE);
                 setTitle(mActivity.getResources().getString(R.string.invited_friends));
+                currentFragmentNum = 8;
                 break;
             case 4:
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new FAQFragment())
                         .commit();
                 dribSearchView.setVisibility(View.INVISIBLE);
+                currentFragmentNum = 9;
                 break;
             case 5:
                 showSignOutAlert();
@@ -404,13 +421,15 @@ public class HomeActivity extends AppCompatActivity implements
         }
         switch (requestCode) {
             case 101:
-                if (data != null) {
-//                    String test = data.getStringExtra("test");
+                if (data != null ) {
                     PostModel postModel = (PostModel) data.getSerializableExtra("post");
                     if (postModel != null) {
-                        MainFragment.updatePostFeed(postModel);
+                        ArrayList<PostModel> postModels = new ArrayList<>();
+                        postModels.add(postModel);
+                        if (resultCode == RESULT_OK) {
+                            MainFragment.updatePostFeed(postModels);
+                        }
                     }
-
                 }
                 break;
             case 102:
@@ -418,6 +437,12 @@ public class HomeActivity extends AppCompatActivity implements
                 if (resultCode == 0) {
 
                 }
+                break;
+            case 103:
+                if (currentFragmentNum == 0) {
+                    navigateTo(0);
+                }
+
                 break;
         }
     }

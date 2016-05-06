@@ -101,8 +101,8 @@ public class ProfileFragment extends Fragment {
     private static Activity mActivity;
     private String userId;
     private static UserModel userModel;
-    private ArrayList<PostModel> mArrPost;
-    private ProfileAdapter mProfileAdapter;
+    private static ArrayList<PostModel> mArrPost;
+    private static ProfileAdapter mProfileAdapter;
 //    private ArrayList<PostModel> mArrBufferPost;
     private ListView lvMain;
     private PullToRefreshListView mPullRefreshHomeListView;
@@ -147,7 +147,23 @@ public class ProfileFragment extends Fragment {
         photoPath = "";
         videoPath = "";
     }
+    private void initUI(View view) {
 
+        ///create listview
+        mPullRefreshHomeListView = (PullToRefreshListView)view.findViewById(R.id.lv_profile);
+        mPullRefreshHomeListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
+
+            @Override
+            public void onLastItemVisible() {
+                if (!isLast) {
+                    getProfile();
+                }
+                mPullRefreshHomeListView.onRefreshComplete();
+            }
+        });
+        lvMain = mPullRefreshHomeListView.getRefreshableView();
+        mProfileAdapter = new ProfileAdapter(mArrPost);
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -435,7 +451,7 @@ public class ProfileFragment extends Fragment {
                             if (userModel.getHeader_video().length() > 0) {
                                 Intent intent = new Intent(mActivity, MediaPlayActivity.class);
                                 intent.putExtra("url", API.BASE_HEADER_VIDEO +  userModel.getHeader_video());
-                                intent.putExtra("type", "header_video");
+                                intent.putExtra("type", "video");
                                 startActivity(intent);
                             }
                         }
@@ -781,23 +797,30 @@ public class ProfileFragment extends Fragment {
         }
 
     }
-    private void initUI(View view) {
-
-        ///create listview
-        mPullRefreshHomeListView = (PullToRefreshListView)view.findViewById(R.id.lv_profile);
-        mPullRefreshHomeListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
-
-            @Override
-            public void onLastItemVisible() {
-                if (!isLast) {
-                    getProfile();
-                }
-                mPullRefreshHomeListView.onRefreshComplete();
+    public static void updatePostFeed(PostModel postModel) {
+        for (int i = 0; i < mArrPost.size(); i ++) {
+            if (postModel.getPost_id().equals(mArrPost.get(i).getPost_id())) {
+                mArrPost.remove(i);
+                mArrPost.add(i, postModel);
+                mProfileAdapter.notifyDataSetChanged();
+                break;
             }
-        });
-        lvMain = mPullRefreshHomeListView.getRefreshableView();
-        mProfileAdapter = new ProfileAdapter(mArrPost);
+        }
     }
+    public static void deletePost(PostModel postModel) {
+        for (int i = 0; i < mArrPost.size(); i ++) {
+            if (postModel.getPost_id().equals(mArrPost.get(i).getPost_id())) {
+                mArrPost.remove(i);
+                mProfileAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
+
+
+
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -872,17 +895,23 @@ public class ProfileFragment extends Fragment {
 
     public String getVideoPath(Uri uri) {
 
-        Cursor cursor = mActivity.getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        String document_id = cursor.getString(0);
-        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
-        cursor.close();
+        String path = "";
+        try {
+            Cursor cursor = mActivity.getContentResolver().query(uri, null, null, null, null);
+            cursor.moveToFirst();
+            String document_id = cursor.getString(0);
+            document_id = document_id.substring(document_id.lastIndexOf(":")+1);
+            cursor.close();
 
-        cursor = mActivity.getContentResolver().query(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                null, MediaStore.Video.Media._ID + " = ? ", new String[]{document_id}, null);
-        cursor.moveToFirst();
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
-        cursor.close();
+            cursor = mActivity.getContentResolver().query(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    null, MediaStore.Video.Media._ID + " = ? ", new String[]{document_id}, null);
+            cursor.moveToFirst();
+            path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+            cursor.close();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return path;
     }
@@ -950,7 +979,7 @@ public class ProfileFragment extends Fragment {
                         if (userModel.getHeader_video().length() > 0) {
                             Intent intent = new Intent(mActivity, MediaPlayActivity.class);
                             intent.putExtra("url", API.BASE_HEADER_VIDEO +  userModel.getHeader_video());
-                            intent.putExtra("type", "header_video");
+                            intent.putExtra("type", "video");
                             startActivity(intent);
                         }
 

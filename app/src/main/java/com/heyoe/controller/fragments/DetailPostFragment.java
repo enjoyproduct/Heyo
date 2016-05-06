@@ -75,12 +75,7 @@ public class DetailPostFragment extends Fragment {
     private FloatingActionButton floatingActionButton;
 
     ImageButton ibFavorite;
-//    ImageView ivLikeCount, ivDislikeCount, ivCommentCounts;
-//    TextView tvLikeCount ;
-//    TextView tvDislikeCount;
-//    TextView tvCommentCount;
-//    TextView tvViewedCount;
-//    static TextView tvSharedCount;
+
     ImageButton ibLike, ibDislike, ibComment;
 
 
@@ -128,41 +123,41 @@ public class DetailPostFragment extends Fragment {
 
     public void viewedPost() {
 
-    Map<String, String> params = new HashMap<String, String>();
-    params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
-    params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
-    params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
-    params.put("post_id", postModel.getPost_id());
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("post_id", postModel.getPost_id());
 
-    CustomRequest customRequest = new CustomRequest(Request.Method.POST, API.VIEWED_POST, params,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        String status = response.getString("status");
-                        if (status.equals("200")) {
-                            int viewedCount = Integer.parseInt(postModel.getViewed_count());
-                            viewedCount ++;
-                            postModel.setViewed_count(String.valueOf(viewedCount));
-//                            tvViewedCount.setText(String.valueOf(viewedCount));
-                        } else  if (status.equals("400")) {
-                            Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
-                        } else if (status.equals("402")) {
+        CustomRequest customRequest = new CustomRequest(Request.Method.POST, API.VIEWED_POST, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                int viewedCount = Integer.parseInt(postModel.getViewed_count());
+                                viewedCount ++;
+                                postModel.setViewed_count(String.valueOf(viewedCount));
+    //                            tvViewedCount.setText(String.valueOf(viewedCount));
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    }catch (Exception e) {
-                        e.printStackTrace();
                     }
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
-                }
-            });
-    RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
-    requestQueue.add(customRequest);
-}
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(customRequest);
+    }
     public static void sharePost() {
 
         Map<String, String> params = new HashMap<String, String>();

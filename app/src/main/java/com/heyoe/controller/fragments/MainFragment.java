@@ -429,16 +429,31 @@ public class MainFragment extends Fragment {
         mArrPost.get(shardPostNum).setShared_count(String.valueOf(shardCount));
         mPostAdapter.notifyDataSetChanged();
     }
-    public static void updatePostFeed(PostModel postModel) {
-        for (int i = 0; i < mArrPost.size(); i ++) {
-            if (postModel.getPost_id().equals(mArrPost.get(i).getPost_id())) {
-                mArrPost.remove(i);
-                mArrPost.add(i, postModel);
-                mPostAdapter.notifyDataSetChanged();
-                break;
+    public static void updatePostFeed(ArrayList<PostModel>  postModels) {
+        for (PostModel postModel : postModels) {
+            for (int i = 0; i < mArrPost.size(); i ++) {
+                if (postModel.getPost_id().equals(mArrPost.get(i).getPost_id())) {
+                    mArrPost.remove(i);
+                    mArrPost.add(i, postModel);
+                    mPostAdapter.notifyDataSetChanged();
+                    break;
+                }
             }
         }
+
     }
+//    public static void deletePost(ArrayList<PostModel>  postModels) {
+//        for (PostModel postModel : postModels) {
+//            for (int i = 0; i < mArrPost.size(); i ++) {
+//                if (postModel.getPost_id().equals(mArrPost.get(i).getPost_id())) {
+//                    mArrPost.remove(i);
+//                    mPostAdapter.notifyDataSetChanged();
+//                    break;
+//                }
+//            }
+//        }
+//
+//    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

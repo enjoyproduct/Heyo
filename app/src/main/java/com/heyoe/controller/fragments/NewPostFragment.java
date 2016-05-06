@@ -61,9 +61,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe.R;
+import com.heyoe.controller.DetailPostActivity;
 import com.heyoe.controller.HomeActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
+import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.BitmapUtility;
 import com.heyoe.utilities.FileUtility;
@@ -119,6 +121,9 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
     private ArrayList<UserModel> arrFriends;
 
+    boolean isEdit;
+    PostModel postModel;
+
     public NewPostFragment() {
         // Required empty public constructor
     }
@@ -142,12 +147,17 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             mAlbumStorageDirFactory = new BaseAlbumDirFactory();
         }
         arrFriends = new ArrayList<>();
+        isEdit = getArguments().getBoolean("isEdit");
+        if (isEdit) {
+            postModel = (PostModel)getArguments().getSerializable("post");
+        }
     }
     private void initMediaPath() {
         photoPath = "";
         youtubePath = "";
         videoPath = "";
         thumbPath = "";
+        mediaType = "";
     }
     private void initUI(View view) {
         myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_compose_avatar);
@@ -194,6 +204,22 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     etYotubeUrl.setText(textToPaste);
                     initMediaPath();
                     youtubePath = etYotubeUrl.getText().toString();
+                    String imageUrl = API.BASE_YOUTUB_PREFIX + FileUtility.getFilenameFromPath(youtubePath) + API.BASE_YOUTUB_SURFIX;
+                    ibPlay.setVisibility(View.VISIBLE);
+                    if (!youtubePath.equals("")) {
+                        UrlRectangleImageViewHelper.setUrlDrawable(imageView, imageUrl, R.drawable.default_tour, new UrlImageViewCallback() {
+                            @Override
+                            public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                                if (!loadedFromCache) {
+
+                                    ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                                    scale.setDuration(500);
+                                    scale.setInterpolator(new OvershootInterpolator());
+                                    imageView.startAnimation(scale);
+                                }
+                            }
+                        });
+                    }
                 }
                 else {
                     etYotubeUrl.setVisibility(View.GONE);
@@ -238,8 +264,12 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkValue()) {
-                    postMedia();
+                if (isEdit) {
+                    editMedia();
+                } else {
+                    if (checkValue()) {
+                        postMedia();
+                    }
                 }
             }
         });
@@ -249,6 +279,35 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
         imageView = (ImageView)view.findViewById(R.id.iv_compose);
         UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(mActivity), UIUtility.getScreenWidth(mActivity));
+        setData();
+    }
+    private void setData() {
+        if (isEdit && postModel != null) {
+            richEditor.setText(Html.fromHtml(postModel.getDescription()));
+            String imageUrl = "";
+            if (postModel.getMedia_type().equals("youtube")) {
+                imageUrl = API.BASE_YOUTUB_PREFIX + FileUtility.getFilenameFromPath(postModel.getMedia_url()) + API.BASE_YOUTUB_SURFIX;
+            } else if (postModel.getMedia_type().endsWith("post_photo")) {
+                imageUrl = API.BASE_POST_PHOTO + postModel.getMedia_url();
+            } else if (postModel.getMedia_type().endsWith("post_video")){
+                ibPlay.setVisibility(View.VISIBLE);
+                imageUrl = API.BASE_THUMBNAIL + postModel.getMedia_url().substring(0, postModel.getMedia_url().length() - 3) + "jpg";
+            }
+            if (!postModel.getMedia_url().equals("")) {
+                UrlRectangleImageViewHelper.setUrlDrawable(imageView, imageUrl, R.drawable.default_tour, new UrlImageViewCallback() {
+                    @Override
+                    public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                        if (!loadedFromCache) {
+
+                            ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                            scale.setDuration(500);
+                            scale.setInterpolator(new OvershootInterpolator());
+                            imageView.startAnimation(scale);
+                        }
+                    }
+                });
+            }
+        }
     }
     private void getFriends() {
         Utils.showProgress(mActivity);
@@ -338,8 +397,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     String mediaType;
     String description;
     private boolean checkValue() {
-        description = richEditor.getText().toString();
-        description = TextUtils.htmlEncode(richEditor.getText().toString());
+//        description = richEditor.getText().toString();
+//        description = TextUtils.htmlEncode(richEditor.getText().toString());
         description = Html.toHtml(richEditor.getText());
         if (photoPath.length() > 0) {
             mediaType = "post_photo";
@@ -446,6 +505,119 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         requestQueue.add(customMultipartRequest);
 
     }
+    private void editMedia() {
+        description = Html.toHtml(richEditor.getText());
+        mediaType = "";
+        if (photoPath.length() > 0) {
+            mediaType = "post_photo";
+        } else if (videoPath.length() > 0) {
+            mediaType = "post_video";
+        } else if (youtubePath.length() > 0) {
+            mediaType = "youtube";
+        }
+        Utils.showProgress(mActivity);
+        CustomMultipartRequest customMultipartRequest = new CustomMultipartRequest(API.EDIT_MY_POST,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                Utils.showToast(mActivity, getResources().getString(R.string.post_success));
+                                UIUtility.hideSoftKeyboard(mActivity);
+
+                                DetailPostActivity.postModel.setDescription(description);
+                                if (mediaType.equals("")) {
+
+                                } else if (mediaType.equals("post_video")) {
+                                    FileUtility.deleteFile(videoPath);
+                                    FileUtility.deleteFile(thumbPath);
+                                    DetailPostActivity.postModel.setMedia_type(mediaType);
+                                    DetailPostActivity.postModel.setMedia_url(response.getJSONObject("data").getString("media_url"));
+
+                                } else if (mediaType.equals("post_photo")) {
+                                    FileUtility.deleteFile(photoPath);
+                                    FileUtility.deleteFile(thumbPath);
+                                    DetailPostActivity.postModel.setMedia_type(mediaType);
+                                    DetailPostActivity.postModel.setMedia_url(response.getJSONObject("data").getString("media_url"));
+                                } else {
+                                    DetailPostActivity.postModel.setMedia_type(mediaType);
+                                    DetailPostActivity.postModel.setMedia_url(youtubePath);
+                                }
+
+                                DetailPostActivity.pushFragment(0);
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            }else  if (status.equals("401")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
+                            }
+
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            Toast.makeText(mActivity, "TimeoutError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof AuthFailureError) {
+                            //TODO
+                            Toast.makeText(mActivity, "AuthFailureError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ServerError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ServerError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof NetworkError) {
+                            //TODO
+                            Toast.makeText(mActivity, "NetworkError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ParseError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ParseError", Toast.LENGTH_LONG).show();
+                        } else {
+                            //TODO
+                            Toast.makeText(mActivity, "UnknownError", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+        customMultipartRequest
+                .addStringPart(Constant.DEVICE_TYPE, Constant.ANDROID)
+                .addStringPart(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN))
+                .addStringPart("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID))
+                .addStringPart("post_id", postModel.getPost_id())
+                .addStringPart("description", description);
+
+
+        customMultipartRequest.addStringPart("media_changed", "yes");
+        customMultipartRequest.addStringPart("media_type", mediaType);
+        if (mediaType.equals("post_video")) {
+            customMultipartRequest.addVideoPart("post_video", videoPath);
+            customMultipartRequest.addImagePart("thumb", thumbPath);
+            customMultipartRequest.addStringPart("width", String.valueOf(imageWidth));
+            customMultipartRequest.addStringPart("height", String.valueOf(imageHeight));
+            customMultipartRequest.addStringPart("media_type", mediaType);
+
+        } else if (mediaType.equals("post_photo")) {
+            customMultipartRequest.addImagePart("post_photo", photoPath);
+            customMultipartRequest.addImagePart("thumb", thumbPath);
+            customMultipartRequest.addStringPart("width", String.valueOf(imageWidth));
+            customMultipartRequest.addStringPart("height", String.valueOf(imageHeight));
+
+        } else if (mediaType.equals("youtube")) {
+            customMultipartRequest.addStringPart("media", youtubePath);
+            customMultipartRequest.addStringPart("width", "0");
+            customMultipartRequest.addStringPart("height", "0");
+        } else {
+            customMultipartRequest.addStringPart("media_changed", "no");
+        }
+
+
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(customMultipartRequest);
+
+    }
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
@@ -455,7 +627,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     public void onDestroy() {
         super.onDestroy();
 
-        UIUtility.hideSoftKeyboard(mActivity);
+//        UIUtility.hideSoftKeyboard(mActivity);
     }
 
     public static void inputTag(String strTag) {
@@ -543,7 +715,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 if (resultCode == Activity.RESULT_OK) {
 
                     etYotubeUrl.setVisibility(View.GONE);
-                    imageView.setVisibility(View.VISIBLE);
+                    ibPlay.setVisibility(View.GONE);
 
                     Uri selectedImage = data.getData();
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
@@ -578,8 +750,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 if (resultCode == Activity.RESULT_OK) {
 
                     etYotubeUrl.setVisibility(View.GONE);
-                    imageView.setVisibility(View.VISIBLE);
-
+                    ibPlay.setVisibility(View.GONE);
                     setPic();
                 }
                 break;
@@ -588,7 +759,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 if (resultCode == Activity.RESULT_OK) {
 
                     etYotubeUrl.setVisibility(View.GONE);
-                    imageView.setVisibility(View.VISIBLE);
 
                     Uri selectedVideoUri = data.getData();
 
@@ -623,7 +793,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 if (resultCode == Activity.RESULT_OK) {
 
                     etYotubeUrl.setVisibility(View.GONE);
-                    imageView.setVisibility(View.VISIBLE);
 
                     if (videoPath.length() > 0) {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.MINI_KIND);
@@ -661,17 +830,23 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
     public String getVideoPath(Uri uri) {
 
-        Cursor cursor = mActivity.getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        String document_id = cursor.getString(0);
-        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
-        cursor.close();
+        String path = "";
+        try {
+            Cursor cursor = mActivity.getContentResolver().query(uri, null, null, null, null);
+            cursor.moveToFirst();
+            String document_id = cursor.getString(0);
+            document_id = document_id.substring(document_id.lastIndexOf(":")+1);
+            cursor.close();
 
-        cursor = mActivity.getContentResolver().query(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                null, MediaStore.Video.Media._ID + " = ? ", new String[]{document_id}, null);
-        cursor.moveToFirst();
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
-        cursor.close();
+            cursor = mActivity.getContentResolver().query(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    null, MediaStore.Video.Media._ID + " = ? ", new String[]{document_id}, null);
+            cursor.moveToFirst();
+            path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+            cursor.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return path;
     }
@@ -687,7 +862,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         etYotubeUrl.setVisibility(View.GONE);
-                        imageView.setVisibility(View.VISIBLE);
                         captureVideoFromCamera();
                         dialog.cancel();
                     }
@@ -696,7 +870,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         etYotubeUrl.setVisibility(View.GONE);
-                        imageView.setVisibility(View.VISIBLE);
                         takeVideoFromGallery();
                         dialog.cancel();
                     }
@@ -716,7 +889,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
     private void takeYoutubeVideoUrl() {
         etYotubeUrl.setVisibility(View.VISIBLE);
-        imageView.setVisibility(View.GONE);
 
         Intent videoClient = new Intent(Intent.ACTION_VIEW);
 //        videoClient.setData(Uri.parse("http://m.youtube.com/watch?v="+videoId));

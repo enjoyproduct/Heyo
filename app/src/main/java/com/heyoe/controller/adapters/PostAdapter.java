@@ -174,6 +174,7 @@ public class PostAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(activity, DetailPostActivity.class);
                     intent.putExtra("post", postModel);
+                    intent.putExtra("from", 0);
                     activity.startActivityForResult(intent, 101);
                 }
             });
@@ -229,6 +230,7 @@ public class PostAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(activity, DetailPostActivity.class);
                     intent.putExtra("post", postModel);
+                    intent.putExtra("from", 0);
                     activity.startActivityForResult(intent, 101);
                 }
             });
@@ -361,7 +363,7 @@ public class PostAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(activity, ProfileActivity.class);
                 intent.putExtra("user_id", postModel.getPoster_id());
-                activity.startActivity(intent);
+                activity.startActivityForResult(intent, 103);
             }
         });
         if (!postModel.getPoster_avatar().equals("")) {
@@ -385,6 +387,7 @@ public class PostAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(activity, DetailPostActivity.class);
                 intent.putExtra("post", postModel);
+                intent.putExtra("from", 0);
                 activity.startActivityForResult(intent, 101);
             }
         });
