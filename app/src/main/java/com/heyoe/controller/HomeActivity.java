@@ -463,6 +463,7 @@ public class HomeActivity extends AppCompatActivity implements
         Utils.saveToPreference(mActivity, Constant.USER_ID, "");
         Utils.saveToPreference(mActivity, Constant.EMAIL, "");
         Utils.saveToPreference(mActivity, Constant.PASSWORD, "");
+        Utils.saveToPreference(mActivity, Constant.BLACK_PASSWORD, "");
         Utils.saveToPreference(mActivity, Constant.FULLNAME, "");
         Utils.saveToPreference(mActivity, Constant.CITY, "");
         Utils.saveToPreference(mActivity, Constant.COUNTRY, "");

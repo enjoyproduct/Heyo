@@ -815,8 +815,8 @@ public class MyBlackFriendsFregment extends Fragment {
         });
     }
     private void deleteDialog(String dialogId) {
-        QBGroupChatManager groupChatManager = QBChatService.getInstance().getGroupChatManager();
-        groupChatManager.deleteDialog(dialogId, new QBEntityCallback<Void>() {
+        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+        privateChatManager.deleteDialog(dialogId, new QBEntityCallback<Void>() {
 
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {

@@ -145,18 +145,20 @@ public class CheckinFragment extends Fragment {
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constant.REQUEST_PLACE_PICKER
-                && resultCode == Activity.RESULT_OK) {
+        if (requestCode == Constant.REQUEST_PLACE_PICKER) {
+            if (resultCode == Activity.RESULT_OK) {
+                // The user has selected a place. Extract the name and address.
+                final Place place = PlacePicker.getPlace(data, mActivity);
 
-            // The user has selected a place. Extract the name and address.
-            final Place place = PlacePicker.getPlace(data, mActivity);
-
-            final CharSequence name = place.getName();
-            final CharSequence address = place.getAddress();
-            String attributions = PlacePicker.getAttributions(data);
-            checkin = name.toString();
-            UserListActivity.setTitle(checkin);
-            enterCheckin();
+                final CharSequence name = place.getName();
+                final CharSequence address = place.getAddress();
+                String attributions = PlacePicker.getAttributions(data);
+                checkin = name.toString();
+                UserListActivity.setTitle(checkin);
+                enterCheckin();
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                mActivity.finish();
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
