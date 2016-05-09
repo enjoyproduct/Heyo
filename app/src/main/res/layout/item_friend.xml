@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_friend"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/transparent">
     <LinearLayout
         android:tag="item_friend"
         android:layout_width="wrap_content"
@@ -28,6 +29,14 @@
             android:id="@+id/delete_friend"
             android:src="@drawable/delete_friend"
             android:layout_width="70dp"
+            android:background="@color/dark"
+            android:paddingLeft="23dp"
+            android:paddingRight="23dp"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/black_chat"
+            android:src="@drawable/black_chat"
+            android:layout_width="70dp"
             android:background="@color/black"
             android:paddingLeft="23dp"
             android:paddingRight="23dp"
@@ -36,7 +45,7 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:background="@color/white"
+        android:background="@color/transparent"
         android:layout_width="match_parent"
         android:layout_height="80dp">
         <RelativeLayout
@@ -111,7 +120,7 @@
                     android:text="0"
                     android:textColor="@color/colorPrimaryDark"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="13dp"
                     android:visibility="visible"
                     />
                 <ImageView

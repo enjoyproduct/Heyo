@@ -120,7 +120,7 @@ public class SignupFragment extends Fragment {
         civAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showChooseDialog(mActivity, getResources().getString(R.string.choose_avatar));
+                showChooseDialog(mActivity, getResources().getString(R.string.choose_photo));
             }
         });
 
@@ -186,6 +186,9 @@ public class SignupFragment extends Fragment {
         }
         if (password.length() == 0 ) {
             Utils.showOKDialog(mActivity, getResources().getString(R.string.Input_password));
+            return false;
+        } else if (password.length() < 3) {
+            Utils.showOKDialog(mActivity, getResources().getString(R.string.Input_longer_password));
             return false;
         }
 
@@ -295,6 +298,7 @@ public class SignupFragment extends Fragment {
                                 String fullname = jsonObject.getString("fullname");
                                 String email = jsonObject.getString("email");
                                 String password = jsonObject.getString("password");
+                                String black_password = jsonObject.getString("black_password");
                                 String city = jsonObject.getString("city");
                                 String country = jsonObject.getString("country");
                                 String birthday = jsonObject.getString("birthday");
@@ -311,6 +315,7 @@ public class SignupFragment extends Fragment {
                                 Utils.saveToPreference(mActivity, Constant.USER_ID, user_id);
                                 Utils.saveToPreference(mActivity, Constant.EMAIL, email);
                                 Utils.saveToPreference(mActivity, Constant.PASSWORD, userModel.getPassword());
+                                Utils.saveToPreference(mActivity, Constant.BLACK_PASSWORD, black_password);
                                 Utils.saveToPreference(mActivity, Constant.FULLNAME, fullname);
                                 Utils.saveToPreference(mActivity, Constant.CITY, city);
                                 Utils.saveToPreference(mActivity, Constant.COUNTRY, country);

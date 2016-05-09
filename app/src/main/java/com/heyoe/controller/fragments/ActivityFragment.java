@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
 import com.heyoe.controller.DetailPostActivity;
+import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.ProfileActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.ActivityModel;
@@ -162,7 +164,7 @@ public class ActivityFragment extends Fragment {
                                         postModel.setDescription(postObject.getString("description"));
                                         postModel.setCommented(postObject.getString("commented"));
                                         postModel.setFavorite(postObject.getString("favorite"));
-                                        postModel.setFriendStatus(postObject.getString("friend_status"));
+//                                        postModel.setFriendStatus(postObject.getString("friend_status"));
                                         postModel.setImageWidth(Integer.parseInt(postObject.getString("width")));
                                         postModel.setImageHeight(Integer.parseInt(postObject.getString("height")));
 
@@ -268,34 +270,43 @@ public class ActivityFragment extends Fragment {
                     }
                 });
             }
-            tvFullname.setText(activityModel.getFullname());
+
             tvDate.setText(TimeUtility.countTime(mActivity, Long.parseLong(activityModel.getDate())));
 
+            String str = "";
             if (activityModel.getType().equals("like")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_like_white));
+                str = "<b>" + activityModel.getFullname() + "</b>" + " liked your post";
             } else if (activityModel.getType().equals("dislike")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_dislike));
+                str = "<b>" + activityModel.getFullname() + "</b>" + " disliked your post";
             } else if (activityModel.getType().equals("comment")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_comment_white41));
+                str = "<b>" + activityModel.getFullname() + "</b>" + " commented on your post";
             } else if (activityModel.getType().equals("share")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_share57));
+                str = "<b>" + activityModel.getFullname() + "</b>" + " shared your post";
             } else if (activityModel.getType().equals("invite")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_plus));
+                str = "<b>" + activityModel.getFullname() + "</b>" + " sent friend request to you";
             } else if (activityModel.getType().equals("accept")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_plus));
+                str = "<b>" + activityModel.getFullname() + "</b>" + " is now your friend";
             } else if (activityModel.getType().equals("reject")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_cross_line_white49));
+                str = "<b>" + activityModel.getFullname() + "</b>" + " rejected your friend request";
             }
-
+            tvFullname.setText(Html.fromHtml(str));
             ivButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (activityModel.getType().equals("invite") ||
                             activityModel.getType().equals("accept") ||
                             activityModel.getType().equals("reject")) {
-                        Intent intent = new Intent(mActivity, ProfileActivity.class);
-                        intent.putExtra("user_id", activityModel.getUser_id());
-                        mActivity.startActivity(intent);
+//                        Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                        intent.putExtra("user_id", activityModel.getUser_id());
+//                        mActivity.startActivity(intent);
+                        HomeActivity.navigateToProfile(activityModel.getUser_id());
                     } else {
                         if (activityModel.getPostModel() != null) {
                             Intent intent = new Intent(mActivity, DetailPostActivity.class);

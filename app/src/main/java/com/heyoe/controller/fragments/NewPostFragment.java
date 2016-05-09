@@ -12,9 +12,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
@@ -37,7 +34,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -63,6 +59,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe.R;
 import com.heyoe.controller.DetailPostActivity;
 import com.heyoe.controller.HomeActivity;
+import com.heyoe.controller.adapters.FriendTagAdapter;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
@@ -71,7 +68,6 @@ import com.heyoe.utilities.BitmapUtility;
 import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
-import com.heyoe.utilities.VideoPlay;
 import com.heyoe.utilities.camera.AlbumStorageDirFactory;
 import com.heyoe.utilities.camera.BaseAlbumDirFactory;
 import com.heyoe.utilities.camera.FroyoAlbumDirFactory;
@@ -117,6 +113,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
     private Activity mActivity;
     private String photoPath, videoPath, thumbPath, youtubePath;
+    private String checkin;
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
     private ArrayList<UserModel> arrFriends;
@@ -158,6 +155,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         videoPath = "";
         thumbPath = "";
         mediaType = "";
+        checkin = "";
     }
     private void initUI(View view) {
         myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_compose_avatar);
@@ -264,6 +262,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UIUtility.hideSoftKeyboard(getActivity());
                 if (isEdit) {
                     editMedia();
                 } else {
@@ -316,7 +315,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
         params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
-
+        params.put("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
 
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_FRIEND_LIST, params,
                 new Response.Listener<JSONObject>() {
@@ -350,7 +349,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                                     UserModel userModel = new UserModel();
 
                                     userModel.setUser_id(user_id);
-                                    userModel.setFullname(fullname);
+                                    userModel.setFullname("@" + fullname);
                                     userModel.setEmail(email);
                                     userModel.setCity(city);
                                     userModel.setCountry(country);
@@ -430,7 +429,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                             String status = response.getString("status");
                             if (status.equals("200")) {
                                 Utils.showToast(mActivity, getResources().getString(R.string.post_success));
-                                UIUtility.hideSoftKeyboard(mActivity);
 
                                 if (mediaType.equals("post_video")) {
                                     FileUtility.deleteFile(videoPath);
@@ -481,6 +479,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 .addStringPart(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN))
                 .addStringPart("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID))
                 .addStringPart("media_type", mediaType)
+                .addStringPart("checkin", checkin)
                 .addStringPart("description", description);
         customMultipartRequest.addStringPart("width", String.valueOf(imageWidth));
         customMultipartRequest.addStringPart("height", String.valueOf(imageHeight));
@@ -525,7 +524,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                             String status = response.getString("status");
                             if (status.equals("200")) {
                                 Utils.showToast(mActivity, getResources().getString(R.string.post_success));
-                                UIUtility.hideSoftKeyboard(mActivity);
 
                                 DetailPostActivity.postModel.setDescription(description);
                                 if (mediaType.equals("")) {
@@ -587,6 +585,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 .addStringPart(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN))
                 .addStringPart("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID))
                 .addStringPart("post_id", postModel.getPost_id())
+                .addStringPart("checkin", checkin)
                 .addStringPart("description", description);
 
 
@@ -623,13 +622,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-//        UIUtility.hideSoftKeyboard(mActivity);
-    }
-
     public static void inputTag(String strTag) {
         String str = "<b>" + strTag + "</b>";
         richEditor.append(Html.fromHtml(str));
@@ -641,29 +633,20 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         final View dialogView = inflater.inflate(R.layout.dlg_tag_selection, null);
-//        AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView)dialogView.findViewById(R.id.actv_tag_selection);
-//        ListView listView = (ListView)dialogView.findViewById(R.id.lv_tag_selection);
-        final ArrayList<String> arrayList = new ArrayList<>();
-        for (int i = 0; i < arrFriends.size(); i ++) {
-            String str = "@" +  arrFriends.get(i).getFullname();
-            arrayList.add(str);
-        }
-        ArrayAdapter<String> searchAgentAdapter = new ArrayAdapter<String>(mActivity, android.R.layout.simple_list_item_1,arrayList);
-//        TagSelectionAutoCompleteAdapter searchAgentAdapter = new TagSelectionAutoCompleteAdapter(mActivity, R.layout.item_tag_selection, arrayList);
-//        listView.setAdapter(searchAgentAdapter);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                inputTag(arrayList.get(position));
-//
-//            }
-//        });
+
+        FriendTagAdapter friendTagAdapter = new FriendTagAdapter(mActivity, arrFriends);
         builder.setCancelable(true);
         builder.setView(dialogView);
-        builder.setAdapter(searchAgentAdapter, new DialogInterface.OnClickListener() {
+        builder.setAdapter(friendTagAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                inputTag(arrayList.get(which));
+                inputTag(arrFriends.get(which).getFullname());
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
             }
         });
         AlertDialog alert = builder.create();
@@ -690,6 +673,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     }
 
 
+
     // A place has been received; use requestCode to track the request.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -705,6 +689,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             String attributions = PlacePicker.getAttributions(data);
 
             String str = "<font color='#03a6a8'>"  + "<b>" + name + "</b></font>";
+            checkin = name.toString();
             richEditor.append(Html.fromHtml(str));
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -997,7 +982,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(Constant.INDECATOR);
-        builder.setMessage(getResources().getString(R.string.choose_avatar));
+        builder.setMessage(getResources().getString(R.string.choose_photo));
         builder.setCancelable(true);
         builder.setPositiveButton("Camera",
                 new DialogInterface.OnClickListener() {
@@ -1021,8 +1006,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
             }
         });
-//        dialog.setCancelable(true);
-//        dialog.setCanceledOnTouchOutside(false);
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -1039,10 +1022,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     }
     /////////////capture photo
     public void dispatchTakePictureIntent() {
-//        Intent intent = new Intent(mActivity, TakeMediaActivity.class);
-//        intent.putExtra("mediaType", 1);
-//        startActivity(intent);
-
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File f = null;
         try {
@@ -1093,7 +1072,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     }
 
 
-
     private void setPic() {
         if (photoPath == null) {
             return;
@@ -1142,4 +1120,9 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     int imageWidth = 0 , imageHeight = 0;
 
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        UIUtility.hideSoftKeyboard(getActivity());
+    }
 }

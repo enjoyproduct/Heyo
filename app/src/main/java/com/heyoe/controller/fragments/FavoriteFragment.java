@@ -12,7 +12,6 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
-import com.heyoe.controller.adapters.FavoriteAdapter;
 import com.heyoe.controller.adapters.PostAdapter;
 import com.heyoe.model.PostModel;
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -59,6 +60,11 @@ public class DetailPostActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         mActivity = this;
         postModel = (PostModel) getIntent().getSerializableExtra("post");
+        if (postModel != null) {
+            if (postModel.getMedia_type().endsWith("post_photo")) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        }
         fromWhere = getIntent().getIntExtra("from", 1);
     }
     private void initUI() {
@@ -70,7 +76,6 @@ public class DetailPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = getIntent();
                 intent.putExtra("post", DetailPostFragment.postModel);
-//                intent.putExtra("test", "test_value");
                 setResult(RESULT_OK, intent);
                 finish();
             }

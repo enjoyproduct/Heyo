@@ -2,6 +2,7 @@ package com.heyoe.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -31,6 +32,7 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.heyoe.R;
 import com.heyoe.utilities.FileUtility;
+import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.VideoPlay;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
@@ -68,6 +70,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         } else if (type.equals("video")){
             initVideoview();
         } else if (type.equals("photo")) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             initImageView();
         }
 
@@ -85,8 +88,18 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
 
     int mode = NONE;
     private void initImageView() {
+
+        int width = getIntent().getIntExtra("width", 0);
+        int height = getIntent().getIntExtra("height", 0);
+
         imageView = (ImageView)findViewById(R.id.imageview);
         imageView.setVisibility(View.VISIBLE);
+//        init imageview size
+        if (width != 0 && height != 0) {
+            double ratio = ((double)height / (double)width);
+            double height1 = ratio * UIUtility.getScreenWidth(this);
+            UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(this), (int)height1);
+        }
         if (!url.equals("")) {
             UrlRectangleImageViewHelper.setUrlDrawable(imageView, url, R.drawable.default_tour, new UrlImageViewCallback() {
                 @Override
@@ -195,8 +208,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         if (youTubeInitializationResult.isUserRecoverableError()) {
             youTubeInitializationResult.getErrorDialog(this, RECOVERY_DIALOG_REQUEST).show();
         } else {
-            String errorMessage = String.format(
-                    getString(R.string.Youtube_play_error), youTubeInitializationResult.toString());
+            String errorMessage = String.format(getString(R.string.Youtube_play_error), youTubeInitializationResult.toString());
             Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
         }
     }

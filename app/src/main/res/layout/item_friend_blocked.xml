@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipe_friend_blocked"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/transparent">
     <LinearLayout
         android:tag="item_friend_blocked"
         android:layout_width="wrap_content"
@@ -29,7 +30,7 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:background="@color/white"
+        android:background="@color/transparent"
         android:layout_width="match_parent"
         android:layout_height="80dp">
         <RelativeLayout

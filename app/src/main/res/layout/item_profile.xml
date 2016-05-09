@@ -79,7 +79,13 @@
                             android:background="@color/transparent"
                             android:visibility="visible"/>
                     </LinearLayout>
-
+                    <ImageButton
+                        android:id="@+id/ib_ip_add_friend"
+                        android:layout_width="@dimen/dimen_32dp"
+                        android:layout_height="@dimen/dimen_32dp"
+                        android:src="@drawable/ic_green_plus"
+                        android:layout_alignParentRight="true"
+                        android:background="@color/transparent"/>
 
                 </RelativeLayout>
 
@@ -223,7 +229,7 @@
                 android:id="@+id/civ_profile_avatar"
                 android:layout_width="@dimen/avatar_size_profile"
                 android:layout_height="@dimen/avatar_size_profile"
-                android:src="@drawable/user3"
+                android:src="@drawable/default_user"
                 android:layout_centerInParent="true"/>
         </RelativeLayout>
 

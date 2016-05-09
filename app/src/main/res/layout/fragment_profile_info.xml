@@ -153,9 +153,11 @@
                 android:background="@color/grey"/>
             <!--email-->
             <RelativeLayout
+                android:id="@+id/rl_profile_info_email"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@color/grey_light"
+                android:visibility="gone"
                 >
                 <TextView
                     android:id="@+id/tv_info_email"
@@ -179,11 +181,13 @@
                     android:singleLine="true"
                     android:maxLength="50"
                     android:background="@color/transparent"/>
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/grey"
+                    android:layout_alignParentBottom="true"/>
             </RelativeLayout>
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/grey"/>
+
             <!--birth-->
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -252,9 +256,11 @@
                 android:background="@color/grey"/>
             <!--celebrity-->
             <RelativeLayout
+                android:id="@+id/rl_profile_info_celebrity"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@color/grey_light"
+                android:visibility="gone"
                 >
                 <TextView
                     android:layout_width="wrap_content"
@@ -275,11 +281,13 @@
                     android:track="@drawable/switch_track_selector"
                     android:thumb="@drawable/switch_thumb_selector"
                     />
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/grey"
+                    android:layout_alignParentBottom="true"/>
             </RelativeLayout>
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/grey"/>
+
             <!--about you-->
             <RelativeLayout
                 android:layout_width="match_parent"

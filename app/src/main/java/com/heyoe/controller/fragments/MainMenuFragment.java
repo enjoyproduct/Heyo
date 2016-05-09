@@ -79,10 +79,11 @@ public class MainMenuFragment extends Fragment {
         myCircularImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mActivity, ProfileActivity.class);
-                intent.putExtra("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
-                mActivity.startActivity(intent);
-                HomeActivity.mDrawerLayout.closeDrawers();
+//                Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                intent.putExtra("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+//                mActivity.startActivity(intent);
+                HomeActivity.navigateToProfile(Utils.getFromPreference(mActivity, Constant.USER_ID));
+
             }
         });
         if (!Utils.getFromPreference(mActivity, Constant.AVATAR).equals("")) {

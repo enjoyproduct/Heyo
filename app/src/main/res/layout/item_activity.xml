@@ -41,8 +41,8 @@
                 android:layout_marginTop="@dimen/dimen_8dp"
                 android:gravity="center_vertical">
                 <ImageView
-                    android:layout_width="@dimen/dimen_20dp"
-                    android:layout_height="@dimen/dimen_20dp"
+                    android:layout_width="@dimen/dimen_16dp"
+                    android:layout_height="@dimen/dimen_16dp"
                     android:src="@drawable/clock"/>
                 <TextView
                     android:id="@+id/tv_ia_time"

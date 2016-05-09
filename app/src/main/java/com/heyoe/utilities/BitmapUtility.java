@@ -255,13 +255,7 @@ public class BitmapUtility {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //get current rotation
-        int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-        ///Convert exif rotation to degrees:
-        int rotationInDegrees = exifToDegrees(rotation);
-        ///Then use the image's actual rotation as a reference point to rotate the image using a Matrix
-        Matrix matrix = new Matrix();
-        if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
+
 
         //get BitmapFactory option
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -275,6 +269,24 @@ public class BitmapUtility {
 
         //get bitmap with local path
         Bitmap yourSelectedImage = BitmapFactory.decodeFile(photopath, options);
+        //downsize bitmap
+        Bitmap downsizedBitmap = null;
+        Matrix matrix = new Matrix();
+        //get current rotation
+        int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        ///Convert exif rotation to degrees:
+        int rotationInDegrees = exifToDegrees(rotation);
+        ///Then use the image's actual rotation as a reference point to rotate the image using a Matrix
+        if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
+
+        if (yourSelectedImage.getWidth() > 1200 || yourSelectedImage.getHeight() > 1200) {
+            int width = yourSelectedImage.getWidth();
+            int height = yourSelectedImage.getHeight();
+
+            float scaleWidth = ((float) 1200) / width;
+            float scaleHeight = ((float) 1200) / width;
+            matrix.postScale(scaleWidth, scaleHeight);
+        }
         ////create a new rotated image
         Bitmap adjustedBitmap = null;
         try {
@@ -284,12 +296,7 @@ public class BitmapUtility {
             e.printStackTrace();
         }
 
-        if (adjustedBitmap.getWidth() > 1200 || adjustedBitmap.getHeight() > 1200) {
-            Bitmap downsized = downSizeBitmap(adjustedBitmap, 1200);  ///downsize to 100dp
-            return downsized;
-        } else {
-            return adjustedBitmap;
-        }
+        return adjustedBitmap;
 
     }
     public static Bitmap adjustBitmapForAvatar(String photopath) {////////////good
@@ -300,16 +307,9 @@ public class BitmapUtility {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //get current rotation
-        int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-        ///Convert exif rotation to degrees:
-        int rotationInDegrees = exifToDegrees(rotation);
-        ///Then use the image's actual rotation as a reference point to rotate the image using a Matrix
-        Matrix matrix = new Matrix();
-        if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
-
         //get BitmapFactory option
         final BitmapFactory.Options options = new BitmapFactory.Options();
+
         options.inJustDecodeBounds = true;
 
         BitmapFactory.decodeFile(photopath, options);
@@ -319,22 +319,34 @@ public class BitmapUtility {
 
         //get bitmap with local path
         Bitmap yourSelectedImage = BitmapFactory.decodeFile(photopath, options);
+        //downsize bitmap
+        Bitmap downsizedBitmap = null;
+        Matrix matrix = new Matrix();
+        //get current rotation
+        int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        ///Convert exif rotation to degrees:
+        int rotationInDegrees = exifToDegrees(rotation);
+        ///Then use the image's actual rotation as a reference point to rotate the image using a Matrix
+        if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
+
+        if (yourSelectedImage.getWidth() > 400 || yourSelectedImage.getHeight() > 400) {
+            int width = yourSelectedImage.getWidth();
+            int height = yourSelectedImage.getHeight();
+
+            float scaleWidth = ((float) 400) / width;
+            float scaleHeight = ((float) 400) / width;
+            matrix.postScale(scaleWidth, scaleHeight);
+        }
+        ////create a new rotated image
         Bitmap adjustedBitmap = null;
         try {
             ////create a new rotated image
             adjustedBitmap = Bitmap.createBitmap(yourSelectedImage, 0, 0, yourSelectedImage.getWidth(), yourSelectedImage.getHeight(), matrix, true);
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ///down size bitmap
-        if (adjustedBitmap.getWidth() > 400 || adjustedBitmap.getHeight() > 400) {
-            Bitmap downsized = downSizeBitmap(adjustedBitmap, 400);  ///downsize to 100dp
-            return downsized;
-        } else {
-            return adjustedBitmap;
-        }
+
+        return adjustedBitmap;
     }
     public static int exifToDegrees(int exifOrientation) {
         if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }

@@ -89,13 +89,15 @@ public class ProfileFragment extends Fragment {
     private static final int take_photo_from_camera = 2;
     private static final int take_video_from_gallery = 3;
     private static final int take_video_from_camera = 4;
+    private static final int change_avatar_from_gallery = 5;
+    private static final int change_avatar_from_camera = 6;
 
     private static final String JPEG_FILE_PREFIX = "Heyoe_header_photo_";
     private static final String JPEG_FILE_SUFFIX = ".jpg";
     private static final String VIDEO_FILE_PREFIX = "Heyoe_header_video_";
     private static final String VIDEO_FILE_SUFFIX = ".mp4";
 
-    private String photoPath, videoPath;
+    private String photoPath, videoPath, avatarPath;
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
     private static Activity mActivity;
@@ -103,7 +105,6 @@ public class ProfileFragment extends Fragment {
     private static UserModel userModel;
     private static ArrayList<PostModel> mArrPost;
     private static ProfileAdapter mProfileAdapter;
-//    private ArrayList<PostModel> mArrBufferPost;
     private ListView lvMain;
     private PullToRefreshListView mPullRefreshHomeListView;
 
@@ -134,7 +135,7 @@ public class ProfileFragment extends Fragment {
         offset = 0;
         mArrPost = new ArrayList<>();
         userModel = new UserModel();
-        userId = mActivity.getIntent().getStringExtra("user_id");
+        userId = getArguments().getString("user_id");
 
         initMediaPath();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
@@ -142,10 +143,12 @@ public class ProfileFragment extends Fragment {
         } else {
             mAlbumStorageDirFactory = new BaseAlbumDirFactory();
         }
+        avatarPath = "";
     }
     private void initMediaPath() {
         photoPath = "";
         videoPath = "";
+        avatarPath = "";
     }
     private void initUI(View view) {
 
@@ -170,12 +173,15 @@ public class ProfileFragment extends Fragment {
 
     }
     public static void setCelebrity() {
-        if (ivCelebrity != null && isMe()) {
-            if (Utils.getFromPreference(mActivity, Constant.CELEBRITY).equals("yes")) {
-                ivCelebrity.setVisibility(View.VISIBLE);
-            } else {
-                ivCelebrity.setVisibility(View.INVISIBLE);
-            }
+//        if (ivCelebrity != null && isMe()) {
+//            if (Utils.getFromPreference(mActivity, Constant.CELEBRITY).equals("yes")) {
+//                ivCelebrity.setVisibility(View.VISIBLE);
+//            } else {
+//                ivCelebrity.setVisibility(View.INVISIBLE);
+//            }
+//        }
+        if (isMe()) {
+            tvFullname.setText(Utils.getFromPreference(mActivity, Constant.FULLNAME));
         }
     }
 
@@ -186,6 +192,7 @@ public class ProfileFragment extends Fragment {
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
         params.put("user_id", userId);
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
         params.put("offset", String.valueOf(offset));
 
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_PROFILE, params,
@@ -216,6 +223,7 @@ public class ProfileFragment extends Fragment {
                                     String header_photo_url = jsonObject.getString("header_photo");
                                     String header_video_url = jsonObject.getString("header_video");
                                     String qb_id = jsonObject.getString("qb_id");
+                                    String friend_status = jsonObject.getString("friend_status");
                                     String online_status = jsonObject.getString("online_status");
 
                                     userModel.setUser_id(user_id);
@@ -234,8 +242,7 @@ public class ProfileFragment extends Fragment {
                                     userModel.setHeader_photo(header_photo_url);
                                     userModel.setHeader_video(header_video_url);
                                     userModel.setQb_id(qb_id);
-
-                                    ProfileActivity.userModel = userModel;
+                                    userModel.setFriendStatus(friend_status);
                                 }
 
 
@@ -393,7 +400,110 @@ public class ProfileFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(customMultipartRequest);
     }
+    private void updateAvatar() {
+        Utils.showProgress(mActivity);
+        CustomMultipartRequest customMultipartRequest = new CustomMultipartRequest(API.CHANGE_AVATAR,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                Utils.showToast(mActivity, getResources().getString(R.string.success));
 
+                                String avatarURL = response.getString("data");
+                                Utils.saveToPreference(mActivity, Constant.AVATAR, avatarURL);
+                                userModel.setAvatar(avatarURL);
+                                for(PostModel pm : mArrPost) {
+                                    pm.setPoster_avatar(avatarURL);
+                                }
+                                mProfileAdapter.notifyDataSetChanged();
+                                FileUtility.deleteFile(avatarPath);
+
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            }else  if (status.equals("401")) {
+                                Utils.showOKDialog(mActivity, response.getString("reason"));
+                            }
+
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            Toast.makeText(mActivity, "TimeoutError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof AuthFailureError) {
+                            //TODO
+                            Toast.makeText(mActivity, "AuthFailureError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ServerError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ServerError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof NetworkError) {
+                            //TODO
+                            Toast.makeText(mActivity, "NetworkError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ParseError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ParseError", Toast.LENGTH_LONG).show();
+                        } else {
+                            //TODO
+                            Toast.makeText(mActivity, "UnknownError", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+        customMultipartRequest
+                .addStringPart(Constant.DEVICE_TYPE, Constant.ANDROID)
+                .addStringPart(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN))
+                .addStringPart("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        customMultipartRequest.addImagePart("avatar", avatarPath);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(customMultipartRequest);
+    }
+    private void sendFriendRequest() {
+        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("user_id", userModel.getUser_id());
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.INVITE_FRIEND, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                userModel.setFriendStatus("waiting");
+                                mProfileAdapter.notifyDataSetChanged();
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
+    }
     private static boolean isMe() {
         if (userModel.getUser_id().equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
             return true;
@@ -405,6 +515,8 @@ public class ProfileFragment extends Fragment {
     ImageView ivMedia;
     ImageButton ibPlayVideo;
     static ImageView ivCelebrity;
+    static TextView tvFullname;
+    MyCircularImageView avatar;
 
     private class ProfileAdapter extends BaseAdapter {
         ArrayList<PostModel> arrayList;
@@ -424,22 +536,41 @@ public class ProfileFragment extends Fragment {
                 rlInfo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ProfileActivity.pushFragment(1);
+//                        ProfileActivity.pushFragment(1);
+                        Intent intent = new Intent(mActivity, ProfileActivity.class);
+                        intent.putExtra("to_where", 0);
+                        intent.putExtra("userModel", userModel);
+                        if (isMe()) {
+                            startActivityForResult(intent, 104);
+                        } else {
+                            startActivity(intent);
+                        }
                     }
                 });
                 rlMedia.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ProfileActivity.pushFragment(2);
+//                        ProfileActivity.pushFragment(2);
+                        Intent intent = new Intent(mActivity, ProfileActivity.class);
+                        intent.putExtra("to_where", 1);
+                        intent.putExtra("userModel", userModel);
+
+                        startActivity(intent);
+
                     }
                 });
                 rlFriend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ProfileActivity.pushFragment(3);
+//                        ProfileActivity.pushFragment(3);
+                        Intent intent = new Intent(mActivity, ProfileActivity.class);
+                        intent.putExtra("to_where", 2);
+                        intent.putExtra("userModel", userModel);
+
+                        startActivity(intent);
                     }
                 });
-                TextView tvFullname = (TextView)view.findViewById(R.id.tv_profile_fullname);
+                tvFullname = (TextView)view.findViewById(R.id.tv_profile_fullname);
                 TextView tvFriendCount = (TextView)view.findViewById(R.id.tv_profile_friends_count);
                 ibPlayVideo = (ImageButton)view.findViewById(R.id.ib_profile_play);
                 ibPlayVideo.setOnClickListener(new View.OnClickListener() {
@@ -461,7 +592,7 @@ public class ProfileFragment extends Fragment {
 
                 ivMedia = (ImageView)view.findViewById(R.id.iv_profile_media);
                 if (!userModel.getHeader_photo().equals("")) {
-                    UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, API.BASE_HEADER_PHOTO + userModel.getHeader_photo(), R.drawable.post3, new UrlImageViewCallback() {
+                    UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, API.BASE_HEADER_PHOTO + userModel.getHeader_photo(), R.drawable.default_tour, new UrlImageViewCallback() {
                         @Override
                         public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                             if (!loadedFromCache) {
@@ -477,11 +608,11 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if (isMe()) {
-                            showPictureChooseDialog();
+                            showPictureChooseDialog(0);
                         }
                     }
                 });
-                MyCircularImageView avatar = (MyCircularImageView)view.findViewById(R.id.civ_profile_avatar);
+                avatar = (MyCircularImageView)view.findViewById(R.id.civ_profile_avatar);
                 if (!userModel.getAvatar().equals("")) {
                     UrlRectangleImageViewHelper.setUrlDrawable(avatar, API.BASE_AVATAR + userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                         @Override
@@ -495,6 +626,14 @@ public class ProfileFragment extends Fragment {
                         }
                     });
                 }
+                avatar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (isMe()) {
+                            showPictureChooseDialog(1);
+                        }
+                    }
+                });
 
                 tvFullname.setText(userModel.getFullname());
                 tvFriendCount.setText(userModel.getFriend_count());
@@ -505,8 +644,24 @@ public class ProfileFragment extends Fragment {
                 } else {
                     ivCelebrity.setVisibility(View.INVISIBLE);
                 }
-
-
+                ImageButton ibAddFriend = (ImageButton)view.findViewById(R.id.ib_ip_add_friend);
+                if (userModel.getFriendStatus().equals("waiting")) {
+                    ibAddFriend.setImageDrawable(getResources().getDrawable(R.drawable.sandglass_small));
+                } else if (userModel.getFriendStatus().equals("none")){
+                    ibAddFriend.setImageDrawable(getResources().getDrawable(R.drawable.ic_green_plus));
+                } else {
+                    ibAddFriend.setVisibility(View.GONE);
+                }
+                if (isMe())
+                    ibAddFriend.setVisibility(View.GONE);
+                ibAddFriend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (userModel.getFriendStatus().equals("none")) {
+                            sendFriendRequest();
+                        }
+                    }
+                });
             } else {
                 view = mActivity.getLayoutInflater().inflate(R.layout.item_post_for_friend, null);
                 final PostModel postModel = arrayList.get(position - 1);
@@ -515,12 +670,13 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if (postModel.getFavorite().equals("favorite")) {
-//                            MainFragment.setFavorite(position, false);
+                            setFavorite(position - 1, false);
                         } else {
-//                            MainFragment.setFavorite(position, true);
+                            setFavorite(position - 1, true);
                         }
                     }
                 });
+                ///small icons
                 ImageView ivLikeCount = (ImageView)view.findViewById(R.id.iv_ipff_like_count);
                 ImageView ivDislikeCount = (ImageView)view.findViewById(R.id.iv_ipff_dislike_count);
                 ImageView ivComments = (ImageView)view.findViewById(R.id.iv_ipff_comments);
@@ -549,7 +705,7 @@ public class ProfileFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(mActivity, DetailPostActivity.class);
                         intent.putExtra("post", postModel);
-                        mActivity.startActivityForResult(intent, 101);
+                        mActivity.startActivityForResult(intent, 104);
                     }
                 });
                 TextView tvLikeCount = (TextView)view.findViewById(R.id.tv_ipff_like_count);
@@ -613,7 +769,7 @@ public class ProfileFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(mActivity, DetailPostActivity.class);
                         intent.putExtra("post", postModel);
-                        mActivity.startActivityForResult(intent, 101);
+                        mActivity.startActivityForResult(intent, 104);
                     }
                 });
 
@@ -624,9 +780,9 @@ public class ProfileFragment extends Fragment {
                     public void onClick(View v) {
                         if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("dislike")) {
                             if (postModel.getLike().equals("like")) {
-//                                MainFragment.setLike(position, "cancel_like");
+                                setLike(position - 1, "cancel_like");
                             } else if (postModel.getLike().equals("none")) {
-//                                MainFragment.setLike(position, "like");
+                                setLike(position - 1, "like");
                             }
                         } else {
                             Utils.showToast(mActivity, mActivity.getResources().getString(R.string.wait_one_minute));
@@ -640,9 +796,9 @@ public class ProfileFragment extends Fragment {
                     public void onClick(View v) {
                         if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("like")) {
                             if (postModel.getLike().equals("dislike")) {
-//                                MainFragment.setLike(position, "cancel_dislike");
+                                setLike(position - 1, "cancel_dislike");
                             } else if (postModel.getLike().equals("none")) {
-//                                MainFragment.setLike(position, "dislike");
+                                setLike(position - 1, "dislike");
                             }
                         }else {
                             Utils.showToast(mActivity, mActivity.getResources().getString(R.string.wait_one_minute));
@@ -668,7 +824,7 @@ public class ProfileFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(mActivity, DetailPostActivity.class);
                         intent.putExtra("post", postModel);
-                        mActivity.startActivityForResult(intent, 101);
+                        mActivity.startActivityForResult(intent, 104);
                     }
                 });
                 if (postModel.getCommented().equals("yes")) {
@@ -681,7 +837,7 @@ public class ProfileFragment extends Fragment {
                 ibShare.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        MainFragment.sharing(position);
+                        sharing(position - 1);
                     }
                 });
 
@@ -708,7 +864,7 @@ public class ProfileFragment extends Fragment {
                     public void onClick(View v) {
                         Intent intent = new Intent(mActivity, DetailPostActivity.class);
                         intent.putExtra("post", postModel);
-                        mActivity.startActivityForResult(intent, 101);
+                        mActivity.startActivityForResult(intent, 104);
                     }
                 });
 
@@ -797,6 +953,177 @@ public class ProfileFragment extends Fragment {
         }
 
     }
+    public static void setFavorite(final int position, final boolean flag) {
+//        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("post_id", mArrPost.get(position).getPost_id());
+        if (flag) {
+            params.put("status", "favorite");
+        } else {
+            params.put("status", "unfavorite");
+        }
+        CustomRequest customRequest = new CustomRequest(Request.Method.POST, API.SET_FAVORITE, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                if (flag) {
+                                    mArrPost.get(position).setFavorite("favorite");
+                                } else {
+                                    mArrPost.get(position).setFavorite("unfavorite");
+                                }
+                                mProfileAdapter.notifyDataSetChanged();
+
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(customRequest);
+    }
+    public static void setLike(final int position, final String type) {
+        final Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("post_id", mArrPost.get(position).getPost_id());
+        params.put("status", type);
+
+        CustomRequest customRequest = new CustomRequest(Request.Method.POST, API.LIKE_POST, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                mArrPost.get(position).setClickedTime(Long.parseLong(TimeUtility.getCurrentTimeStamp()));
+
+                                if (type.equals("like")) {
+                                    mArrPost.get(position).setLike("like");
+
+                                    int like_count = Integer.parseInt(mArrPost.get(position).getLike_count());
+                                    like_count ++;
+                                    mArrPost.get(position).setLike_count(String.valueOf(like_count));
+
+                                } else if (type.equals("dislike")){
+                                    int dislike_count = Integer.parseInt(mArrPost.get(position).getDislike_count());
+                                    dislike_count ++;
+                                    mArrPost.get(position).setDislike_count(String.valueOf(dislike_count));
+
+                                    mArrPost.get(position).setLike("dislike");
+
+                                } else if (type.equals("cancel_like")){
+                                    int like_count = Integer.parseInt(mArrPost.get(position).getLike_count());
+                                    like_count --;
+                                    if (like_count < 0) {
+                                        like_count = 0;
+                                    }
+                                    mArrPost.get(position).setLike_count(String.valueOf(like_count));
+
+                                    mArrPost.get(position).setLike("none");
+
+                                } else if (type.equals("cancel_dislike")){
+                                    int dislike_count = Integer.parseInt(mArrPost.get(position).getDislike_count());
+                                    dislike_count --;
+                                    if (dislike_count < 0) {
+                                        dislike_count = 0;
+                                    }
+                                    mArrPost.get(position).setDislike_count(String.valueOf(dislike_count));
+
+                                    mArrPost.get(position).setLike("none");
+                                }
+
+                                mProfileAdapter.notifyDataSetChanged();
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(customRequest);
+    }
+    static int shardPostNum;
+    public static  void sharing(int position){
+        shardPostNum = position;
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mArrPost.get(position).getPoster_fullname());
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, "http://heyoe.com/");
+        mActivity.startActivityForResult(Intent.createChooser(sharingIntent, "Heyoe"), 105);
+
+    }
+    public static void updateSharedCount() {
+        sharePost(shardPostNum);
+        int shardCount  = Integer.parseInt(mArrPost.get(shardPostNum).getShared_count());
+        shardCount ++;
+        mArrPost.get(shardPostNum).setShared_count(String.valueOf(shardCount));
+        mProfileAdapter.notifyDataSetChanged();
+    }
+    public static void sharePost(int position) {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("post_id", mArrPost.get(position).getPost_id());
+
+        CustomRequest customRequest = new CustomRequest(Request.Method.POST, API.SHARED_POST, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(customRequest);
+    }
     public static void updatePostFeed(PostModel postModel) {
         for (int i = 0; i < mArrPost.size(); i ++) {
             if (postModel.getPost_id().equals(mArrPost.get(i).getPost_id())) {
@@ -822,6 +1149,7 @@ public class ProfileFragment extends Fragment {
 
 
 
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -831,6 +1159,41 @@ public class ProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case change_avatar_from_gallery:
+                if (resultCode == Activity.RESULT_OK) {
+
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                    Cursor cursor = mActivity.getContentResolver().query(
+                            selectedImage, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    initMediaPath();
+                    avatarPath = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    Bitmap bitmap = BitmapUtility.adjustBitmap(avatarPath);
+                    avatar.setImageBitmap(bitmap);
+                    imageWidth = bitmap.getWidth();
+                    imageHeight = bitmap.getHeight();
+                    avatarPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(avatarPath));
+
+                    if (avatarPath.length() > 0) {
+                        askToUpdateAvatar();
+                    }
+
+
+                }
+                break;
+            case change_avatar_from_camera:
+                if (resultCode == Activity.RESULT_OK) {
+                    setPic(1);
+                    if (avatarPath.length() > 0) {
+                        askToUpdateAvatar();
+                    }
+                }
+                break;
             case take_photo_from_gallery:
                 if (resultCode == Activity.RESULT_OK) {
 
@@ -858,15 +1221,15 @@ public class ProfileFragment extends Fragment {
 
                 }
                 break;
-            case take_photo_from_camera: {
+            case take_photo_from_camera:
                 if (resultCode == Activity.RESULT_OK) {
-                    setPic();
+                    setPic(0);
                     if (photoPath.length() > 0) {
                         askToUploadHeaderMedia(1);
                     }
                 }
                 break;
-            }
+
             case take_video_from_gallery:
                 if (resultCode == Activity.RESULT_OK) {
                     Uri selectedVideoUri = data.getData();
@@ -915,6 +1278,46 @@ public class ProfileFragment extends Fragment {
 
         return path;
     }
+    public void askToUpdateAvatar() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        builder.setMessage(getResources().getString(R.string.confirm_update_avatar));
+        builder.setCancelable(true);
+        builder.setPositiveButton("Set",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                       updateAvatar();
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton("Discard",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (userModel.getAvatar().length() == 0) {
+                            avatar.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
+                        } else {
+                            if (!userModel.getHeader_photo().equals("")) {
+                                UrlRectangleImageViewHelper.setUrlDrawable(avatar, API.BASE_AVATAR + userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                                    @Override
+                                    public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                                        if (!loadedFromCache) {
+                                            ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                                            scale.setDuration(10);
+                                            scale.setInterpolator(new OvershootInterpolator());
+                                            imageView.startAnimation(scale);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                        dialog.cancel();
+                    }
+                });
+
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
     public void askToUploadHeaderMedia(final int type) {
         String msg = "";
         switch (type) {
@@ -940,7 +1343,24 @@ public class ProfileFragment extends Fragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (type == 1) {
-                            ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.post3));
+                            if (userModel.getHeader_photo().length() == 0) {
+                                ivMedia.setImageDrawable(getResources().getDrawable(R.drawable.post3));
+                            } else {
+                                if (!userModel.getHeader_photo().equals("")) {
+                                    UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, API.BASE_HEADER_PHOTO + userModel.getHeader_photo(), R.drawable.default_tour, new UrlImageViewCallback() {
+                                        @Override
+                                        public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                                            if (!loadedFromCache) {
+                                                ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                                                scale.setDuration(10);
+                                                scale.setInterpolator(new OvershootInterpolator());
+                                                imageView.startAnimation(scale);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+
                         }
                         dialog.cancel();
                     }
@@ -1067,23 +1487,23 @@ public class ProfileFragment extends Fragment {
 
 
     ///photo choose dialog
-    public void showPictureChooseDialog(){
+    public void showPictureChooseDialog(final int type){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(Constant.INDECATOR);
-        builder.setMessage(getResources().getString(R.string.choose_avatar));
+        builder.setMessage(getResources().getString(R.string.choose_photo));
         builder.setCancelable(true);
         builder.setPositiveButton("Camera",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        dispatchTakePictureIntent();
+                        dispatchTakePictureIntent(type);
                         dialog.cancel();
                     }
                 });
         builder.setNegativeButton("gallery",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        takePictureFromGallery();
+                        takePictureFromGallery(type);
                         dialog.cancel();
                     }
                 });
@@ -1101,41 +1521,51 @@ public class ProfileFragment extends Fragment {
         alert.show();
     }
     //////////////////take a picture from gallery
-    private void takePictureFromGallery()
+    private void takePictureFromGallery(int type)
     {
+
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, take_photo_from_gallery);
+        if (type == 0) {// take picture for header photo
+            startActivityForResult(photoPickerIntent, take_photo_from_gallery);
+        } else {
+            startActivityForResult(photoPickerIntent, change_avatar_from_gallery);
+        }
 
-//        Intent intent = new Intent(mActivity, TakeMediaActivity.class);
-//        intent.putExtra("mediaType", 0);
-//        startActivity(intent);
     }
     /////////////capture photo
-    public void dispatchTakePictureIntent() {
-//        Intent intent = new Intent(mActivity, TakeMediaActivity.class);
-//        intent.putExtra("mediaType", 1);
-//        startActivity(intent);
+    public void dispatchTakePictureIntent(int type) {
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File f = null;
         try {
-            f = setUpPhotoFile();
+            f = setUpPhotoFile(type);
             initMediaPath();
-            photoPath = f.getAbsolutePath();
+            if (type == 0) {// take picture for header photo
+                photoPath = f.getAbsolutePath();
+            } else {
+                avatarPath = f.getAbsolutePath();
+            }
+
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
         } catch (IOException e) {
             e.printStackTrace();
             f = null;
             photoPath = "";
+            avatarPath = "";
         }
-        startActivityForResult(takePictureIntent, take_photo_from_camera);
+        if (type == 0) {// take picture for header photo
+            startActivityForResult(takePictureIntent, take_photo_from_camera);
+        } else {
+            startActivityForResult(takePictureIntent, change_avatar_from_camera);
+        }
+
+
     }
-    private File setUpPhotoFile() throws IOException {
+    private File setUpPhotoFile(int type) throws IOException {
 
         File f = createImageFile();
         initMediaPath();
-        photoPath = f.getAbsolutePath();
         return f;
     }
     private File createImageFile() throws IOException {
@@ -1165,7 +1595,7 @@ public class ProfileFragment extends Fragment {
         }
         return storageDir;
     }
-    private void setPic() {
+    private void setPic(int type) {
         if (photoPath == null) {
             return;
         }
@@ -1180,7 +1610,13 @@ public class ProfileFragment extends Fragment {
 		/* Get the size of the image */
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(photoPath, bmOptions);
+        if (type == 0) {// take picture for header photo
+            BitmapFactory.decodeFile(photoPath, bmOptions);
+        } else {
+            BitmapFactory.decodeFile(avatarPath, bmOptions);
+        }
+
+
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
@@ -1195,14 +1631,28 @@ public class ProfileFragment extends Fragment {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
+        Bitmap bitmap = null;
+        if (type == 0) {// take picture for header photo
+            bitmap = BitmapUtility.adjustBitmap(photoPath);
+            ivMedia.setImageBitmap(bitmap);
+        } else {
+            bitmap = BitmapUtility.adjustBitmapForAvatar(avatarPath);
+            avatar.setImageBitmap(bitmap);
+        }
 
-        ivMedia.setImageBitmap(bitmap);
+
+
 
         imageWidth = bitmap.getWidth();
         imageHeight = bitmap.getHeight();
 
-        photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+        if (type == 0) {// take picture for header photo
+            photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+        } else {
+            avatarPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(avatarPath));
+
+        }
+
     }
     int imageWidth = 0 , imageHeight = 0;
 }

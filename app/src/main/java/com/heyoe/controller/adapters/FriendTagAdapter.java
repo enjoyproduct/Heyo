@@ -1,0 +1,88 @@
+package com.heyoe.controller.adapters;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.heyoe.R;
+import com.heyoe.controller.ProfileActivity;
+import com.heyoe.model.API;
+import com.heyoe.model.PostModel;
+import com.heyoe.model.UserModel;
+import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
+import com.heyoe.utilities.image_downloader.UrlImageViewHelper;
+import com.heyoe.widget.MyCircularImageView;
+
+import java.util.ArrayList;
+
+/**
+ * Created by dell17 on 4/18/2016.
+ */
+public class FriendTagAdapter extends BaseAdapter {
+    LayoutInflater layoutInflater;
+    ArrayList<UserModel> arrayList;
+    Activity activity ;
+    public FriendTagAdapter(Activity activity, ArrayList<UserModel> arrayList) {
+        this.activity = activity;
+        this.arrayList = arrayList;
+        layoutInflater = activity.getLayoutInflater();
+    }
+    @Override
+    public int getCount() {
+        return arrayList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return arrayList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = convertView;
+        if (view == null) {
+            view = layoutInflater.inflate(R.layout.item_search, null);
+        }
+        final UserModel userModel = arrayList.get(position);
+        if (userModel != null) {
+            TextView name = (TextView) view.findViewById(R.id.item_search_fullname);
+            name.setText(Html.fromHtml("<b>" +  userModel.getFullname() + "</b>"));
+
+            MyCircularImageView circularImageView = (MyCircularImageView) view.findViewById(R.id.item_search_civ_photo);
+            if (!userModel.getAvatar().equals("")) {
+                UrlImageViewHelper.setUrlDrawable(circularImageView, API.BASE_AVATAR + userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                    @Override
+                    public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                        if (!loadedFromCache) {
+                            ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                            scale.setDuration(100);
+                            scale.setInterpolator(new OvershootInterpolator());
+                            imageView.startAnimation(scale);
+                        }
+                    }
+                });
+            } else {
+                circularImageView.setImageDrawable(activity.getResources().getDrawable(R.drawable.default_user));
+            }
+
+            ImageView ibAdd = (ImageView) view.findViewById(R.id.ib_search_add);
+            ibAdd.setVisibility(View.GONE);
+        }
+        return view;
+    }
+
+}

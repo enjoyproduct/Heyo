@@ -58,9 +58,10 @@ public class SearchUserAutoCompleteAdapter extends ArrayAdapter<UserModel> {
             name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, ProfileActivity.class);
-                    intent.putExtra("user_id", userModel.getUser_id());
-                    mContext.startActivity(intent);
+//                    Intent intent = new Intent(mContext, ProfileActivity.class);
+//                    intent.putExtra("user_id", userModel.getUser_id());
+//                    mContext.startActivity(intent);
+                    HomeActivity.navigateToProfile(userModel.getUser_id());
                 }
             });
             MyCircularImageView circularImageView  = (MyCircularImageView)v.findViewById(R.id.item_search_civ_photo);
@@ -82,9 +83,10 @@ public class SearchUserAutoCompleteAdapter extends ArrayAdapter<UserModel> {
             circularImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, ProfileActivity.class);
-                    intent.putExtra("user_id", userModel.getUser_id());
-                    mContext.startActivity(intent);
+//                    Intent intent = new Intent(mContext, ProfileActivity.class);
+//                    intent.putExtra("user_id", userModel.getUser_id());
+//                    mContext.startActivity(intent);
+                    HomeActivity.navigateToProfile(userModel.getUser_id());
                 }
             });
             ImageView ibAdd = (ImageView)v.findViewById(R.id.ib_search_add);

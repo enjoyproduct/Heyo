@@ -8,9 +8,11 @@
     tools:context="com.heyoe.controller.ChatActivity">
 
     <LinearLayout
+        android:id="@+id/ll_chat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/white">
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,6 +52,8 @@
                 <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+
                     >
 
                     <ImageView
@@ -70,6 +74,7 @@
                         android:maxLines="5"
                         android:minHeight="36dp"
                         android:paddingLeft="5dp"
+
                         android:id="@+id/et_message_content"
                         />
 
@@ -84,6 +89,7 @@
                 android:id="@+id/lv_messages"
                 android:divider="@null"
                 android:clickable="false"
+                android:background="@color/transparent"
                 >
 
             </ListView>

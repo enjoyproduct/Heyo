@@ -103,6 +103,17 @@ public class MainFragment extends Fragment {
                 mPullRefreshHomeListView.onRefreshComplete();
             }
         });
+        mPullRefreshHomeListView.setOnPullEventListener(new PullToRefreshBase.OnPullEventListener<ListView>() {
+            @Override
+            public void onPullEvent(PullToRefreshBase<ListView> refreshView, PullToRefreshBase.State state, PullToRefreshBase.Mode direction) {
+                if (state == PullToRefreshBase.State.RELEASE_TO_REFRESH && direction == PullToRefreshBase.Mode.PULL_FROM_START) {
+                    isLast = false;
+                    offset = 0;
+                    mArrPost.clear();
+                    getAllPosts();
+                }
+            }
+        });
         lvMain = mPullRefreshHomeListView.getRefreshableView();
 
         mPostAdapter = new PostAdapter(getActivity(),mArrPost);

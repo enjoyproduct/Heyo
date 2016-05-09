@@ -501,7 +501,7 @@ public class DetailPostFragment extends Fragment {
                 myCircularImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(mActivity, ProfileActivity.class));
+
                     }
                 });
                 if (!postModel.getPoster_avatar().equals("")) {

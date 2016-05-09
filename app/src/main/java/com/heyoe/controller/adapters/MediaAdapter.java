@@ -125,6 +125,9 @@ public class MediaAdapter extends BaseAdapter {
                 if (postModel.getMedia_type().equals("post_photo")) {
                     intent.putExtra("type", "photo");
                     intent.putExtra("url", finalImagUrl);
+                    intent.putExtra("width", postModel.getImageWidth());
+                    intent.putExtra("height", postModel.getImageHeight());
+
                 } else {
                     if (postModel.getMedia_type().equals("post_video")) {
                         intent.putExtra("type", "video");

@@ -99,7 +99,7 @@ public class FriendListFragment extends Fragment {
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
         params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
-        params.put("user_id", ProfileActivity.userId);
+        params.put("user_id", ProfileActivity.userModel.getUser_id());
 
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_FRIEND_LIST, params,
                 new Response.Listener<JSONObject>() {

@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
     private TextView tvCountry, tvGender, tvBirthday;
     private Switch aSwitchCelebrity;
     private LinearLayout llPassword;
+    private RelativeLayout rlEmail, rlCelebrity;
 
     private UserModel userModel;
     private Activity mActivity;
@@ -79,6 +81,12 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
     }
     private void initUI(View view) {
 
+        rlCelebrity = (RelativeLayout)view.findViewById(R.id.rl_profile_info_celebrity);
+        rlEmail = (RelativeLayout)view.findViewById(R.id.rl_profile_info_email);
+        if (userModel.getUser_id().equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
+//            rlCelebrity.setVisibility(View.VISIBLE);
+            rlEmail.setVisibility(View.VISIBLE);
+        }
         ibEditAboutMe  = (ImageButton)view.findViewById(R.id.ib_info_edit_about_me);
         ibEditContact  = (ImageButton)view.findViewById(R.id.ib_info_edit_contact);
         ibEditPassword = (ImageButton)view.findViewById(R.id.ib_info_edit_password);
@@ -177,7 +185,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
             etFullname      .setEnabled(true);
             etCity          .setEnabled(true);
             tvCountry       .setEnabled(true);
-            etEmail         .setEnabled(true);
+//            etEmail         .setEnabled(true);
             tvBirthday      .setEnabled(true);
             tvGender        .setEnabled(true);
             aSwitchCelebrity.setEnabled(true);
@@ -313,7 +321,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
                                 ProfileActivity.userModel.setGender(gender);
                                 ProfileActivity.userModel.setCelebrity(celebrity);
 
-                                ProfileFragment.setCelebrity();
+                               ;
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {

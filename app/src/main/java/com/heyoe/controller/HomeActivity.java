@@ -12,10 +12,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -34,15 +37,15 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe.R;
 import com.heyoe.controller.adapters.SearchUserAutoCompleteAdapter;
 import com.heyoe.controller.fragments.ActivityFragment;
-import com.heyoe.controller.fragments.CheckinChatFragment;
+import com.heyoe.controller.fragments.CheckinFragment;
 import com.heyoe.controller.fragments.FAQFragment;
-import com.heyoe.controller.fragments.FavoriteFragment;
 import com.heyoe.controller.fragments.InviteFriendFragment;
 import com.heyoe.controller.fragments.MainFragment;
 import com.heyoe.controller.fragments.MainMenuFragment;
 import com.heyoe.controller.fragments.MoreFriendFragment;
 import com.heyoe.controller.fragments.MyFriendFragment;
 import com.heyoe.controller.fragments.NewPostFragment;
+import com.heyoe.controller.fragments.ProfileFragment;
 import com.heyoe.controller.fragments.RequestFragment;
 import com.heyoe.controller.pushnotifications.GcmServiceManager;
 import com.heyoe.model.API;
@@ -65,9 +68,9 @@ public class HomeActivity extends AppCompatActivity implements
 
 //    private ImageButton ibMenu;
 //    private SearchView searchView;
-    private AutoCompleteTextView autoCompleteTextView;
+    private static AutoCompleteTextView autoCompleteTextView;
     private static DribSearchView dribSearchView;
-    private MaterialMenuDrawable materialMenu;
+    private static MaterialMenuDrawable materialMenu;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private static SearchUserAutoCompleteAdapter searchUserAutoCompleteAdapter;
 
@@ -130,15 +133,10 @@ public class HomeActivity extends AppCompatActivity implements
             public void onChange(DribSearchView.State state) {
                 switch (state) {
                     case LINE:
-                        autoCompleteTextView.setVisibility(View.VISIBLE);
-                        autoCompleteTextView.setFocusable(true);
-                        autoCompleteTextView.setFocusableInTouchMode(true);
-                        autoCompleteTextView.requestFocus();
-                        UIUtility.showSoftKeyboard(mActivity, autoCompleteTextView);
+                        showHideSearchView(true);
                         break;
                     case SEARCH:
-                        UIUtility.hideSoftKeyboard(mActivity);
-                        autoCompleteTextView.setVisibility(View.GONE);
+                       showHideSearchView(false);
 
                         break;
                 }
@@ -190,6 +188,25 @@ public class HomeActivity extends AppCompatActivity implements
 
         navigateTo(0);
     }
+    private static void showHideSearchView(boolean flag) {
+        if (mActivity == null) {
+            return;
+        }
+        if (flag) {
+            autoCompleteTextView.setVisibility(View.VISIBLE);
+            autoCompleteTextView.setFocusable(true);
+            autoCompleteTextView.setFocusableInTouchMode(true);
+            autoCompleteTextView.requestFocus();
+            UIUtility.showSoftKeyboard(mActivity, autoCompleteTextView);
+        } else {
+            autoCompleteTextView.setText("");
+            UIUtility.hideSoftKeyboard(mActivity);
+            autoCompleteTextView.setVisibility(View.GONE);
+
+            dribSearchView.changeSearch();
+            materialMenu.animateIconState(MaterialMenuDrawable.IconState.BURGER, true);
+        }
+    }
     private void initAutoCompleteTextView() {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity ,android.R.layout.simple_list_item_1, makeSampleData());
         searchUserAutoCompleteAdapter = new SearchUserAutoCompleteAdapter(mActivity, R.layout.item_search, arrAllUsers);
@@ -201,15 +218,89 @@ public class HomeActivity extends AppCompatActivity implements
                 if (arrAllUsers.get(position).getFriendStatus().equals("none")) {
                     sendFriendRequest(position);
                 } else {
-                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user_id", arrAllUsers.get(position).getUser_id());
-//                    startActivity(intent);
+
                 }
 
             }
         });
-    }
+        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE
+                        || actionId == EditorInfo.IME_ACTION_NEXT
+                        || actionId == EditorInfo.IME_ACTION_GO
+                        || actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_SEND) {
+                    String black_pass = autoCompleteTextView.getText().toString().trim();
+                    if (Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD).equals("")
+                            && black_pass.length() > 1
+                            && black_pass.substring(0,1).equals("*")) {
+                        setBlackPassword(black_pass);
+                    }
+                }
+                return false;
+            }
+        });
+        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String black_pass = Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD);
+                if (s.toString().equals(black_pass) && !black_pass.equals("")) {
+                    Intent intent = new Intent(mActivity, Black_Friend_Activity.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+    private void setBlackPassword(final String black_pass) {
+        Utils.showProgress(mActivity);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("black_password", black_pass);
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.SET_BLACK_PASSWORD, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                Utils.saveToPreference(mActivity, Constant.BLACK_PASSWORD, black_pass);
+                                Intent intent = new Intent(mActivity, Black_Friend_Activity.class);
+                                startActivity(intent);
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
+                            } else if (status.equals("401")) {
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.user_not_exist));
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -217,6 +308,9 @@ public class HomeActivity extends AppCompatActivity implements
         fragmentManager.beginTransaction()
                 .replace(R.id.main_menu_container, mainMenuFragment)
                 .commit();
+        if (currentFragmentNum == 10) {
+            ProfileFragment.setCelebrity();
+        }
     }
 
     private static void setTitle(String title) {
@@ -224,6 +318,9 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     public static void navigateTo(int num) {
+        dribSearchView.setVisibility(View.VISIBLE);
+        setTitle("");
+
         switch (num) {
             case 0:
                 Fragment fragment = new MainFragment();
@@ -233,19 +330,18 @@ public class HomeActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, fragment)
                         .commit();
-                dribSearchView.setVisibility(View.VISIBLE);
-                setTitle("");
+
                 currentFragmentNum = 0;
                 break;
             case 1:
+                showHideSearchView(false);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new MyFriendFragment())
                         .commit();
-                dribSearchView.setVisibility(View.VISIBLE);
-                setTitle("");
                 currentFragmentNum = 1;
                 break;
             case 2:
+                showHideSearchView(false);
                 Bundle bundle1 = new Bundle();
                 bundle1.putBoolean("isEdit", false);
                 NewPostFragment fragobj = new NewPostFragment();
@@ -253,30 +349,43 @@ public class HomeActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, fragobj)
                         .commit();
-                dribSearchView.setVisibility(View.VISIBLE);
-                setTitle("");
                 currentFragmentNum = 2;
                 break;
             case 3:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new CheckinChatFragment())
-                        .commit();
-                dribSearchView.setVisibility(View.VISIBLE);
-                setTitle("");
-                currentFragmentNum = 3;
+                showHideSearchView(false);
+                Intent intent = new Intent(mActivity, UserListActivity.class);
+                intent.putExtra("type", "checkin");
+                mActivity.startActivity(intent);
                 break;
             case 4:
+                showHideSearchView(false);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new ActivityFragment())
                         .commit();
-                dribSearchView.setVisibility(View.VISIBLE);
-                setTitle("");
                 currentFragmentNum = 4;
                 break;
+
         }
+
+    }
+    public static void navigateToProfile(String userId) {
+        Fragment fragment = new ProfileFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("user_id", userId);
+        fragment.setArguments(bundle);
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+        dribSearchView.setVisibility(View.INVISIBLE);
+        setTitle(mActivity.getResources().getString(R.string.profile));
+        currentFragmentNum = 10;
+        showHideSearchView(false);
+        HomeActivity.mDrawerLayout.closeDrawers();
     }
 
     public static void menuNavigateTo(int num) {
+        dribSearchView.setVisibility(View.INVISIBLE);
+
         switch (num) {
             case 0:
                 Fragment fragment = new MainFragment();
@@ -286,7 +395,7 @@ public class HomeActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, fragment)
                         .commit();
-                dribSearchView.setVisibility(View.INVISIBLE);
+
                 setTitle(mActivity.getResources().getString(R.string.favorite));
                 currentFragmentNum = 5;
                 break;
@@ -294,7 +403,6 @@ public class HomeActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new RequestFragment())
                         .commit();
-                dribSearchView.setVisibility(View.INVISIBLE);
                 setTitle(mActivity.getResources().getString(R.string.requests));
                 currentFragmentNum = 6;
                 break;
@@ -302,7 +410,6 @@ public class HomeActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new MoreFriendFragment())
                         .commit();
-                dribSearchView.setVisibility(View.INVISIBLE);
                 setTitle(mActivity.getResources().getString(R.string.more_friends));
                 currentFragmentNum = 7;
                 break;
@@ -310,7 +417,6 @@ public class HomeActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new InviteFriendFragment())
                         .commit();
-                dribSearchView.setVisibility(View.INVISIBLE);
                 setTitle(mActivity.getResources().getString(R.string.invited_friends));
                 currentFragmentNum = 8;
                 break;
@@ -318,7 +424,6 @@ public class HomeActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, new FAQFragment())
                         .commit();
-                dribSearchView.setVisibility(View.INVISIBLE);
                 currentFragmentNum = 9;
                 break;
             case 5:
@@ -328,6 +433,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
         mDrawerLayout.closeDrawers();
     }
+
     public static void showSignOutAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(mActivity.getResources().getString(R.string.app_name));
@@ -378,6 +484,7 @@ public class HomeActivity extends AppCompatActivity implements
         mActivity.startActivity(new Intent(mActivity, SignActivity.class));
         ((HomeActivity)mActivity).finish();
     }
+
     @Override
     public void onClick(View v) {
 
@@ -420,7 +527,7 @@ public class HomeActivity extends AppCompatActivity implements
             super.onActivityResult(requestCode, resultCode, data);
         }
         switch (requestCode) {
-            case 101:
+            case 101:////from detail post
                 if (data != null ) {
                     PostModel postModel = (PostModel) data.getSerializableExtra("post");
                     if (postModel != null) {
@@ -432,17 +539,35 @@ public class HomeActivity extends AppCompatActivity implements
                     }
                 }
                 break;
-            case 102:
-                MainFragment.updateSharedCount();
-                if (resultCode == 0) {
+            case 102://from social sharing
 
+                if (resultCode == RESULT_OK) {
+                    MainFragment.updateSharedCount();
                 }
                 break;
-            case 103:
+            case 103:////from profile activity
                 if (currentFragmentNum == 0) {
                     navigateTo(0);
                 }
 
+                break;
+            case 104:////from detail post from profile
+                if (data != null) {
+                    PostModel postModel = (PostModel) data.getSerializableExtra("post");
+                    if (postModel != null) {
+                        if (resultCode == RESULT_OK) {
+                            ProfileFragment.updatePostFeed(postModel);
+                        }
+                        if (resultCode == 40) {
+                            ProfileFragment.deletePost(postModel);
+                        }
+                    }
+                }
+                break;
+            case 105://from social sharing from profile
+                if (resultCode == RESULT_OK) {
+                    ProfileFragment.updateSharedCount();
+                }
                 break;
         }
     }

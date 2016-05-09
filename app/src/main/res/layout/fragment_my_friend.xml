@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.heyoe.controller.fragments.MyFriendFragment">
 
     <LinearLayout
@@ -14,26 +15,40 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2">
-            <Button
-                android:id="@+id/btn_my_friend"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:background="@color/white"
-                android:text="@string/friends"
-                android:textColor="@color/green"
-                android:layout_weight="1"
-                />
-            <Button
-                android:id="@+id/btn_my_friend_blocked"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:layout_weight="1">
+                <Button
+                    android:id="@+id/btn_my_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:background="@color/white"
+                    android:text="@string/friends"
+                    android:textColor="@color/green"
+
+                    />
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:background="@color/grey"
-                android:text="@string/blocked"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:layout_weight="1">
+                <Button
+                    android:id="@+id/btn_my_friend_blocked"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:background="@color/grey"
+                    android:text="@string/blocked"
+                    android:textColor="@color/white"
+                    android:layout_weight="1"
+                    android:visibility="visible"
+                    />
 
-                android:textColor="@color/white"
+            </RelativeLayout>
 
-                android:layout_weight="1"
-                />
+
         </LinearLayout>
         <com.handmark.pulltorefresh.library.PullToRefreshListView
             android:layout_width="fill_parent"

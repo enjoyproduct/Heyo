@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.Volley;
 import com.heyoe.R;
 import com.heyoe.controller.DetailPostActivity;
+import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.MediaPlayActivity;
 import com.heyoe.controller.ProfileActivity;
 import com.heyoe.controller.UserListActivity;
@@ -343,9 +344,9 @@ public class PostAdapter extends BaseAdapter {
                     ibAddFriend.setVisibility(View.GONE);
             }
             if (postModel.getFriendStatus().equals("waiting")) {
-                ibAddFriend.setImageDrawable(activity.getResources().getDrawable(R.drawable.sandglass));
+                ibAddFriend.setImageDrawable(activity.getResources().getDrawable(R.drawable.sandglass_small));
             } else {
-                ibAddFriend.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_plus_green));
+                ibAddFriend.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_green_plus));
             }
             ibAddFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -361,9 +362,10 @@ public class PostAdapter extends BaseAdapter {
         myCircularImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, ProfileActivity.class);
-                intent.putExtra("user_id", postModel.getPoster_id());
-                activity.startActivityForResult(intent, 103);
+//                Intent intent = new Intent(activity, ProfileActivity.class);
+//                intent.putExtra("user_id", postModel.getPoster_id());
+//                activity.startActivityForResult(intent, 103);
+                HomeActivity.navigateToProfile(postModel.getPoster_id());
             }
         });
         if (!postModel.getPoster_avatar().equals("")) {
@@ -454,9 +456,10 @@ public class PostAdapter extends BaseAdapter {
         tvName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(activity, ProfileActivity.class);
-                intent.putExtra("user_id", postModel.getPoster_id());
-                activity.startActivity(intent);
+//                Intent intent = new Intent(activity, ProfileActivity.class);
+//                intent.putExtra("user_id", postModel.getPoster_id());
+//                activity.startActivity(intent);
+                HomeActivity.navigateToProfile(postModel.getPoster_id());
             }
         });
         TextView tvPostedDate = (TextView)view.findViewById(R.id.tv_ipff_date);

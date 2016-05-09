@@ -134,14 +134,16 @@
         <activity
             android:name=".controller.ChatActivity"
             android:label="@string/title_activity_chat"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <!--QuickBlox service and receiver-->
+            android:theme="@style/AppTheme.NoActionBar" />
+        <!-- QuickBlox service and receiver -->
         <service
             android:name="com.quickblox.q_municate_core.service.QBService"
             android:icon="@mipmap/ic_launcher" />
 
-
-
+        <activity
+            android:name=".controller.Black_Friend_Activity"
+            android:label="@string/title_activity_black__friend_"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

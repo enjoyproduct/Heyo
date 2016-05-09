@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -20,18 +19,13 @@ import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
 import com.heyoe.controller.ProfileActivity;
-import com.heyoe.controller.adapters.FavoriteAdapter;
 import com.heyoe.controller.adapters.MediaAdapter;
 import com.heyoe.model.API;
-import com.heyoe.model.CommentModel;
 import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
-import com.heyoe.model.UserModel;
 import com.heyoe.utilities.Utils;
-import com.heyoe.widget.grid.StaggeredGridView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -144,7 +138,7 @@ public class MediaFragment extends Fragment {
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
-        params.put("user_id", ProfileActivity.userId);
+        params.put("user_id", ProfileActivity.userModel.getUser_id());
         params.put("media_type", media_type);
         params.put("offset", String.valueOf(offset));
 
@@ -178,6 +172,7 @@ public class MediaFragment extends Fragment {
                                     postModel.setDescription(postObject.getString("description"));
                                     postModel.setImageWidth(Integer.parseInt(postObject.getString("width")));
                                     postModel.setImageHeight(Integer.parseInt(postObject.getString("height")));
+
 
 
                                     mArrPost.add(postModel);

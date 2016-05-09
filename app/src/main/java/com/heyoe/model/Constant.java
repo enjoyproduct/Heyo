@@ -19,8 +19,7 @@ public class Constant {
     public static String USER_ID = "user_id";
     public static String EMAIL = "email";
     public static String PASSWORD = "password";
-    public static String FIRST_NAME = "firstname";
-    public static String LAST_NAME = "lastname";
+    public static String BLACK_PASSWORD = "black_password";
     public static String FULLNAME = "fullname";
     public static String BIRTHDAY = "birthday";
     public static String GENDER = "gender";
@@ -28,7 +27,6 @@ public class Constant {
     public static String ADD_AVATAR = "add_avatar";
     public static String CITY = "city";
     public static String COUNTRY = "country";
-    public static String VERIFY_CODE = "verify_code";
     public static String CELEBRITY = "celebrity";
     public static String ABOUT_ME = "gender";
     public static String MEDIA_COUNT = "media_count";

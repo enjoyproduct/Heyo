@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
+import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.ProfileActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
@@ -518,9 +519,10 @@ public class RequestFragment extends Fragment {
             myCircularImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
-                    mActivity.startActivity(intent);
+//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+//                    mActivity.startActivity(intent);
+                    HomeActivity.navigateToProfile(arrFriends.get(position).getUser_id());
                 }
             });
             TextView tvFullname = (TextView)view.findViewById(R.id.tv_ia_irr_fullname);
@@ -528,9 +530,10 @@ public class RequestFragment extends Fragment {
             tvFullname.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
-                    mActivity.startActivity(intent);
+//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+//                    mActivity.startActivity(intent);
+                    HomeActivity.navigateToProfile(arrFriends.get(position).getUser_id());
                 }
             });
 
@@ -625,9 +628,10 @@ public class RequestFragment extends Fragment {
             myCircularImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
-                    mActivity.startActivity(intent);
+//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+//                    mActivity.startActivity(intent);
+                    HomeActivity.navigateToProfile(arrFriends.get(position).getUser_id());
                 }
             });
             TextView tvFullname = (TextView)view.findViewById(R.id.tv_irc_fullname);
@@ -635,9 +639,10 @@ public class RequestFragment extends Fragment {
             tvFullname.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
-                    mActivity.startActivity(intent);
+//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+//                    mActivity.startActivity(intent);
+                    HomeActivity.navigateToProfile(arrFriends.get(position).getUser_id());
                 }
             });
             return view;

@@ -34,6 +34,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
 import com.heyoe.controller.ChatActivity;
+import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.ProfileActivity;
 import com.heyoe.controller.adapters.MediaAdapter;
 import com.heyoe.model.API;
@@ -179,6 +180,7 @@ public class MyFriendFragment extends Fragment {
         friendAdapter = new FriendAdapter(arrActiveUsers);
         lvHome.setAdapter(friendAdapter);
     }
+
     private void getFriends() {
         Utils.showProgress(mActivity);
 
@@ -417,6 +419,48 @@ public class MyFriendFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
+    private void addToBlackList(final int position) {
+        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("friend_id", arrActiveUsers.get(position).getUser_id());
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.ADD_BLACK_FRIEND, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                arrActiveUsers.remove(position);
+
+                                friendAdapter.notifyDataSetChanged();
+
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
+    }
+
     public class FriendAdapter extends BaseSwipeAdapter {
 
         LayoutInflater mlayoutInflater;
@@ -490,7 +534,13 @@ public class MyFriendFragment extends Fragment {
                     mItemManger.closeAllItems();
                 }
             });
-
+            swipeLayout.findViewById(R.id.black_chat).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addToBlackList(position);
+                    mItemManger.closeAllItems();
+                }
+            });
             swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
                 @Override
                 public void onStartOpen(SwipeLayout layout) {
@@ -554,9 +604,10 @@ public class MyFriendFragment extends Fragment {
             myCircularImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user_id", userModel.getUser_id());
-                    mActivity.startActivity(intent);
+//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                    intent.putExtra("user_id", userModel.getUser_id());
+//                    mActivity.startActivity(intent);
+                    HomeActivity.navigateToProfile(userModel.getUser_id());
                 }
             });
 
@@ -565,9 +616,10 @@ public class MyFriendFragment extends Fragment {
             tvFullname.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user_id", userModel.getUser_id());
-                    mActivity.startActivity(intent);
+//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                    intent.putExtra("user_id", userModel.getUser_id());
+//                    mActivity.startActivity(intent);
+                    HomeActivity.navigateToProfile(userModel.getUser_id());
                 }
             });
 //            TextView tvLastMsg = (TextView)convertView.findViewById(R.id.tv_if_last_msg);
@@ -750,10 +802,7 @@ public class MyFriendFragment extends Fragment {
             @Override
             public void onSuccess(QBSession qbSession, Bundle bundle) {
 
-
                 user.setId(qbSession.getUserId());
-
-//                fetchUserList();
                 getDialogs();
             }
 
@@ -815,36 +864,6 @@ public class MyFriendFragment extends Fragment {
             }
         });
     }
-    QBRosterListener rosterListener = new QBRosterListener() {
-        @Override
-        public void entriesDeleted(Collection<Integer> userIds) {
-
-        }
-
-        @Override
-        public void entriesAdded(Collection<Integer> userIds) {
-
-        }
-
-        @Override
-        public void entriesUpdated(Collection<Integer> userIds) {
-
-        }
-
-        @Override
-        public void presenceChanged(QBPresence presence) {
-
-        }
-    };
-
-    QBSubscriptionListener subscriptionListener = new QBSubscriptionListener() {
-        @Override
-        public void subscriptionRequested(int userId) {
-
-        }
-    };
-
-
 
 
     private void fetchUserList()
@@ -854,10 +873,6 @@ public class MyFriendFragment extends Fragment {
         pagedRequestBuilder.setPerPage(100);
 
         arrUsers = new ArrayList<>();
-
-
-
-
 
         QBUsers.getUsers(pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
             @Override

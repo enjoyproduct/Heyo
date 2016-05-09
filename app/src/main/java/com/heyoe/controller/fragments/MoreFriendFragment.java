@@ -27,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
+import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.ProfileActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
@@ -77,12 +78,13 @@ public class MoreFriendFragment extends Fragment {
         arrUsers = new ArrayList<>();
     }
     private void initUI(View view) {
-///create listview
+        ///create listview
         mPullRefreshHomeListView = (PullToRefreshListView) view.findViewById(R.id.lv_more_friends);
         mPullRefreshHomeListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
             @Override
             public void onLastItemVisible() {
                 if (!isLast) {
+                    getNonFriends();
                 }
                 mPullRefreshHomeListView.onRefreshComplete();
 
@@ -260,18 +262,20 @@ public class MoreFriendFragment extends Fragment {
             myCircularImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
-                    mActivity.startActivity(intent);
+//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+//                    mActivity.startActivity(intent);
+                    HomeActivity.navigateToProfile(arrFriends.get(position).getUser_id());
                 }
             });
             TextView tvName = (TextView)view.findViewById(R.id.tv_imf_friend_name);
             tvName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
-                    mActivity.startActivity(intent);
+//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
+//                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+//                    mActivity.startActivity(intent);
+                    HomeActivity.navigateToProfile(arrFriends.get(position).getUser_id());
                 }
             });
             TextView tvAboutMe = (TextView)view.findViewById(R.id.tv_imf_aboutme);
