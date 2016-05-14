@@ -59,6 +59,7 @@ import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.BitmapUtility;
 import com.heyoe.utilities.FileUtility;
+import com.heyoe.utilities.StringUtility;
 import com.heyoe.utilities.TimeUtility;
 import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
@@ -76,9 +77,15 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import me.kaede.tagview.OnTagClickListener;
+import me.kaede.tagview.Tag;
+import me.kaede.tagview.TagView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -271,6 +278,9 @@ public class ProfileFragment extends Fragment {
                                     postModel.setViewed_count(postObject.getString("viewed_count"));
                                     postModel.setLike(postObject.getString("like"));
                                     postModel.setDescription(postObject.getString("description"));
+//                                    postModel.setFriend_tag(postObject.getString("tag"));
+//                                    postModel.setFriend_ids(postObject.getString("tag_ids"));
+                                    postModel.setHashtag(postObject.getString("hashtag"));
                                     postModel.setCommented(postObject.getString("commented"));
                                     postModel.setFavorite(postObject.getString("favorite"));
                                     postModel.setImageWidth(Integer.parseInt(postObject.getString("width")));
@@ -421,6 +431,8 @@ public class ProfileFragment extends Fragment {
                                 mProfileAdapter.notifyDataSetChanged();
                                 FileUtility.deleteFile(avatarPath);
 
+                                ///update menu avatar
+                                HomeActivity.resetMenu();
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             }else  if (status.equals("401")) {
@@ -592,6 +604,7 @@ public class ProfileFragment extends Fragment {
 
                 ivMedia = (ImageView)view.findViewById(R.id.iv_profile_media);
                 if (!userModel.getHeader_photo().equals("")) {
+
                     UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, API.BASE_HEADER_PHOTO + userModel.getHeader_photo(), R.drawable.default_tour, new UrlImageViewCallback() {
                         @Override
                         public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
@@ -889,6 +902,7 @@ public class ProfileFragment extends Fragment {
                     videoUrl = postModel.getMedia_url();
                 }
                 if (!postModel.getMedia_url().equals("")) {
+                    ivMedia.setVisibility(View.VISIBLE);
                     UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, imageUrl, R.drawable.default_tour, new UrlImageViewCallback() {
                         @Override
                         public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
@@ -903,10 +917,12 @@ public class ProfileFragment extends Fragment {
                             }
                         }
                     });
+                } else {
+                    ivMedia.setVisibility(View.GONE);
                 }
 
                 ImageButton ibPlay = (ImageButton)view.findViewById(R.id.ib_ipff_play);
-                if (postModel.getMedia_type().equals("post_photo")) {
+                if (postModel.getMedia_type().equals("post_photo") || postModel.getMedia_type().equals("")) {
                     ibPlay.setVisibility(View.GONE);
                 } else {
                     ibPlay.setVisibility(View.VISIBLE);
@@ -932,7 +948,43 @@ public class ProfileFragment extends Fragment {
                 tvPostedDate.setText(TimeUtility.countTime(mActivity, Long.parseLong(postModel.getPosted_date()) ));
 
                 TextView tvDescription = (TextView)view.findViewById(R.id.tv_ipff_description);
-                tvDescription.setText(Html.fromHtml(postModel.getDescription()));
+                String str1 = postModel.getDescription();
+//                if (str1.lastIndexOf("\n") != 0) {
+//                    str1 = str1.substring(0, str1.length() - 1);
+//                }
+                CharSequence str2 = StringUtility.trimTrailingWhitespace(Html.fromHtml(str1));
+                tvDescription.setText(str2);
+                tvDescription.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(mActivity, DetailPostActivity.class);
+                        intent.putExtra("post", postModel);
+                        mActivity.startActivityForResult(intent, 104);
+                    }
+                });
+
+                //hashtag
+                TagView hashTagView = (TagView)view.findViewById(R.id.ipff_hashtag);
+                List<String> hashTags = new ArrayList<>();
+                if (postModel.getHashtag().length() > 0) {
+                    hashTags = Arrays.asList(postModel.getHashtag().split("#"));
+                    for (int j = 0; j < hashTags.size(); j ++) {
+
+                        Tag tag = new Tag("#" + hashTags.get(j));
+//                        tag.radius = 5f;
+                        tag.layoutColor = getResources().getColor(R.color.transparent);
+                        tag.tagTextColor =  getResources().getColor(R.color.green);
+                        hashTagView.addTag(tag);
+                    }
+                }
+                hashTagView.setOnTagClickListener(new OnTagClickListener() {
+
+                    @Override
+                    public void onTagClick(Tag tag, int position) {
+
+                    }
+                });
+
             }
             return view;
         }

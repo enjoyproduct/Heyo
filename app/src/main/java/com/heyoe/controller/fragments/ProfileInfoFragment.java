@@ -124,17 +124,32 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
                 tvGender.setOnClickListener(this);
 
             }
-            etFullname.setText(userModel.getFullname());
-            etCity    .setText(userModel.getCity());
-            tvCountry .setText(userModel.getCountry());
-            etEmail   .setText(userModel.getEmail());
-            tvBirthday.setText(userModel.getBirthday());
-            tvGender  .setText(userModel.getGender());
-            etAboutMe .setText(userModel.getAbout_you());
+            if (userModel.getUser_id().equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
+                etFullname.setText(Utils.getFromPreference(mActivity, Constant.FULLNAME));
+                etCity    .setText(Utils.getFromPreference(mActivity, Constant.CITY));
+                tvCountry .setText(Utils.getFromPreference(mActivity, Constant.COUNTRY));
+                etEmail   .setText(Utils.getFromPreference(mActivity, Constant.EMAIL));
+                tvBirthday.setText(Utils.getFromPreference(mActivity, Constant.BIRTHDAY));
+                tvGender  .setText(Utils.getFromPreference(mActivity, Constant.GENDER));
+                etAboutMe .setText(Utils.getFromPreference(mActivity, Constant.ABOUT_ME));
 
-            if (userModel.getCelebrity().equals("yes")) {
-                aSwitchCelebrity.setChecked(true);
+                if (Utils.getFromPreference(mActivity, Constant.CELEBRITY).equals("yes")) {
+                    aSwitchCelebrity.setChecked(true);
+                }
+            } else {
+                etFullname.setText(userModel.getFullname());
+                etCity    .setText(userModel.getCity());
+                tvCountry .setText(userModel.getCountry());
+                etEmail   .setText(userModel.getEmail());
+                tvBirthday.setText(userModel.getBirthday());
+                tvGender  .setText(userModel.getGender());
+                etAboutMe .setText(userModel.getAbout_you());
+
+                if (userModel.getCelebrity().equals("yes")) {
+                    aSwitchCelebrity.setChecked(true);
+                }
             }
+
         }
 
     }
@@ -321,7 +336,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
                                 ProfileActivity.userModel.setGender(gender);
                                 ProfileActivity.userModel.setCelebrity(celebrity);
 
-                               ;
+
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {

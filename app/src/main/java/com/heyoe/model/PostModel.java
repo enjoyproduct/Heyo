@@ -12,6 +12,32 @@ public class PostModel implements Serializable{
         like, favorite, commented;
     String friendStatus;
     String poster_fullname;
+    String  hashtag;
+
+//    public String getFriend_tag() {
+//        return friend_tag;
+//    }
+//
+//    public void setFriend_tag(String friend_tag) {
+//        this.friend_tag = friend_tag;
+//    }
+//
+//    public String getFriend_ids() {
+//        return friend_ids;
+//    }
+//
+//    public void setFriend_ids(String friend_ids) {
+//        this.friend_ids = friend_ids;
+//    }
+
+    public String getHashtag() {
+        return hashtag;
+    }
+
+    public void setHashtag(String hashtag) {
+        this.hashtag = hashtag;
+    }
+
     Long clickedTime;
     int imageWidth, imageHeight;
 

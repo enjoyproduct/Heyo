@@ -155,13 +155,25 @@ public class Utils {
         edit.putString(key, value);
 
 
-        edit.commit();
+        edit.apply();
     }
     public static String getFromPreference(Context context, String key) {
         return getSharedPreferences(context).getString(key, "");
     }
 
+    public static void saveIntToPreference(Context context, String key, int value){
+        SharedPreferences preferences = getSharedPreferences(context);
+        /////////save user information in preference
+        SharedPreferences.Editor edit = preferences.edit();
 
+        edit.putInt(key, value);
+
+
+        edit.apply();
+    }
+    public static int getIntFromPreference(Context context, String key) {
+        return getSharedPreferences(context).getInt(key, 0);
+    }
 
     public static void CopyStream(InputStream is, OutputStream os) {
         final int buffer_size = 1024;

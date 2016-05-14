@@ -33,7 +33,7 @@ public class Constant {
     public static String FRIEND_COUNT = "friend_count";
     public static String HEADER_PHOTO = "header_photo";
     public static String HEADER_VIDEO = "header_video";
-
+    public static String QB_ID = "qb_id";
 
     ///for facebook login
     public static String FB_EMAIL = INDECATOR + "_fb_email";
@@ -45,7 +45,7 @@ public class Constant {
     public static int PLACE_AUTOCOMPLETE_REQUEST_CODE = 101;
     public static int REQUEST_PLACE_PICKER = 102;
 
-
+    ///QB
     public static String APP_ID = "39876";
     public static String AUTH_KEY = "zYac8X4A2Zs3z9y";
     public static String AUTH_SECRET = "OxhcUz3rrnSaeVJ";
@@ -53,5 +53,7 @@ public class Constant {
 
     public static String DEFAULT_PASSWORD = "135792468";
 
-    public static String QB_ID = "qb_id";
+    public static String MSG_COUNT = "msg_count";
+    public static String ACTIVITY_COUNT = "activity_count";
+
 }

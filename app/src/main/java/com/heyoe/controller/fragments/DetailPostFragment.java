@@ -34,6 +34,7 @@ import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
 import com.heyoe.R;
 import com.heyoe.controller.DetailPostActivity;
+import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.MediaPlayActivity;
 import com.heyoe.controller.ProfileActivity;
 import com.heyoe.controller.adapters.RecyclerAdapter;
@@ -43,6 +44,7 @@ import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.FileUtility;
+import com.heyoe.utilities.StringUtility;
 import com.heyoe.utilities.TimeUtility;
 import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
@@ -54,9 +56,14 @@ import com.heyoe.widget.MyCircularImageView;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import me.kaede.tagview.OnTagClickListener;
+import me.kaede.tagview.Tag;
+import me.kaede.tagview.TagView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -314,11 +321,13 @@ public class DetailPostFragment extends Fragment {
         requestQueue.add(customRequest);
     }
     public  void showCommentDlg() {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(mActivity.getResources().getString(R.string.type_comment_below));
         builder.setCancelable(true);
         View customView = layoutInflater.inflate(R.layout.custom_comment, null);
         final EditText etComment = (EditText)customView.findViewById(R.id.et_comment);
+        UIUtility.showSoftKeyboard(mActivity, etComment);
         builder.setView(customView);
 
         builder.setPositiveButton("Send",
@@ -402,6 +411,7 @@ public class DetailPostFragment extends Fragment {
         postModel.setShared_count(String.valueOf(shardCount));
 //        tvSharedCount.setText(String.valueOf(shardCount));
     }
+
     public class UserAdpater extends BaseAdapter {
 
         LayoutInflater mlayoutInflater;
@@ -542,6 +552,7 @@ public class DetailPostFragment extends Fragment {
                     videoUrl = postModel.getMedia_url();
                 }
                 if (!postModel.getMedia_url().equals("")) {
+                    ivMedia.setVisibility(View.VISIBLE);
                     UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, imageUrl, R.drawable.default_tour, new UrlImageViewCallback() {
                         @Override
                         public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
@@ -556,10 +567,12 @@ public class DetailPostFragment extends Fragment {
                             }
                         }
                     });
+                }else {
+                    ivMedia.setVisibility(View.GONE);
                 }
 
                 ImageButton ibPlay = (ImageButton)view.findViewById(R.id.ib_ipff_play);
-                if (postModel.getMedia_type().equals("post_photo")) {
+                if (postModel.getMedia_type().equals("post_photo")  || postModel.getMedia_type().equals("")) {
                     ibPlay.setVisibility(View.GONE);
                 } else {
                     ibPlay.setVisibility(View.VISIBLE);
@@ -585,8 +598,36 @@ public class DetailPostFragment extends Fragment {
                 tvPostedDate.setText(TimeUtility.countTime(mActivity, Long.parseLong(postModel.getPosted_date())));
 
                 TextView tvDescription = (TextView)view.findViewById(R.id.tv_ipff_description);
-                tvDescription.setText(Html.fromHtml(postModel.getDescription()));
+                String str1 = postModel.getDescription();
+//                if (str1.lastIndexOf("\n") != 0) {
+//                    str1 = str1.substring(0, str1.length() - 1);
+//                }
+                CharSequence str2 = StringUtility.trimTrailingWhitespace(Html.fromHtml(str1));
+                tvDescription.setText(str2);
 
+                //hashtag
+                TagView hashTagView = (TagView)view.findViewById(R.id.ipff_hashtag);
+                List<String> hashTags = new ArrayList<>();
+                if (postModel.getHashtag().length() > 0) {
+                    hashTags = Arrays.asList(postModel.getHashtag().split("#"));
+                    for (int j = 0; j < hashTags.size(); j ++) {
+
+                        Tag tag = new Tag("#" + hashTags.get(j));
+//                        tag.radius = 5f;
+                        tag.layoutColor = getResources().getColor(R.color.transparent);
+                        tag.tagTextColor =  getResources().getColor(R.color.green);
+                        hashTagView.addTag(tag);
+                    }
+                }
+                hashTagView.setOnTagClickListener(new OnTagClickListener() {
+
+                    @Override
+                    public void onTagClick(Tag tag, int position) {
+
+                    }
+                });
+
+                ///social icon
                 ibLike = (ImageButton)view.findViewById(R.id.ib_ipff_like);
                 ibLike.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -32,6 +32,9 @@ import com.android.volley.error.VolleyError;
 import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
 import com.balysv.materialmenu.MaterialMenuDrawable;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.AppInviteContent;
+import com.facebook.share.widget.AppInviteDialog;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe.R;
@@ -43,6 +46,7 @@ import com.heyoe.controller.fragments.InviteFriendFragment;
 import com.heyoe.controller.fragments.MainFragment;
 import com.heyoe.controller.fragments.MainMenuFragment;
 import com.heyoe.controller.fragments.MoreFriendFragment;
+import com.heyoe.controller.fragments.MyBlackFriendsFregment;
 import com.heyoe.controller.fragments.MyFriendFragment;
 import com.heyoe.controller.fragments.NewPostFragment;
 import com.heyoe.controller.fragments.ProfileFragment;
@@ -78,8 +82,10 @@ public class HomeActivity extends AppCompatActivity implements
     private RelativeLayout rlMain, rlFriends, rlNewPost, rlCheckin, rlActivity;
     public static DrawerLayout mDrawerLayout;
     private static FragmentManager fragmentManager;
-    private MainMenuFragment mainMenuFragment;
+    private static MainMenuFragment mainMenuFragment;
     private static TextView tvTitle;
+    private static TextView tvMsgCount;
+    private static TextView tvActivityCount;
     private static Activity mActivity;
 
     private static ArrayList<UserModel> arrAllUsers;
@@ -95,9 +101,10 @@ public class HomeActivity extends AppCompatActivity implements
 
         initVariables();
         initUI();
-        setOffline("on");
+
         getAllUsers();
     }
+
     private void initVariables() {
         fragmentManager = getSupportFragmentManager();
         mActivity = this;
@@ -112,6 +119,9 @@ public class HomeActivity extends AppCompatActivity implements
 
         tvTitle = (TextView)findViewById(R.id.tv_home_title);
         this.setTitle("");
+
+        tvMsgCount = (TextView)findViewById(R.id.txt_msg_count);
+        tvActivityCount = (TextView)findViewById(R.id.txt_activity_count);
 
         //init autocomplete search view/////////////////////////////////////////////////
 
@@ -185,9 +195,54 @@ public class HomeActivity extends AppCompatActivity implements
         rlActivity.setOnClickListener(this);
 
 //        setupNavigationDrawer(toolbar);
+        int pagenumber = getIntent().getIntExtra("page_num", 0);
+        if (pagenumber > 4) {
+            menuNavigateTo( pagenumber - 5);
+        } else {
+            navigateTo(pagenumber);
+        }
 
-        navigateTo(0);
+        showActivityBadge();
     }
+    public static void showActivityBadge() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                int activityCount = Utils.getIntFromPreference(mActivity, Constant.ACTIVITY_COUNT);
+                if (activityCount > 0) {
+                    tvActivityCount.setVisibility(View.VISIBLE);
+                    tvActivityCount.setText(String.valueOf(activityCount));
+                } else {
+                    tvActivityCount.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+
+    }
+    public static void showMsgBadge(final String user_id) {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                int msgCount = Utils.getIntFromPreference(mActivity, Constant.MSG_COUNT);
+                if (msgCount > 0) {
+                    tvMsgCount.setVisibility(View.VISIBLE);
+                    tvMsgCount.setText(String.valueOf(msgCount));
+                    if (currentFragmentNum == 1 && !user_id.equals("")) {
+                        MyFriendFragment.updateUnreadMsgCount(user_id);
+                    }
+                } else {
+                    tvMsgCount.setVisibility(View.INVISIBLE);
+                }
+
+
+            }
+        });
+
+
+    }
+
     private static void showHideSearchView(boolean flag) {
         if (mActivity == null) {
             return;
@@ -207,6 +262,7 @@ public class HomeActivity extends AppCompatActivity implements
             materialMenu.animateIconState(MaterialMenuDrawable.IconState.BURGER, true);
         }
     }
+
     private void initAutoCompleteTextView() {
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity ,android.R.layout.simple_list_item_1, makeSampleData());
         searchUserAutoCompleteAdapter = new SearchUserAutoCompleteAdapter(mActivity, R.layout.item_search, arrAllUsers);
@@ -251,8 +307,9 @@ public class HomeActivity extends AppCompatActivity implements
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String black_pass = Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD);
                 if (s.toString().equals(black_pass) && !black_pass.equals("")) {
-                    Intent intent = new Intent(mActivity, Black_Friend_Activity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(mActivity, Black_Friend_Activity.class);
+//                    startActivity(intent);
+                    navigateToBlackChat();
                 }
             }
 
@@ -279,8 +336,9 @@ public class HomeActivity extends AppCompatActivity implements
                             String status = response.getString("status");
                             if (status.equals("200")) {
                                 Utils.saveToPreference(mActivity, Constant.BLACK_PASSWORD, black_pass);
-                                Intent intent = new Intent(mActivity, Black_Friend_Activity.class);
-                                startActivity(intent);
+//                                Intent intent = new Intent(mActivity, Black_Friend_Activity.class);
+//                                startActivity(intent);
+                                navigateToBlackChat();
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("401")) {
@@ -304,15 +362,18 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        setOffline("on");
+       resetMenu();
+    }
+    public static void resetMenu() {
         mainMenuFragment = new MainMenuFragment();
         fragmentManager.beginTransaction()
                 .replace(R.id.main_menu_container, mainMenuFragment)
                 .commit();
         if (currentFragmentNum == 10) {
-            ProfileFragment.setCelebrity();
+//            ProfileFragment.setCelebrity();
         }
     }
-
     private static void setTitle(String title) {
         tvTitle.setText(title);
     }
@@ -326,6 +387,7 @@ public class HomeActivity extends AppCompatActivity implements
                 Fragment fragment = new MainFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isFavorite", false);
+                bundle.putString("hashtag", "");
                 fragment.setArguments(bundle);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, fragment)
@@ -382,7 +444,15 @@ public class HomeActivity extends AppCompatActivity implements
         showHideSearchView(false);
         HomeActivity.mDrawerLayout.closeDrawers();
     }
-
+    public static void navigateToBlackChat() {
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, new MyBlackFriendsFregment())
+                .commit();
+        dribSearchView.setVisibility(View.INVISIBLE);
+        currentFragmentNum = 11;
+        showHideSearchView(false);
+        HomeActivity.mDrawerLayout.closeDrawers();
+    }
     public static void menuNavigateTo(int num) {
         dribSearchView.setVisibility(View.INVISIBLE);
 
@@ -391,6 +461,7 @@ public class HomeActivity extends AppCompatActivity implements
                 Fragment fragment = new MainFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isFavorite", true);
+                bundle.putString("hashtag", "");
                 fragment.setArguments(bundle);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, fragment)
@@ -414,11 +485,12 @@ public class HomeActivity extends AppCompatActivity implements
                 currentFragmentNum = 7;
                 break;
             case 3:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new InviteFriendFragment())
-                        .commit();
-                setTitle(mActivity.getResources().getString(R.string.invited_friends));
-                currentFragmentNum = 8;
+                fbInviteDlg();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, new InviteFriendFragment())
+//                        .commit();
+//                setTitle(mActivity.getResources().getString(R.string.invited_friends));
+//                currentFragmentNum = 8;
                 break;
             case 4:
                 fragmentManager.beginTransaction()
@@ -433,57 +505,25 @@ public class HomeActivity extends AppCompatActivity implements
         }
         mDrawerLayout.closeDrawers();
     }
+    public static void navigateForHashTag(boolean isFavorite, String hashtag) {
+        dribSearchView.setVisibility(View.INVISIBLE);
 
-    public static void showSignOutAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle(mActivity.getResources().getString(R.string.app_name));
-        builder.setMessage("Do you want to log out?");
-        builder.setCancelable(true);
-        builder.setPositiveButton("Log Out",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        sign_out();
-                    }
-                });
-        builder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+        Fragment fragment = new MainFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isFavorite", isFavorite);
+        bundle.putString("hashtag", hashtag);
+        fragment.setArguments(bundle);
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
 
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-    private static void sign_out() {
-
-        setOffline("off");
-
-        Utils.saveToPreference(mActivity, Constant.DEVICE_TOKEN, "");
-        Utils.saveToPreference(mActivity, Constant.USER_ID, "");
-        Utils.saveToPreference(mActivity, Constant.EMAIL, "");
-        Utils.saveToPreference(mActivity, Constant.PASSWORD, "");
-        Utils.saveToPreference(mActivity, Constant.BLACK_PASSWORD, "");
-        Utils.saveToPreference(mActivity, Constant.FULLNAME, "");
-        Utils.saveToPreference(mActivity, Constant.CITY, "");
-        Utils.saveToPreference(mActivity, Constant.COUNTRY, "");
-        Utils.saveToPreference(mActivity, Constant.BIRTHDAY, "");
-        Utils.saveToPreference(mActivity, Constant.GENDER, "");
-        Utils.saveToPreference(mActivity, Constant.CELEBRITY, "");
-        Utils.saveToPreference(mActivity, Constant.ABOUT_ME, "");
-        Utils.saveToPreference(mActivity, Constant.MEDIA_COUNT, "");
-        Utils.saveToPreference(mActivity, Constant.FRIEND_COUNT, "");
-        Utils.saveToPreference(mActivity, Constant.AVATAR, "");
-        Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, "");
-        Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, "");
-        Utils.saveToPreference(mActivity, Constant.FB_ACCESS_TOKEN, "");
-        Utils.saveToPreference(mActivity, Constant.FB_NAME, "");
-        Utils.saveToPreference(mActivity, Constant.FB_EMAIL, "");
-        Utils.saveToPreference(mActivity, Constant.FB_PHOTO, "");
-
-
-        mActivity.startActivity(new Intent(mActivity, SignActivity.class));
-        ((HomeActivity)mActivity).finish();
+        setTitle(hashtag);
+        if (isFavorite) {
+            currentFragmentNum = 5;
+        } else {
+            currentFragmentNum = 0;
+        }
+        mDrawerLayout.closeDrawers();
     }
 
     @Override
@@ -506,7 +546,7 @@ public class HomeActivity extends AppCompatActivity implements
             navigateTo(4);
         }
     }
-//    static MenuItem searchItem;
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -528,7 +568,7 @@ public class HomeActivity extends AppCompatActivity implements
             super.onActivityResult(requestCode, resultCode, data);
         }
         switch (requestCode) {
-            case 101:////from detail post
+            case 101:////from detail post in main
                 if (data != null ) {
                     PostModel postModel = (PostModel) data.getSerializableExtra("post");
                     if (postModel != null) {
@@ -536,6 +576,9 @@ public class HomeActivity extends AppCompatActivity implements
                         postModels.add(postModel);
                         if (resultCode == RESULT_OK) {
                             MainFragment.updatePostFeed(postModels);
+                        }
+                        if (resultCode == 40) {
+                            MainFragment.deletePost(postModels);
                         }
                     }
                 }
@@ -552,7 +595,7 @@ public class HomeActivity extends AppCompatActivity implements
                 }
 
                 break;
-            case 104:////from detail post from profile
+            case 104:////from detail post in profile
                 if (data != null) {
                     PostModel postModel = (PostModel) data.getSerializableExtra("post");
                     if (postModel != null) {
@@ -565,13 +608,27 @@ public class HomeActivity extends AppCompatActivity implements
                     }
                 }
                 break;
-            case 105://from social sharing from profile
+            case 105://from social sharing in profile
                 if (resultCode == RESULT_OK) {
                     ProfileFragment.updateSharedCount();
                 }
                 break;
+            case 106: //from chat activity
+                if (resultCode == RESULT_OK) {
+                    if (currentFragmentNum == 1) {
+                        UserModel userModel = (UserModel)data.getSerializableExtra("user");
+                        if (userModel != null) {
+                            MyFriendFragment.updateUserState(userModel);
+                        }
+
+                    }
+                }
+                break;
         }
     }
+
+
+
     //get all users
     private void getAllUsers() {
 
@@ -690,6 +747,10 @@ public class HomeActivity extends AppCompatActivity implements
         requestQueue.add(signinRequest);
     }
 
+
+
+
+
     //    if set up this method, cannot close searchview
     public void setupNavigationDrawer(Toolbar toolbar){
         actionBarDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,
@@ -710,6 +771,9 @@ public class HomeActivity extends AppCompatActivity implements
         actionBarDrawerToggle.syncState();
     }
 
+
+
+
     @Override
     protected void onDestroy() {
         if (Utils.getFromPreference(mActivity, Constant.USER_ID).length() > 0) {
@@ -717,6 +781,61 @@ public class HomeActivity extends AppCompatActivity implements
         }
         super.onDestroy();
 
+    }
+    public static void showSignOutAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(mActivity.getResources().getString(R.string.app_name));
+        builder.setMessage("Do you want to log out?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("Log Out",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        sign_out();
+                    }
+                });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    private static void sign_out() {
+
+        setOffline("off");
+
+        Utils.saveToPreference(mActivity, Constant.DEVICE_TOKEN, "");
+//        String docken = Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN);
+        Utils.saveToPreference(mActivity, Constant.USER_ID, "");
+        Utils.saveToPreference(mActivity, Constant.EMAIL, "");
+        Utils.saveToPreference(mActivity, Constant.PASSWORD, "");
+        Utils.saveToPreference(mActivity, Constant.BLACK_PASSWORD, "");
+        Utils.saveToPreference(mActivity, Constant.FULLNAME, "");
+        Utils.saveToPreference(mActivity, Constant.CITY, "");
+        Utils.saveToPreference(mActivity, Constant.COUNTRY, "");
+        Utils.saveToPreference(mActivity, Constant.BIRTHDAY, "");
+        Utils.saveToPreference(mActivity, Constant.GENDER, "");
+        Utils.saveToPreference(mActivity, Constant.CELEBRITY, "");
+        Utils.saveToPreference(mActivity, Constant.ABOUT_ME, "");
+        Utils.saveToPreference(mActivity, Constant.MEDIA_COUNT, "");
+        Utils.saveToPreference(mActivity, Constant.FRIEND_COUNT, "");
+        Utils.saveToPreference(mActivity, Constant.AVATAR, "");
+        Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, "");
+        Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, "");
+        Utils.saveToPreference(mActivity, Constant.QB_ID, "");
+        Utils.saveToPreference(mActivity, Constant.FB_ACCESS_TOKEN, "");
+        Utils.saveToPreference(mActivity, Constant.FB_NAME, "");
+        Utils.saveToPreference(mActivity, Constant.FB_EMAIL, "");
+        Utils.saveToPreference(mActivity, Constant.FB_PHOTO, "");
+
+        Utils.saveIntToPreference(mActivity, Constant.MSG_COUNT, 0);
+        Utils.saveIntToPreference(mActivity, Constant.ACTIVITY_COUNT, 0);
+
+        mActivity.startActivity(new Intent(mActivity, SignActivity.class));
+        ((HomeActivity)mActivity).finish();
     }
     public static void setOffline(String status) {
 
@@ -753,4 +872,21 @@ public class HomeActivity extends AppCompatActivity implements
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
+
+    public static void fbInviteDlg() {
+        String appLinkUrl, previewImageUrl;
+        FacebookSdk.sdkInitialize(mActivity);
+
+        appLinkUrl = "http://www.heyoe.com/";
+        previewImageUrl = API.BASE_APP;
+
+        if (AppInviteDialog.canShow()) {
+            AppInviteContent content = new AppInviteContent.Builder()
+                    .setApplinkUrl(appLinkUrl)
+//                    .setPreviewImageUrl(previewImageUrl)
+                    .build();
+            AppInviteDialog.show(mActivity, content);
+        }
+    }
+
 }

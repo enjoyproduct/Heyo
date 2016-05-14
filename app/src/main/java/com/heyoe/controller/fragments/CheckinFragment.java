@@ -17,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,16 @@ import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBPrivateChatManager;
+import com.quickblox.chat.model.QBDialog;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.users.model.QBUser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -166,6 +177,7 @@ public class CheckinFragment extends Fragment {
     }
 
     private void getCheckinUsers() {
+        Utils.showProgress(mActivity);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
@@ -236,8 +248,13 @@ public class CheckinFragment extends Fragment {
 
                                     arrUsers.add(userModel);
                                 }
+                                if (userCount > 0) {
+                                    createSession();
+                                } else {
+                                    Utils.hideProgress();
+                                    mPullRefreshHomeListView.onRefreshComplete();
+                                }
 
-                                checkinUserAdapter.notifyDataSetChanged();
 
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
@@ -374,6 +391,65 @@ public class CheckinFragment extends Fragment {
         requestQueue.add(signinRequest);
     }
 
+    private QBChatService chatService;
+    private QBUser user;
+
+    private void createSession(){
+//        Utils.showProgress(mActivity);
+        chatService = QBChatService.getInstance();
+        user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
+        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                user.setId(qbSession.getUserId());
+                getDialogs();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.hideProgress();
+
+                Utils.showToast(mActivity, e.getLocalizedMessage());
+            }
+        });
+    }
+    private void getDialogs(){
+        QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
+        QBChatService.getChatDialogs(null, requestGetBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
+            @Override
+            public void onSuccess(ArrayList<QBDialog> qbDialogs, Bundle bundle) {
+
+                Utils.hideProgress();
+
+                ArrayList<QBDialog> arr = qbDialogs;
+                for(int i = 0; i < arrUsers.size(); i ++) {
+                    arrUsers.get(i).setUnreadMsgCount(0);
+                    arrUsers.get(i).setDialog_id("0");
+                    for (QBDialog dialog : arr) {
+                        if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrUsers.get(i).getQb_id()))) {
+                            ///get unread message count and dialog id
+                            arrUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
+                            arrUsers.get(i).setDialog_id(dialog.getDialogId());
+
+
+                            break;
+                        }
+                    }
+
+                }
+                checkinUserAdapter.notifyDataSetChanged();
+                mPullRefreshHomeListView.onRefreshComplete();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.hideProgress();
+            }
+        });
+    }
+
     public class CheckinUserAdapter extends BaseAdapter {
 
         LayoutInflater mlayoutInflater;
@@ -432,9 +508,12 @@ public class CheckinFragment extends Fragment {
 //                    HomeActivity.navigateToProfile(arrFriends.get(position).getUser_id());
                 }
             });
+
             TextView tvAboutMe = (TextView)view.findViewById(R.id.tv_imf_aboutme);
             ImageButton ibAdd = (ImageButton)view.findViewById(R.id.ib_imf_add);
             ImageButton ibChat = (ImageButton)view.findViewById(R.id.ib_imf_chat);
+            RelativeLayout rlChatBubble = (RelativeLayout)view.findViewById(R.id.rl_checkin_chat_bubble);
+
             tvName.setText(arrFriends.get(position).getFullname());
             tvAboutMe.setText(arrFriends.get(position).getAbout_you());
             ibAdd.setOnClickListener(new View.OnClickListener() {
@@ -446,13 +525,18 @@ public class CheckinFragment extends Fragment {
 
                 }
             });
+            rlChatBubble.setVisibility(View.GONE);
 
             if (arrFriends.get(position).getFriendStatus().equals("waiting")) {
                 ibAdd.setImageDrawable(getResources().getDrawable(R.drawable.sandglass_small));
             } else if (arrFriends.get(position).getFriendStatus().equals("none")){
                 ibAdd.setImageDrawable(getResources().getDrawable(R.drawable.ic_green_plus));
+            } else if (arrFriends.get(position).getFriendStatus().equals("block")){
+                ibAdd.setVisibility(View.GONE);
+                rlChatBubble.setVisibility(View.GONE);
             } else {
-                ibAdd.setVisibility(View.INVISIBLE);
+                ibAdd.setVisibility(View.GONE);
+                rlChatBubble.setVisibility(View.VISIBLE);
             }
             ibChat.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -462,16 +546,14 @@ public class CheckinFragment extends Fragment {
                     startActivity(intent);
                 }
             });
+            TextView tvUnreadMsgCount = (TextView)view.findViewById(R.id.tv_if_unreadmsgcount);
+            tvUnreadMsgCount.setVisibility(View.VISIBLE);
+            tvUnreadMsgCount.setText(String.valueOf(arrFriends.get(position).getUnreadMsgCount()));
             return view;
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-
-    }
 
     @Override
     public void onDestroy() {

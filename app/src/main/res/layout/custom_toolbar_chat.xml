@@ -43,10 +43,18 @@
                 android:textSize="@dimen/txt_12sp"
                 android:textColor="@color/white"
                 android:textAlignment="center"
-                android:text="@string/online"
+                android:text=""
                 />
         </LinearLayout>
-
+    <!--<ImageButton-->
+        <!--android:id="@+id/ib_chat_attachment"-->
+        <!--android:layout_width="42dp"-->
+        <!--android:layout_height="42dp"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginRight="@dimen/dimen_16dp"-->
+        <!--android:src="@drawable/attachment_white"-->
+        <!--android:background="@color/transparent"/>-->
 
 
     </RelativeLayout>

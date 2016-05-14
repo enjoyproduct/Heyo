@@ -19,9 +19,16 @@ repositories {
 
 
 android {
+    signingConfigs {
+        config {
+            keyAlias '123456'
+            keyPassword '123456'
+            storeFile file('E:/_My Projects(2016)/2016.3.31(Heyoe_android_backend)Netherland/heyoe.jks')
+            storePassword '123456'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "23.0.1"
-
     defaultConfig {
         applicationId "com.heyoe"
         minSdkVersion 17
@@ -34,6 +41,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     packagingOptions {
@@ -54,14 +62,14 @@ dependencies {
     compile project(':volleylibrary')
     compile project(':swipe_layout_library')
     compile project(':pullToRefreshLibrary')
-//    compile project(':Q-municate_core')
-//    compile project(':Q-municate_db')
+//    compile project(':cropper')
+    compile project(':taglibrary')
+//    compile 'com.ns-developer:tagcloudview:0.1.0'
+
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
-    //    compile 'com.android.support:support-v4:22.2.1'
     compile files('libs/YouTubeAndroidPlayerApi.jar')
-
     compile project(':dribSearch')
     compile('com.balysv.materialmenu:material-menu-toolbar:1.5.1') {
         exclude group: 'com.nineoldandroids'
@@ -70,8 +78,11 @@ dependencies {
     compile('com.quickblox:quickblox-android-sdk-chat:2.5.1@aar') {
         transitive = true
     }
-//    compile 'com.quickblox:quickblox-android-sdk-messages:2.5.1@aar'
-    //    compile "com.quickblox:quickblox-android-sdk-customobjects:2.5.1@aar"
+    compile 'com.quickblox:quickblox-android-sdk-core:2.5.1@aar'
+    compile 'com.quickblox:quickblox-android-sdk-content:2.5.1@aar'
+    compile 'com.quickblox:quickblox-android-sdk-messages:2.5.1@aar'
+    compile "com.quickblox:quickblox-android-sdk-customobjects:2.5.1@aar"
+
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:design:22.2.1'
@@ -82,7 +93,6 @@ dependencies {
     compile 'com.commonsware.cwac:richedit:0.5.+'
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.android.support:multidex:1.0.0'
-    compile 'com.quickblox:quickblox-android-sdk-core:2.5.1@aar'
-    compile 'com.quickblox:quickblox-android-sdk-content:2.5.1@aar'
+
 }
 

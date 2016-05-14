@@ -1,1 +1,1 @@
-include ':app', ':volleylibrary', ':pullToRefreshLibrary', ':swipe_layout_library', ':dribSearch'
+include ':app', ':volleylibrary', ':pullToRefreshLibrary', ':swipe_layout_library', ':dribSearch', ':taglibrary'

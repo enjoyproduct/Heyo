@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/dribSearch/dribSearch.iml" filepath="$PROJECT_DIR$/dribSearch/dribSearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/pullToRefreshLibrary/pullToRefreshLibrary.iml" filepath="$PROJECT_DIR$/pullToRefreshLibrary/pullToRefreshLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/swipe_layout_library/swipe_layout_library.iml" filepath="$PROJECT_DIR$/swipe_layout_library/swipe_layout_library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/taglibrary/taglibrary.iml" filepath="$PROJECT_DIR$/taglibrary/taglibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/volleylibrary/volleylibrary.iml" filepath="$PROJECT_DIR$/volleylibrary/volleylibrary.iml" />
     </modules>
   </component>

@@ -2,10 +2,8 @@ package com.heyoe.controller.fragments;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,7 +24,6 @@ import com.android.volley.Response;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
-import com.daimajia.swipe.SimpleSwipeListener;
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -35,10 +31,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
 import com.heyoe.controller.ChatActivity;
 import com.heyoe.controller.HomeActivity;
-import com.heyoe.controller.ProfileActivity;
-import com.heyoe.controller.adapters.MediaAdapter;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
+import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
@@ -47,27 +42,18 @@ import com.heyoe.widget.MyCircularImageView;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.QBPrivateChatManager;
-import com.quickblox.chat.QBRoster;
-import com.quickblox.chat.listeners.QBRosterListener;
-import com.quickblox.chat.listeners.QBSubscriptionListener;
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.chat.model.QBPresence;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
-import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
-import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -79,12 +65,12 @@ import java.util.Set;
 public class MyFriendFragment extends Fragment {
     private ListView lvHome;
     private PullToRefreshListView mPullRefreshHomeListView;
-    private FriendAdapter friendAdapter;
+    private static FriendAdapter friendAdapter;
     private BlockedFriendAdapter blockedFriendAdapter;
     private Activity mActivity;
     static boolean isLast;
     static int offset;
-    private ArrayList<UserModel> arrActiveUsers;
+    private static ArrayList<UserModel> arrActiveUsers;
     private ArrayList<UserModel> arrBlockedUsers;
     private Button btnFriend, btnBlocked;
     private int state;
@@ -179,6 +165,17 @@ public class MyFriendFragment extends Fragment {
 
         friendAdapter = new FriendAdapter(arrActiveUsers);
         lvHome.setAdapter(friendAdapter);
+
+    }
+    private void clearBadge(int count) {
+        int unreadMsgCount = Utils.getIntFromPreference(mActivity, Constant.MSG_COUNT);
+        if (count > unreadMsgCount) {
+            unreadMsgCount = 0;
+        } else {
+            unreadMsgCount -= count;
+        }
+        Utils.saveIntToPreference(mActivity, Constant.MSG_COUNT, unreadMsgCount);
+        HomeActivity.showMsgBadge("");
     }
 
     private void getFriends() {
@@ -221,6 +218,7 @@ public class MyFriendFragment extends Fragment {
                                     String header_photo_url = userObject.getString("header_photo");
                                     String header_video_url = userObject.getString("header_video");
                                     String qb_id = userObject.getString("qb_id");
+                                    String blacker_id = userObject.getString("blacker_id");
                                     String online_status = userObject.getString("online_status");
 
                                     UserModel userModel = new UserModel();
@@ -239,6 +237,8 @@ public class MyFriendFragment extends Fragment {
                                     userModel.setHeader_photo(header_photo_url);
                                     userModel.setHeader_video(header_video_url);
                                     userModel.setQb_id(qb_id);
+                                    userModel.setBlacker_id(blacker_id);
+
                                     if (online_status.equals("on")) {
                                         userModel.setOnline(true);
                                     } else {
@@ -461,6 +461,17 @@ public class MyFriendFragment extends Fragment {
         requestQueue.add(signinRequest);
     }
 
+    public static void updateUserState(UserModel userModel) {
+        for (int i = 0; i < arrActiveUsers.size(); i ++) {
+            if (userModel.getUser_id().equals(arrActiveUsers.get(i).getUser_id())) {
+                arrActiveUsers.remove(i);
+                arrActiveUsers.add(i, userModel);
+                friendAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
     public class FriendAdapter extends BaseSwipeAdapter {
 
         LayoutInflater mlayoutInflater;
@@ -513,7 +524,7 @@ public class MyFriendFragment extends Fragment {
                 public void onClick(View v) {
 
                     if (!arrActiveUsers.get(position).getDialog_id().equals("0")) {
-                        deleteDialog(arrActiveUsers.get(position).getDialog_id());
+                        deleteMessage(arrActiveUsers.get(position).getDialog_id());
                     }
                     mItemManger.closeAllItems();
                 }
@@ -628,11 +639,13 @@ public class MyFriendFragment extends Fragment {
             ivChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    clearBadge(arrActiveUsers.get(position).getUnreadMsgCount());
                     chattingFriendNum = position;
                     Intent intent = new Intent(mActivity, ChatActivity.class);
                     intent.putExtra("userModel", arrActiveUsers.get(position));
+                    intent.putExtra("blacker_id", Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()));
                     intent.putExtra("me", user);
-                    mActivity.startActivity(intent);
+                    mActivity.startActivityForResult(intent, 106);
                 }
             });
             ImageView ivCloseNav = (ImageView)convertView.findViewById(R.id.iv_if_close_swipe);
@@ -778,22 +791,11 @@ public class MyFriendFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (state == 0) {
-//            arrActiveUsers.get(chattingFriendNum).setUnreadMsgCount(0);
-//            friendAdapter.notifyDataSetChanged();
-        }
-    }
-
-    private ArrayList<QBUser> arrUsers;
     private QBPrivateChatManager privateChatManager;
     private QBChatService chatService;
     private QBUser user;
 
-    private void createSession()
-    {
+    private void createSession() {
 //        Utils.showProgress(mActivity);
         chatService = QBChatService.getInstance();
         user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
@@ -809,13 +811,13 @@ public class MyFriendFragment extends Fragment {
             @Override
             public void onError(QBResponseException e) {
                 Utils.hideProgress();
-
                 Utils.showToast(mActivity, e.getLocalizedMessage());
+
+                friendAdapter.notifyDataSetChanged();
             }
         });
     }
-    private void getDialogs()
-    {
+    private void getDialogs() {
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
         QBChatService.getChatDialogs(null, requestGetBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
@@ -824,7 +826,7 @@ public class MyFriendFragment extends Fragment {
                 Utils.hideProgress();
 
                 ArrayList<QBDialog> arr = qbDialogs;
-                for(int i = 0; i < arrActiveUsers.size(); i ++) {
+                for (int i = 0; i < arrActiveUsers.size(); i++) {
                     arrActiveUsers.get(i).setUnreadMsgCount(0);
                     arrActiveUsers.get(i).setDialog_id("0");
                     for (QBDialog dialog : arr) {
@@ -832,8 +834,6 @@ public class MyFriendFragment extends Fragment {
                             ///get unread message count and dialog id
                             arrActiveUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
                             arrActiveUsers.get(i).setDialog_id(dialog.getDialogId());
-
-
                             break;
                         }
                     }
@@ -849,9 +849,13 @@ public class MyFriendFragment extends Fragment {
             }
         });
     }
-    private void deleteDialog(String dialogId) {
-        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
-        privateChatManager.deleteDialog(dialogId, new QBEntityCallback<Void>() {
+
+    private void deleteMessage(final String dialogId) {
+        Set<String> messagesIds = new HashSet<String>() {{
+            add(dialogId);
+        }};
+
+        QBChatService.deleteMessages(messagesIds, new QBEntityCallback<Void>() {
 
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
@@ -860,49 +864,23 @@ public class MyFriendFragment extends Fragment {
 
             @Override
             public void onError(QBResponseException errors) {
-
+                Toast.makeText(mActivity, "Failed to clear chat history", Toast.LENGTH_SHORT).show();
             }
         });
+
+    }
+
+    public static void updateUnreadMsgCount(String userId) {
+        for(int i = 0; i < arrActiveUsers.size(); i ++ ) {
+            if (arrActiveUsers.get(i).getQb_id().equals(userId)) {
+                int unreadMsgCount = arrActiveUsers.get(i).getUnreadMsgCount();
+                unreadMsgCount ++;
+                arrActiveUsers.get(i).setUnreadMsgCount(unreadMsgCount);
+                friendAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
     }
 
 
-    private void fetchUserList()
-    {   Utils.showProgress(mActivity);
-        QBPagedRequestBuilder pagedRequestBuilder = new QBPagedRequestBuilder();
-        pagedRequestBuilder.setPage(1);
-        pagedRequestBuilder.setPerPage(100);
-
-        arrUsers = new ArrayList<>();
-
-        QBUsers.getUsers(pagedRequestBuilder, new QBEntityCallback<ArrayList<QBUser>>() {
-            @Override
-            public void onSuccess(ArrayList<QBUser> qbUsers, Bundle bundle) {
-                Utils.hideProgress();
-                arrUsers = qbUsers;
-                arrUsers.remove(0);
-                for (int i = 0; i < arrActiveUsers.size(); i ++) {
-                    for (int j = 0; j < arrUsers.size(); j ++) {
-                        if (arrUsers.get(j).getEmail().equals(arrActiveUsers.get(i).getEmail())) {
-
-                            break;
-                        }
-                    }
-                }
-                for (int i = 0; i < arrBlockedUsers.size(); i ++) {
-                    for (int j = 0; j < arrUsers.size(); j ++) {
-                        if (arrUsers.get(j).getEmail().equals(arrActiveUsers.get(i).getEmail())) {
-                            break;
-                        }
-                    }
-                }
-
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                Utils.hideProgress();
-                Utils.showToast(mActivity, e.getLocalizedMessage());
-            }
-        });
-    }
 }

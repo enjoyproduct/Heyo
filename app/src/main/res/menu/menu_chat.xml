@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/ic_photo"
+        android:title="Attach Photo"
+        android:orderInCategory="100"
+        />
+    <item android:id="@+id/ic_video"
+        android:title="Attach Video"
+        android:orderInCategory="100"
+        />
+</menu>

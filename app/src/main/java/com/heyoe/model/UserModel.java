@@ -23,6 +23,15 @@ public class UserModel implements Serializable {
     String gender;
     String time;
     String qb_id;
+    String blacker_id;
+
+    public String getBlacker_id() {
+        return blacker_id;
+    }
+
+    public void setBlacker_id(String blacker_id) {
+        this.blacker_id = blacker_id;
+    }
 
     public String getDialog_id() {
         return dialog_id;

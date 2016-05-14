@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.heyoe.controller.fragments.NewPostFragment">
 
     <ScrollView
@@ -49,15 +50,62 @@
                 android:id="@+id/editor"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_16dp"
+                android:layout_marginRight="@dimen/dimen_16dp"
+                android:layout_marginLeft="@dimen/dimen_16dp"
+                android:layout_marginTop="@dimen/dimen_16dp"
+                android:hint="Input description"
                 android:gravity="top|left"
                 android:inputType="textMultiLine"
                 android:imeOptions="flagNoExtractUi"
-                android:maxLength="150">
+                android:maxLength="500">
 
                 <requestFocus/>
 
             </com.commonsware.cwac.richedit.RichEditText>
+            <!--string length-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_16dp"
+                android:layout_marginRight="@dimen/dimen_16dp">
+                <TextView
+                    android:id="@+id/tv_compose_txt_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:layout_toLeftOf="@+id/tv_compose_total_txt_count"/>
+                <TextView
+                    android:id="@+id/tv_compose_total_txt_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="/500"
+                    android:layout_alignParentRight="true"/>
+            </RelativeLayout>
+
+            <!--hashtag view-->
+            <me.kaede.tagview.TagView
+                android:id="@+id/hashtagview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="@dimen/dimen_16dp"
+                android:layout_marginLeft="@dimen/dimen_16dp"
+                app:lineMargin="5dp"
+                app:tagMargin="3dp"
+                app:textPaddingBottom="3dp"
+                app:textPaddingLeft="10dp"
+                app:textPaddingRight="10dp"
+                app:textPaddingTop="3dp">
+            </me.kaede.tagview.TagView>
+            <EditText
+                android:id="@+id/et_compose_hashtag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Input hashtag text"
+                android:layout_margin="@dimen/dimen_16dp"
+                android:singleLine="true"
+                android:visibility="visible"
+                />
             <!--youtube link-->
             <EditText
                 android:id="@+id/et_compose_youtube_url"

@@ -16,7 +16,9 @@
 
     <!--/////////////////////////////   facebook -->
     <string name="facebook_app_id">1115896661787487</string>
-    <string name="key_hash">3zMxj/ECDwxahhd5TeTlieYYvKk=</string>
+    <string name="key_hash">GdhKsBv2+UhE/d1pVFKBJc4YuWM=</string>
+    <!--release key-->
+    <!--<string name="key_hash">2jmj7l5rSw0yVb/vlWAYkK/YBwk=</string>-->
 
     <!--google project id-->
     <string name="project_id">535417836265</string>
@@ -158,7 +160,7 @@
     <string name="confirm_header_video">Do you want set this video as profile header?</string>
     <string name="confirm_delete_post">Do you want to delete this post?</string>
     <string name="confirm_update_avatar">Do you want to change avatar?</string>
-    <!--<string name=""></string>-->
+    <string name="input_description">Please input description</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
@@ -465,4 +467,5 @@
 
     </string-array>
     <string name="title_activity_black__friend_">Black_Friend_Activity</string>
+    <string name="title_activity_photo_crop">PhotoCropActivity</string>
 </resources>

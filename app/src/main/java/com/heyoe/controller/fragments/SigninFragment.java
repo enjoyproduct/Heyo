@@ -278,6 +278,8 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 String user_id = jsonObject.getString("user_id");
                                 String fullname = jsonObject.getString("fullname");
                                 String email = jsonObject.getString("email");
+                                String password = jsonObject.getString("password");
+                                String black_password = jsonObject.getString("black_password");
                                 String city = jsonObject.getString("city");
                                 String country = jsonObject.getString("country");
                                 String birthday = jsonObject.getString("birthday");
@@ -295,6 +297,8 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 Utils.saveToPreference(mActivity, Constant.USER_ID, user_id);
                                 Utils.saveToPreference(mActivity, Constant.EMAIL, email);
                                 Utils.saveToPreference(mActivity, Constant.FULLNAME, fullname);
+                                Utils.saveToPreference(mActivity, Constant.PASSWORD, password);
+                                Utils.saveToPreference(mActivity, Constant.BLACK_PASSWORD, black_password);
                                 Utils.saveToPreference(mActivity, Constant.CITY, city);
                                 Utils.saveToPreference(mActivity, Constant.COUNTRY, country);
                                 Utils.saveToPreference(mActivity, Constant.BIRTHDAY, birthday);

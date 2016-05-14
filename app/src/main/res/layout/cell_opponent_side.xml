@@ -24,6 +24,12 @@
             android:layout_marginLeft="8dp"
             android:orientation="horizontal"
             >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageview"
+                android:layout_marginRight="@dimen/dimen_12dp"
+                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

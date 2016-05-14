@@ -11,6 +11,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.heyoe.R;
 import com.heyoe.controller.MediaPlayActivity;
@@ -58,18 +59,14 @@ public class MediaAdapter extends BaseAdapter {
         }
         final PostModel postModel = arrayList.get(position);
 
+        RelativeLayout relativeLayout = (RelativeLayout)view.findViewById(R.id.rl_media);
         ImageView imageView = (ImageView)view.findViewById(R.id.iv_item_media);
 
+        //set relativelayout size
+        UIUtility.setRelativeLayoutSize(relativeLayout, UIUtility.getScreenWidth(activity)/3, UIUtility.getScreenWidth(activity)/3);
         //set imageview size
         UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(activity)/3, UIUtility.getScreenWidth(activity)/3);
-//        if (postModel.getImageWidth() != 0 && postModel.getImageHeight() != 0) {
-//            double ratio = ((double)postModel.getImageHeight() / (double)postModel.getImageWidth());
-//            double height = ratio * UIUtility.getScreenWidth(activity) / 2;
-//            UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(activity), (int)height);
-//        } else {
-//            int height = (int)( UIUtility.getScreenWidth(activity) * 0.75  / 2);
-//            UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(activity), height);
-//        }
+
 
         String thumbnailUrl = "";
         String imagUrl = "";
@@ -83,6 +80,7 @@ public class MediaAdapter extends BaseAdapter {
         } else if (postModel.getMedia_type().equals("youtube")) {
             thumbnailUrl = API.BASE_YOUTUB_PREFIX + FileUtility.getFilenameFromPath(postModel.getMedia_url()) + API.BASE_YOUTUB_SURFIX;
             videoUrl = postModel.getMedia_url();
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
         if (!postModel.getMedia_url().equals("")) {

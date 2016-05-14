@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#03a6a8</color>
+    <color name="colorPrimaryDark">#038b8c</color>
+    <color name="colorAccent">#000000</color>
+    <color name="colorPrimaryLight">#02cacc</color>
+
+    <color name="transparent">#00ffffff</color>
+    <color name="white">#fafafa</color>
+    <color name="black">#0d0d0d</color>
+    <color name="dark">#717071</color>
+    <color name="blue">#26aefc</color>
+    <color name="green">#03a6a8</color>
+    <color name="red">#c12304</color>
+    <color name="strong_blue">#104df5</color>
+    <color name="num">#f55910</color>
+    <color name="grey">#b4b3b3</color>
+    <color name="grey_light">#ededed</color>
+    <color name="brown">#99480a</color>
+    <color name="light_orange">#bff7d8a9</color>
+    <!--my theme color-->
+    <color name="my_theme_color">#a3a3a3</color>
+    <color name="my_theme_color_light">#646464</color>
+    <color name="background_gray1">#cccbca</color>
+    <color name="background_dark_gray1">#353535</color>
+    <color name="navigation_menu_bg">#ff000000</color>
+
+    <!-- font color -->
+    <color name="font_blue_color">#26437d</color>
+    <color name="fb_font_color">#34267d</color>
+    <color name="main_background">#e2e2e2</color>
+    <color name="bound_gray">#646464</color>
+    <color name="add_dialog_color">#424242</color>
+    <color name="normal_pressed_color">#e7e7e7</color>
+    <color name="normal_non_color">#00ffffff</color>
+</resources>

@@ -24,7 +24,6 @@
             android:layout_toRightOf="@+id/civ_imf_friend_avatar3"
             android:layout_toLeftOf="@+id/rl_imf_social"
             android:layout_marginLeft="@dimen/dimen_12dp"
-            android:layout_marginRight="@dimen/dimen_12dp"
             android:layout_centerVertical="true"
             >
             <TextView
@@ -61,22 +60,37 @@
             android:layout_centerVertical="true"
             android:orientation="horizontal"
             android:weightSum="2">
-            <ImageButton
-                android:id="@+id/ib_imf_chat"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/rl_checkin_chat_bubble"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/chat_bubble"
-                android:layout_centerInParent="true"
-                android:padding="@dimen/dimen_12dp"
-                android:background="@color/transparent"
-                android:layout_weight="1"/>
+                android:layout_weight="1">
+                <ImageButton
+                    android:id="@+id/ib_imf_chat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/chat_bubble"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/dimen_12dp"
+                    android:background="@color/transparent"
+                   />
+                <TextView
+                    android:id="@+id/tv_if_unreadmsgcount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:text="0"
+                    android:maxLength="3"
+                    android:textColor="@color/green"/>
+            </RelativeLayout>
+
 
             <ImageButton
                 android:id="@+id/ib_imf_add"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_plus_green"
-                android:layout_centerInParent="true"
                 android:padding="@dimen/dimen_12dp"
                 android:background="@color/transparent"
                 android:layout_weight="1"/>

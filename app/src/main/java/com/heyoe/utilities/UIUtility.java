@@ -87,7 +87,7 @@ public class UIUtility {
         imageview.setMinimumHeight(screenHeight);
     }
 
-    public static void setRelativeLayoutSize(RelativeLayout relativeLayout, int screenWidth){
+    public static void setRelativeLayoutSize(RelativeLayout relativeLayout, int screenWidth, int screenHeight){
         ViewGroup.LayoutParams layoutParams = null;
         try{
             layoutParams =  relativeLayout.getLayoutParams();
@@ -95,7 +95,7 @@ public class UIUtility {
             e.printStackTrace();
         }
         layoutParams.width = screenWidth ;
-        layoutParams.height = screenWidth;
+        layoutParams.height = screenHeight;
 
 
         relativeLayout.setLayoutParams(layoutParams);

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/white">
 
@@ -55,11 +55,23 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="@dimen/txt_14sp"
-            android:maxLines="3"
-            android:layout_marginTop="@dimen/dimen_8dp"
             android:layout_marginRight="@dimen/dimen_8dp"
             android:layout_marginLeft="@dimen/dimen_8dp"
+            android:layout_marginTop="@dimen/dimen_8dp"
             />
+
+        <me.kaede.tagview.TagView
+            android:id="@+id/ipff_hashtag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:lineMargin="5dp"
+            app:tagMargin="3dp"
+            app:textPaddingBottom="3dp"
+            app:textPaddingLeft="10dp"
+            app:textPaddingRight="10dp"
+            app:textPaddingTop="3dp">
+        </me.kaede.tagview.TagView>
     </LinearLayout>
     <!--media-->
     <RelativeLayout
@@ -71,28 +83,19 @@
             android:id="@+id/iv_ipff_media"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/post1"
             android:layout_centerInParent="true"
             android:scaleType="fitXY"
             android:adjustViewBounds="true"
 
             />
-        <ImageButton
-            android:id="@+id/iv_ipff_favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_favorite_star_empty"
-            android:background="@color/transparent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/dimen_16dp"/>
+
         <ImageButton
             android:id="@+id/ib_ipff_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/ic_play_dark"
-            android:visibility="visible"/>
+            android:visibility="gone"/>
     </RelativeLayout>
     <TextView
         android:layout_width="match_parent"
@@ -104,6 +107,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         >
         <ImageButton
             android:id="@+id/ib_ipff_like"
@@ -133,6 +137,19 @@
             android:src="@drawable/btn_share"
             android:background="@color/transparent"
             android:layout_marginLeft="@dimen/dimen_20dp"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/iv_ipff_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_favorite_star_empty"
+                android:background="@color/transparent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dimen_16dp"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"

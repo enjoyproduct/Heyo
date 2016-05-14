@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -57,7 +57,7 @@
             android:id="@+id/iv_ipff_media"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/post1"
+            android:src="@drawable/default_tour"
             android:scaleType="fitXY"
             android:adjustViewBounds="true"
             />
@@ -150,57 +150,70 @@
                 android:textSize="@dimen/txt_14sp"
                 android:maxLines="3"
                 />
+
+            <me.kaede.tagview.TagView
+                android:id="@+id/hashtag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:lineMargin="5dp"
+                app:tagMargin="3dp"
+                app:textPaddingBottom="3dp"
+                app:textPaddingLeft="10dp"
+                app:textPaddingRight="10dp"
+                app:textPaddingTop="3dp">
+            </me.kaede.tagview.TagView>
         </LinearLayout>
     </RelativeLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@color/grey"
-        android:layout_marginTop="@dimen/dimen_12dp"/>
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0.5dp"-->
-        <!--android:layout_margin="@dimen/dimen_12dp"-->
-        <!--android:background="@color/dark"/>-->
-    <!--&lt;!&ndash;social icons&ndash;&gt;-->
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal">-->
-        <!--<ImageButton-->
-            <!--android:id="@+id/ib_ipff_like"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/btn_like"-->
-            <!--android:background="@color/transparent"-->
-            <!--android:layout_marginLeft="@dimen/dimen_20dp"/>-->
-        <!--<ImageButton-->
-            <!--android:id="@+id/ib_ipff_dislike"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/btn_dislike"-->
-            <!--android:background="@color/transparent"-->
-            <!--android:layout_marginLeft="@dimen/dimen_20dp"/>-->
-        <!--<ImageButton-->
-            <!--android:id="@+id/ib_ipff_comment"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/btn_comment"-->
-            <!--android:background="@color/transparent"-->
-            <!--android:layout_marginLeft="@dimen/dimen_20dp"/>-->
-        <!--<ImageButton-->
-            <!--android:id="@+id/ib_ipff_share"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/btn_share"-->
-            <!--android:background="@color/transparent"-->
-            <!--android:layout_marginLeft="@dimen/dimen_20dp"/>-->
-    <!--</LinearLayout>-->
-
     <!--<TextView-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="10dp"-->
         <!--android:background="@color/grey"-->
-        <!--android:layout_marginTop="@dimen/dimen_12dp"-->
-        <!--/>-->
+        <!--android:layout_marginTop="@dimen/dimen_12dp"/>-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_margin="@dimen/dimen_12dp"
+        android:background="@color/dark"/>
+    <!--social icons-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/ib_ipff_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_like"
+            android:background="@color/transparent"
+            android:layout_marginLeft="@dimen/dimen_20dp"/>
+        <ImageButton
+            android:id="@+id/ib_ipff_dislike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_dislike"
+            android:background="@color/transparent"
+            android:layout_marginLeft="@dimen/dimen_20dp"/>
+        <ImageButton
+            android:id="@+id/ib_ipff_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_comment"
+            android:background="@color/transparent"
+            android:layout_marginLeft="@dimen/dimen_20dp"/>
+        <ImageButton
+            android:id="@+id/ib_ipff_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_share"
+            android:background="@color/transparent"
+            android:layout_marginLeft="@dimen/dimen_20dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/grey"
+        android:layout_marginTop="@dimen/dimen_12dp"
+        />
 </LinearLayout>

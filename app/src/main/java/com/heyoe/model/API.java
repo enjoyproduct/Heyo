@@ -12,6 +12,7 @@ public class API {
     public static String BASE_THUMBNAIL = "http://www.heyoe.com/heyoe/assets/images/thumb/";
     public static String BASE_HEADER_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/header_video/";
     public static String BASE_POST_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/post_video/";
+    public static String BASE_APP = "http://www.heyoe.com/heyoe/assets/images/app.png";
 
 //    public static String BASE_URL = "http://192.168.2.17/heyoe/index.php/api/";
 //    public static String BASE_AVATAR = "http://192.168.2.17/heyoe/assets/images/avatars/";
@@ -20,6 +21,7 @@ public class API {
 //    public static String BASE_THUMBNAIL = "http://192.168.2.17/heyoe/assets/images/thumb/";
 //    public static String BASE_HEADER_VIDEO = "http://192.168.2.17/heyoe/assets/videos/header_video/";
 //    public static String BASE_POST_VIDEO = "http://192.168.2.17/heyoe/assets/videos/post_video/";
+//    public static String BASE_APP = "http://192.168.2.17/heyoe/assets/images/app.png";
 
 
     public static String BASE_YOUTUB_PREFIX = "http://i1.ytimg.com/vi/";
@@ -32,6 +34,7 @@ public class API {
     public static String GET_NON_FRIENDS = BASE_URL + "get_non_friends";
     public static String INVITE_FRIEND = BASE_URL + "invite_friend";
     public static String SET_OFFLINE = BASE_URL + "set_offline";
+    public static String GET_ONLINE_STATUS = BASE_URL + "get_online_status";
     public static String GET_INVITED_FRIENDS = BASE_URL + "get_invited_users";
     public static String GET_REQUESTED_USERS = BASE_URL + "get_requested_users";
     public static String ACCEPT_FRIEND = BASE_URL + "accept_friend";

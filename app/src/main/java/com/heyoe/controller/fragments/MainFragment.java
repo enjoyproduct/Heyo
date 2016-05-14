@@ -56,7 +56,9 @@ public class MainFragment extends Fragment {
     int offset;
     boolean isLast;
 
-    boolean isFavorite;
+    public static boolean isFavorite;
+    private String hashtag;
+
     String api;
     public MainFragment() {
         // Required empty public constructor
@@ -82,6 +84,8 @@ public class MainFragment extends Fragment {
         offset = 0;
         mArrPost = new ArrayList<>();
         isFavorite = getArguments().getBoolean("isFavorite");
+        hashtag = getArguments().getString("hashtag");
+
         if (isFavorite) {
             api = API.GET_ALL_FAVORITE_POSTS;
         } else {
@@ -128,6 +132,7 @@ public class MainFragment extends Fragment {
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
         params.put("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("hashtag", hashtag);
         params.put("offset", String.valueOf(offset));
 
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, api, params,
@@ -163,6 +168,9 @@ public class MainFragment extends Fragment {
                                     postModel.setViewed_count(postObject.getString("viewed_count"));
                                     postModel.setLike(postObject.getString("like"));
                                     postModel.setDescription(postObject.getString("description"));
+//                                    postModel.setFriend_tag(postObject.getString("tag"));
+//                                    postModel.setFriend_ids(postObject.getString("tag_ids"));
+                                    postModel.setHashtag(postObject.getString("hashtag"));
                                     postModel.setCommented(postObject.getString("commented"));
                                     postModel.setFavorite(postObject.getString("favorite"));
                                     postModel.setFriendStatus(postObject.getString("friend_status"));
@@ -251,7 +259,12 @@ public class MainFragment extends Fragment {
                                 if (flag) {
                                     mArrPost.get(position).setFavorite("favorite");
                                 } else {
-                                    mArrPost.get(position).setFavorite("unfavorite");
+                                    if (isFavorite) {
+                                        mArrPost.remove(position);
+                                    } else {
+                                        mArrPost.get(position).setFavorite("unfavorite");
+                                    }
+
                                 }
                                 mPostAdapter.notifyDataSetChanged();
 
@@ -453,18 +466,18 @@ public class MainFragment extends Fragment {
         }
 
     }
-//    public static void deletePost(ArrayList<PostModel>  postModels) {
-//        for (PostModel postModel : postModels) {
-//            for (int i = 0; i < mArrPost.size(); i ++) {
-//                if (postModel.getPost_id().equals(mArrPost.get(i).getPost_id())) {
-//                    mArrPost.remove(i);
-//                    mPostAdapter.notifyDataSetChanged();
-//                    break;
-//                }
-//            }
-//        }
-//
-//    }
+    public static void deletePost(ArrayList<PostModel>  postModels) {
+        for (PostModel postModel : postModels) {
+            for (int i = 0; i < mArrPost.size(); i ++) {
+                if (postModel.getPost_id().equals(mArrPost.get(i).getPost_id())) {
+                    mArrPost.remove(i);
+                    mPostAdapter.notifyDataSetChanged();
+                    break;
+                }
+            }
+        }
+
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

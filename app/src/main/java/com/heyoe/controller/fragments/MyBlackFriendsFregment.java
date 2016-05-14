@@ -56,7 +56,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -167,6 +169,7 @@ public class MyBlackFriendsFregment extends Fragment {
         friendAdapter = new FriendAdapter(arrActiveUsers);
         lvHome.setAdapter(friendAdapter);
     }
+
     private void getBlackFriends() {
         Utils.showProgress(mActivity);
 
@@ -207,6 +210,7 @@ public class MyBlackFriendsFregment extends Fragment {
                                     String header_photo_url = userObject.getString("header_photo");
                                     String header_video_url = userObject.getString("header_video");
                                     String qb_id = userObject.getString("qb_id");
+                                    String blacker_id = userObject.getString("blacker_id");
                                     String online_status = userObject.getString("online_status");
 
                                     UserModel userModel = new UserModel();
@@ -225,6 +229,8 @@ public class MyBlackFriendsFregment extends Fragment {
                                     userModel.setHeader_photo(header_photo_url);
                                     userModel.setHeader_video(header_video_url);
                                     userModel.setQb_id(qb_id);
+                                    userModel.setBlacker_id(blacker_id);
+
                                     if (online_status.equals("on")) {
                                         userModel.setOnline(true);
                                     } else {
@@ -353,6 +359,7 @@ public class MyBlackFriendsFregment extends Fragment {
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("device_id", Utils.getFromPreference(mActivity, Constant.DEVICE_ID));
         params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
         params.put("friend_id", arrBlockedUsers.get(position).getUser_id());
 
@@ -603,6 +610,7 @@ public class MyBlackFriendsFregment extends Fragment {
                     intent.putExtra("userModel", arrActiveUsers.get(position));
                     intent.putExtra("me", user);
                     intent.putExtra("is_black_chat", true);
+                    intent.putExtra("blacker_id", Integer.parseInt(userModel.getBlacker_id()));
                     mActivity.startActivity(intent);
                 }
             });
@@ -814,9 +822,12 @@ public class MyBlackFriendsFregment extends Fragment {
             }
         });
     }
-    private void deleteDialog(String dialogId) {
-        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
-        privateChatManager.deleteDialog(dialogId, new QBEntityCallback<Void>() {
+    private void deleteDialog(final String dialogId) {
+        Set<String> messagesIds = new HashSet<String>() {{
+            add(dialogId);
+        }};
+
+        QBChatService.deleteMessages(messagesIds, new QBEntityCallback<Void>() {
 
             @Override
             public void onSuccess(Void aVoid, Bundle bundle) {
@@ -825,8 +836,22 @@ public class MyBlackFriendsFregment extends Fragment {
 
             @Override
             public void onError(QBResponseException errors) {
-
+                Toast.makeText(mActivity, "Failed to clear chat history", Toast.LENGTH_SHORT).show();
             }
         });
+
+//        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
+//        privateChatManager.deleteDialog(dialogId, new QBEntityCallback<Void>() {
+//
+//            @Override
+//            public void onSuccess(Void aVoid, Bundle bundle) {
+//                Toast.makeText(mActivity, "Cleared chat history successfully", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onError(QBResponseException errors) {
+//
+//            }
+//        });
     }
 }

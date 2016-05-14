@@ -95,6 +95,7 @@ public class MoreFriendFragment extends Fragment {
         lvHome.setAdapter(moreFriendAdapter);
     }
     private void getNonFriends() {
+        Utils.showProgress(mActivity);
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
@@ -106,6 +107,7 @@ public class MoreFriendFragment extends Fragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {

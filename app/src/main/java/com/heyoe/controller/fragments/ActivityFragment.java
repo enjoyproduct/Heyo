@@ -94,17 +94,36 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onLastItemVisible() {
                 if (!isLast) {
+                    getMyActivity();
                 }
                 mPullRefreshHomeListView.onRefreshComplete();
 
             }
         });
+        mPullRefreshHomeListView.setOnPullEventListener(new PullToRefreshBase.OnPullEventListener<ListView>() {
+            @Override
+            public void onPullEvent(PullToRefreshBase<ListView> refreshView, PullToRefreshBase.State state, PullToRefreshBase.Mode direction) {
+                if (state == PullToRefreshBase.State.RELEASE_TO_REFRESH && direction == PullToRefreshBase.Mode.PULL_FROM_START) {
+                    isLast = false;
+                    offset = 0;
+                    arrActivities.clear();
+                    getMyActivity();
+                }
+            }
+        });
         lvHome = mPullRefreshHomeListView.getRefreshableView();
         activityAdapter = new ActivityAdapter(arrActivities);
         lvHome.setAdapter(activityAdapter);
+
+        clearBadge();
+    }
+    private void clearBadge() {
+        Utils.saveIntToPreference(mActivity, Constant.ACTIVITY_COUNT, 0);
+        HomeActivity.showActivityBadge();
     }
     private void getMyActivity() {
 
+        Utils.showProgress(mActivity);
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
@@ -115,6 +134,7 @@ public class ActivityFragment extends Fragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
@@ -162,6 +182,9 @@ public class ActivityFragment extends Fragment {
                                         postModel.setViewed_count(postObject.getString("viewed_count"));
                                         postModel.setLike(postObject.getString("like"));
                                         postModel.setDescription(postObject.getString("description"));
+//                                        postModel.setFriend_tag(postObject.getString("tag"));
+//                                        postModel.setFriend_ids(postObject.getString("tag_ids"));
+                                        postModel.setHashtag(postObject.getString("hashtag"));
                                         postModel.setCommented(postObject.getString("commented"));
                                         postModel.setFavorite(postObject.getString("favorite"));
 //                                        postModel.setFriendStatus(postObject.getString("friend_status"));
@@ -189,7 +212,7 @@ public class ActivityFragment extends Fragment {
                                     arrActivities.add(activityModel);
 
                                 }
-
+                                clearBadge();
                                 activityAdapter.notifyDataSetChanged();
 
                             } else if (status.equals("400")) {
@@ -300,8 +323,9 @@ public class ActivityFragment extends Fragment {
             ivButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (activityModel.getType().equals("invite") ||
-                            activityModel.getType().equals("accept") ||
+                    if (activityModel.getType().endsWith("invite")) {
+                        HomeActivity.menuNavigateTo(1);
+                    }else if (activityModel.getType().equals("accept") ||
                             activityModel.getType().equals("reject")) {
 //                        Intent intent = new Intent(mActivity, ProfileActivity.class);
 //                        intent.putExtra("user_id", activityModel.getUser_id());

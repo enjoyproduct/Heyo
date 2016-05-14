@@ -85,7 +85,13 @@ public class AdapterPrivateChatRoom extends BaseAdapter {
         MyCircularImageView ciUser = (MyCircularImageView)convertView.findViewById(R.id.civUser);
         TextView tvMessage = (TextView)convertView.findViewById(R.id.tvMessage);
         TextView tvTime = (TextView)convertView.findViewById(R.id.tvTime);
+        ImageView imageView = (ImageView)convertView.findViewById(R.id.imageview);
 
+//        if (itemMessage.getAttachments() == null) {
+//            tvMessage.setText(itemMessage.getBody());
+//        } else {
+//
+//        }
         tvMessage.setText(itemMessage.getBody());
         tvTime.setText(DateFormat.format("HH:mm", new Date(itemMessage.getDateSent() * 1000)).toString());
         if (opponentAvatar.length() != 0) {

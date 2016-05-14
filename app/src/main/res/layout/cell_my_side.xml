@@ -16,12 +16,19 @@
         android:background="@drawable/bubble_right"
         android:layout_marginRight="8dp"
         android:layout_alignParentRight="true">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageview"
+            android:layout_marginRight="@dimen/dimen_12dp"
+
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/txt_16sp"
             android:textColor="#000000"
-            android:text="I hope to see you soon."
+            android:text=""
             android:id="@+id/tvMessage"
             android:maxWidth="200dp"
             android:layout_marginRight="@dimen/dimen_12dp"

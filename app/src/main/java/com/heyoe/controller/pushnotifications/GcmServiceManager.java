@@ -13,6 +13,9 @@ import android.support.v4.app.NotificationCompat;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.heyoe.R;
+import com.heyoe.controller.HomeActivity;
+import com.heyoe.model.Constant;
+import com.heyoe.utilities.Utils;
 
 public class GcmServiceManager {
     private static GcmServiceManager gcmServiceManager;
@@ -71,8 +74,13 @@ public class GcmServiceManager {
     }
 
     public void sendNotification() {
+
         Intent intent = new Intent(activity, activity.getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (notificationData.containsKey("received_invite")) {
+            intent.putExtra("page_num", 6);
+        }
+
         PendingIntent pendingIntent = PendingIntent.getActivity(activity, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
@@ -91,14 +99,34 @@ public class GcmServiceManager {
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
     }
 
+    private void increaseActivityCount() {
+        if (getActivity() != null) {
+            int count = Utils.getIntFromPreference(activity, Constant.ACTIVITY_COUNT);
+            count ++;
+            Utils.saveIntToPreference(activity, Constant.ACTIVITY_COUNT, count);
+            HomeActivity.showActivityBadge();
+        }
 
+    }
+    private void increaseMsgCount(String user_id) {
+        if (getActivity() != null) {
+            int count = Utils.getIntFromPreference(activity, Constant.MSG_COUNT);
+            count ++;
+            Utils.saveIntToPreference(activity, Constant.MSG_COUNT, count);
+            if (user_id.length() > 0) {
+                HomeActivity.showMsgBadge(user_id);
+            }
 
+        }
+
+    }
+    String id = "";
     private String parseMessage(Bundle data){
         message = "";
         if(data.containsKey("liked_post")){
             message = data.getString("liked_post");
-        }else if (data.containsKey("dislike_post")){
-            message = data.getString("dislike_post");
+        }else if (data.containsKey("disliked_post")){
+            message = data.getString("disliked_post");
         }else if (data.containsKey("commented_post")){
             message = data.getString("commented_post");
         }else if (data.containsKey("shared_post")){
@@ -109,6 +137,19 @@ public class GcmServiceManager {
             message = data.getString("accepted_invite");
         }else if (data.containsKey("rejected_invite")){
             message = data.getString("rejected_invite");
+//        } else if (data.containsKey("user_id")){
+//            message = "qb_" + data.getString("message");
+        } else {
+            if (data.containsKey("message")) {
+                String msg = data.getString("message");
+                String[] str = msg.split("_qb_");
+                if (str.length > 0) {
+                    id = str[0];
+                    String name = str[1];
+                    message = "qb_You received message from " + name;
+                }
+
+            }
         }
         return message;
     }
@@ -121,8 +162,18 @@ public class GcmServiceManager {
 
     public void setNotificationData(Bundle data) {
         notificationData = data;
-        if (!parseMessage(data).equals(""))
+        parseMessage(data);
+        if (!message.equals("")) {
+            if (message.contains("qb_")) {
+                message = message.replace("qb_", "");
+                increaseMsgCount(id);
+            } else {
+                increaseActivityCount();
+
+            }
             sendNotification();
+        }
+
     }
 
     public Bundle getNotificationData() {

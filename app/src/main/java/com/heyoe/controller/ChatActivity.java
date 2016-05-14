@@ -1,11 +1,27 @@
 package com.heyoe.controller;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
@@ -17,12 +33,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.CustomRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe.R;
 import com.heyoe.controller.adapters.AdapterPrivateChatRoom;
+import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.model.UserModel;
+import com.heyoe.utilities.BitmapUtility;
+import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
+import com.heyoe.utilities.camera.AlbumStorageDirFactory;
+import com.heyoe.utilities.camera.BaseAlbumDirFactory;
+import com.heyoe.utilities.camera.FroyoAlbumDirFactory;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
@@ -32,20 +62,36 @@ import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBIsTypingListener;
 import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
+import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
+import com.quickblox.content.QBContent;
+import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.core.helper.StringifyArrayList;
 import com.quickblox.core.request.QBRequestGetBuilder;
+import com.quickblox.messages.QBPushNotifications;
+import com.quickblox.messages.model.QBEnvironment;
+import com.quickblox.messages.model.QBEvent;
+import com.quickblox.messages.model.QBNotificationType;
+import com.quickblox.messages.model.QBPushType;
 import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,6 +102,7 @@ public class ChatActivity extends AppCompatActivity {
     private ListView lvContent;
     private TextView tvName, tvOnlineStatus;
     private LinearLayout llChat;
+    private ImageButton ibAttachment;
 
     private String opponentID;
 //    private String dialogId;
@@ -68,10 +115,13 @@ public class ChatActivity extends AppCompatActivity {
     private QBUser me;
 
     private Timer timer;
-    private TimerTask timerTask;
+//    private Timer timer2;
+    private TimerTask timerTask, timerTask2;
     private int timeCounter = 1;
 
-
+    Activity mActivity;
+    boolean isBlackFriend;
+    int blacker_id ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,9 +134,12 @@ public class ChatActivity extends AppCompatActivity {
         loginChatService();
 
         initTimer();
+//        initTimer2();
     }
 
     private void initUI() {
+        mActivity = this;
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ImageButton ibBack = (ImageButton)toolbar.findViewById(R.id.ib_back);
@@ -97,6 +150,32 @@ public class ChatActivity extends AppCompatActivity {
                 finish();
             }
         });
+//        ibAttachment = (ImageButton)toolbar.findViewById(R.id.ib_chat_attachment);
+//        ibAttachment.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+//                builder.setTitle(Constant.INDECATOR);
+//                builder.setMessage("Choose attachment");
+//                builder.setCancelable(true);
+//                builder.setPositiveButton("Photo",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//
+//                                dialog.cancel();
+//                            }
+//                        });
+//                builder.setNegativeButton("Video",
+//                        new DialogInterface.OnClickListener() {
+//                            public void onClick(DialogInterface dialog, int id) {
+//                                dialog.cancel();
+//                            }
+//                        });
+//
+//                AlertDialog alert = builder.create();
+//                alert.show();
+//            }
+//        });
         tvName = (TextView)toolbar.findViewById(R.id.tv_chat_fullname);
         tvOnlineStatus = (TextView)toolbar.findViewById(R.id.tv_chat_online);
 
@@ -120,7 +199,7 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (timeCounter > 5) {
+                if (timeCounter > 4) {
                     timeCounter = 0;
                 }
             }
@@ -131,8 +210,9 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         llChat = (LinearLayout)findViewById(R.id.ll_chat);
-
-        if (getIntent().getBooleanExtra("is_black_chat", false)) {
+        blacker_id = getIntent().getIntExtra("blacker_id", 0);
+        isBlackFriend = getIntent().getBooleanExtra("is_black_chat", false);
+        if (isBlackFriend) {
             llChat.setBackgroundColor(getResources().getColor(R.color.black));
             etMessage.setTextColor(getResources().getColor(R.color.white));
         }
@@ -144,11 +224,7 @@ public class ChatActivity extends AppCompatActivity {
 //        me = (QBUser)getIntent().getSerializableExtra("me");
 
         tvName.setText(opponentUserModel.getFullname());
-        if (opponentUserModel.isOnline()) {
-            tvOnlineStatus.setText(getResources().getString(R.string.online));
-        } else {
-            tvOnlineStatus.setText(getResources().getString(R.string.offline));
-        }
+        updateStatus(opponentUserModel.isOnline());
 
         lvContent = (ListView) findViewById(R.id.lv_messages);
         lvContent.setStackFromBottom(true);
@@ -158,9 +234,14 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
-
-    private void loginChatService()
-    {
+    private void updateStatus(boolean state) {
+        if (state) {
+            tvOnlineStatus.setText(getResources().getString(R.string.online));
+        } else {
+            tvOnlineStatus.setText(getResources().getString(R.string.offline));
+        }
+    }
+    private void loginChatService() {
         Utils.showProgress(this);
         me = new QBUser(Utils.getFromPreference(this, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
 
@@ -235,8 +316,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void getChatHistory()
-    {
+    private void getChatHistory() {
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
         requestGetBuilder.setLimit(1000);
         requestGetBuilder.sortAsc("date_sent");
@@ -264,17 +344,108 @@ public class ChatActivity extends AppCompatActivity {
                 if (timeCounter == 0) {
                     sendTypingNotification();
                 }
-                if (timeCounter == 5) {
+                if (timeCounter == 4) {
                     sendStopTypingNotification();
                 }
-                timeCounter ++;
+                if (timeCounter % 4 == 0) {
+                    getOnlineStatus();
+                }
+                timeCounter += 2;
             }
         };
-        timer.schedule(timerTask, 0, 1000);
+        timer.schedule(timerTask, 0, 2000);
     }
+//    private void initTimer2() {
+//        timer2 = new Timer();
+//        timerTask2 = new TimerTask() {
+//            @Override
+//            public void run() {
+//                getOnlineStatus();
+//            }
+//        };
+//        timer2.schedule(timerTask2, 0, 3167);
+//    }
+    private void getOnlineStatus() {
+        final RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
 
-    private void sendMessage()
-    {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("user_id", opponentUserModel.getUser_id());
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_ONLINE_STATUS, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                JSONObject jsonObject = response.getJSONObject("data");
+                                String online_status = jsonObject.getString("online_status");
+                                if (online_status.equals("on")) {
+                                    if (!opponentUserModel.isOnline()) {
+                                        opponentUserModel.setOnline(true);
+                                        updateStatus(opponentUserModel.isOnline());
+                                    }
+                                } else {
+                                    if (opponentUserModel.isOnline()) {
+                                        opponentUserModel.setOnline(false);
+                                        updateStatus(opponentUserModel.isOnline());
+                                    }
+                                }
+                                requestQueue.getCache().clear();
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        requestQueue.add(signinRequest);
+    }
+    private void sendPush(String id, String name) {
+        // recipients
+        StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
+//        userIds.add(Integer.valueOf(id));
+        userIds.add(Integer.valueOf(opponentID));
+
+        QBEvent event = new QBEvent();
+        event.setUserIds(userIds);
+        event.setEnvironment(QBEnvironment.DEVELOPMENT);
+        event.setNotificationType(QBNotificationType.PUSH);
+        event.setPushType(QBPushType.GCM);
+//        HashMap<String, String> data = new HashMap<String, String>();
+//        data.put("user_id", id);
+//        data.put("message", "You received message from " + name);
+        event.setMessage(id + "_qb_" + name);
+//        event.setUserId(Integer.parseInt(id));
+//        event.setId(Integer.parseInt(id));
+
+        QBPushNotifications.createEvent(event, new QBEntityCallback<QBEvent>() {
+            @Override
+            public void onSuccess(QBEvent qbEvent, Bundle args) {
+                // sent
+            }
+
+            @Override
+            public void onError(QBResponseException errors) {
+
+            }
+        });
+    }
+    private void sendMessage() {
         String content = etMessage.getText().toString().trim();
         if (content.length() == 0)
             return;
@@ -289,6 +460,11 @@ public class ChatActivity extends AppCompatActivity {
             }
 
             privateChat.sendMessage(chatMessage);
+            if (blacker_id == 0 || blacker_id == Integer.parseInt(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
+                sendPush(Utils.getFromPreference(this, Constant.QB_ID), Utils.getFromPreference(this, Constant.FULLNAME));
+            }
+
+
             chatMessage.setDateSent(System.currentTimeMillis() / 1000);
             chatMessage.setSenderId(Integer.parseInt(Utils.getFromPreference(this, Constant.QB_ID)));
             arrHIstoryMessages.add(chatMessage);
@@ -298,7 +474,48 @@ public class ChatActivity extends AppCompatActivity {
             showAlert(e.getLocalizedMessage());
         }
     }
+    private void sendPhoto() {
+//        File filePhoto = new File(photoPath);
+//        Boolean fileIsPublic = false;
+//        QBContent.uploadFileTask(filePhoto, fileIsPublic, null, new QBEntityCallback<QBFile>() {
+//            @Override
+//            public void onSuccess(QBFile file, Bundle params) {
+//
+//                // create a message
+//                QBChatMessage chatMessage = new QBChatMessage();
+//                chatMessage.setProperty("save_to_history", "1"); // Save a message to history
+//
+//                // attach a photo
+//                QBAttachment attachment = new QBAttachment("photo");
+//                attachment.setId(file.getId().toString());
+//                chatMessage.addAttachment(attachment);
+//
+//                QBPrivateChat privateChat = privateChatManager.getChat(Integer.parseInt(opponentID));
+//                if (privateChat == null){
+//                    privateChat = privateChatManager.createChat(Integer.parseInt(opponentID), privateChatQBMessageListener);
+//                }
+//
+//                try {
+//                    privateChat.sendMessage(chatMessage);
+//                } catch (SmackException.NotConnectedException e) {
+//                    e.printStackTrace();
+//                }
+//                chatMessage.setDateSent(System.currentTimeMillis() / 1000);
+//                chatMessage.setSenderId(Integer.parseInt(Utils.getFromPreference(mActivity, Constant.QB_ID)));
+//                arrHIstoryMessages.add(chatMessage);
+//                adapterPrivateChat.updateList(arrHIstoryMessages);
+//
+//            }
+//
+//            @Override
+//            public void onError(QBResponseException errors) {
+//                // error
+//            }
+//        });
+    }
+    private void sendVidoe() {
 
+    }
     QBPrivateChat privateChat;
     private QBPrivateChat initQBPrivateChat() {
         privateChat= privateChatManager.getChat(Integer.parseInt(opponentID));
@@ -352,11 +569,7 @@ public class ChatActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (opponentUserModel.isOnline()) {
-                        tvOnlineStatus.setText(getResources().getString(R.string.online));
-                    } else {
-                        tvOnlineStatus.setText(getResources().getString(R.string.offline));
-                    }
+                   updateStatus(opponentUserModel.isOnline());
                 }
             });
 
@@ -431,13 +644,11 @@ public class ChatActivity extends AppCompatActivity {
         }
     };
 
-    public void showAlert(String message)
-    {
+    public void showAlert(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void transferAnimation(int i)
-    {
+    private void transferAnimation(int i) {
         switch (i){
             case 1:
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -463,8 +674,374 @@ public class ChatActivity extends AppCompatActivity {
                 showAlert(e.getLocalizedMessage());
             }
         });
+        timer.purge();
         UIUtility.hideSoftKeyboard(this);
         super.onDestroy();
     }
+
+
+
+    private static MenuItem edit, delete;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_chat, menu);
+        edit = menu.findItem(R.id.ic_photo);
+        delete = menu.findItem(R.id.ic_video);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.ic_photo) {
+            showPictureChooseDialog();
+            return true;
+        } else if (id == R.id.ic_video) {
+            showVideoChooseDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // A place has been received; use requestCode to track the request.
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        switch (requestCode) {
+            case take_photo_from_gallery:
+                if (resultCode == Activity.RESULT_OK) {
+
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                    Cursor cursor = mActivity.getContentResolver().query(
+                            selectedImage, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    initMediaPath();
+                    photoPath = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
+
+
+                    imageWidth = bitmap.getWidth();
+                    imageHeight = bitmap.getHeight();
+
+                    photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+
+                    if (photoPath.length() > 0) {
+                        sendPhoto();
+                    }
+
+                }
+                break;
+            case take_photo_from_camera: {
+                if (resultCode == Activity.RESULT_OK) {
+                    setPic();
+                }
+                break;
+            }
+            case take_video_from_gallery:
+                if (resultCode == Activity.RESULT_OK) {
+                    Uri selectedVideoUri = data.getData();
+                    videoPath = getVideoPath(selectedVideoUri);
+                    if (videoPath.length() > 0) {
+                        sendVidoe();
+                    }
+                }
+                break;
+            case take_video_from_camera:
+                if (resultCode == Activity.RESULT_OK) {
+                    if (videoPath.length() > 0) {
+                        sendVidoe();
+                    }
+                }
+                break;
+        }
+    }
+
+    public String getVideoPath(Uri uri) {
+
+        String path = "";
+        try {
+            Cursor cursor = mActivity.getContentResolver().query(uri, null, null, null, null);
+            cursor.moveToFirst();
+            String document_id = cursor.getString(0);
+            document_id = document_id.substring(document_id.lastIndexOf(":")+1);
+            cursor.close();
+
+            cursor = mActivity.getContentResolver().query(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                    null, MediaStore.Video.Media._ID + " = ? ", new String[]{document_id}, null);
+            cursor.moveToFirst();
+            path = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+            cursor.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return path;
+    }
+
+    private static final int take_photo_from_gallery = 1;
+    private static final int take_photo_from_camera = 2;
+    private static final int take_video_from_gallery = 3;
+    private static final int take_video_from_camera = 4;
+
+    private static final String JPEG_FILE_PREFIX = "Heyoe_Compose_photo_";
+    private static final String JPEG_FILE_SUFFIX = ".jpg";
+    private static final String VIDEO_FILE_PREFIX = "Heyoe_Compose_video_";
+    private static final String VIDEO_FILE_SUFFIX = ".mp4";
+
+    private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
+
+    private String photoPath, videoPath;
+    private void initMediaPath() {
+        photoPath = "";
+        videoPath = "";
+
+    }
+
+    //    choose video
+    private void showVideoChooseDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        builder.setMessage(getResources().getString(R.string.choose_video));
+        builder.setCancelable(true);
+        builder.setPositiveButton("Camera",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        captureVideoFromCamera();
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton("Gallery",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        takeVideoFromGallery();
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    private void takeVideoFromGallery() {
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.putExtra("return-data", true);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Video"), take_video_from_gallery);
+    }
+    private Uri fileUri;
+    public static final int MEDIA_TYPE_VIDEO = 2;
+
+    private void captureVideoFromCamera() {
+// create new Intentwith with Standard Intent action that can be
+        // sent to have the camera application capture an video and return it.
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+
+        // create a file to save the video
+        fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
+        initMediaPath();
+        videoPath = fileUri.getPath();
+        // set the image file name
+        intent.putExtra(MediaStore.EXTRA_OUTPUT,fileUri);
+
+        // set the video image quality to high
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+
+        // set max time limit
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
+//        or
+//        intent.putExtra("android.intent.extra.durationLimit", 30000);
+
+        // start the Video Capture Intent
+        startActivityForResult(intent, take_video_from_camera);
+    }
+    /** Create a file Uri for saving an image or video */
+    private Uri getOutputMediaFileUri(int type){
+
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+    /** Create a File for saving an image or video */
+    private File getOutputMediaFile(int type){
+
+        // Check that the SDCard is mounted
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "HeyoeVideo");
+        // Create the storage directory(MyCameraVideo) if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Toast.makeText(mActivity, "Failed to create directory HeyoeVideo.",
+                        Toast.LENGTH_LONG).show();
+                Log.d("MyCameraVideo", "Failed to create directory HeyoeVideo.");
+                return null;
+            }
+        }
+        // For unique file name appending current timeStamp with file name
+        java.util.Date date= new java.util.Date();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(date.getTime());
+        File mediaFile;
+        if(type == MEDIA_TYPE_VIDEO) {
+            // For unique video file name appending current timeStamp with file name
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    VIDEO_FILE_PREFIX + timeStamp + VIDEO_FILE_SUFFIX);
+        } else {
+            return null;
+        }
+        return mediaFile;
+    }
+
+
+    ///photo choose dialog
+    public void showPictureChooseDialog(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        builder.setMessage(getResources().getString(R.string.choose_photo));
+        builder.setCancelable(true);
+        builder.setPositiveButton("Camera",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dispatchTakePictureIntent();
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton("Gallery",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        takePictureFromGallery();
+                        dialog.cancel();
+                    }
+                });
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int arg1) {
+                dialog.cancel();
+
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    //////////////////take a picture from gallery
+    private void takePictureFromGallery() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, take_photo_from_gallery);
+    }
+    /////////////capture photo
+    public void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File f = null;
+        try {
+            f = setUpPhotoFile();
+            initMediaPath();
+            photoPath = f.getAbsolutePath();
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        } catch (IOException e) {
+            e.printStackTrace();
+            f = null;
+            photoPath = "";
+        }
+        startActivityForResult(takePictureIntent, take_photo_from_camera);
+    }
+    private File setUpPhotoFile() throws IOException {
+
+        File f = createImageFile();
+        initMediaPath();
+        photoPath = f.getAbsolutePath();
+        return f;
+    }
+    private File createImageFile() throws IOException {
+
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+        File albumF = getAlbumDir();
+        File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+        return imageF;
+    }
+    private File getAlbumDir() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+            mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
+        } else {
+            mAlbumStorageDirFactory = new BaseAlbumDirFactory();
+        }
+        File storageDir = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            storageDir = mAlbumStorageDirFactory.getAlbumStorageDir("AllyTours");
+            if (storageDir != null) {
+                if (! storageDir.mkdirs()) {
+                    if (! storageDir.exists()){
+                        Log.d("CameraSample", "failed to create directory");
+                        return null;
+                    }
+                }
+            }
+        } else {
+            Log.v(getString(R.string.app_name), "External storage is not mounted READ/WRITE.");
+        }
+        return storageDir;
+    }
+    private void setPic() {
+        if (photoPath == null) {
+            return;
+        }
+
+		/* There isn't enough memory to open up more than a couple camera photos */
+		/* So pre-scale the target bitmap into which the file is decoded */
+
+		/* Get the size of the ImageView */
+        int targetW = 150;
+        int targetH = 150;
+
+		/* Get the size of the image */
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(photoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+		/* Figure out which way needs to be reduced less */
+        int scaleFactor = 1;
+        if ((targetW > 0) && (targetH > 0)) {
+            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        }
+
+		/* Set bitmap options to scale the image decode target */
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
+
+//        imageView.setImageBitmap(bitmap);
+
+        imageWidth = bitmap.getWidth();
+        imageHeight = bitmap.getHeight();
+
+        photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
+
+        if (photoPath.length() > 0) {
+            sendPhoto();
+        }
+
+        //crop thumbnail
+//        Bitmap cropBitmap = BitmapUtility.cropBitmapCenter(bitmap);
+//        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(bitmap, bitmap.getWidth(), bitmap.getWidth());
+        // save croped thumbnail
+//        thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
+    }
+    int imageWidth = 0 , imageHeight = 0;
+
 
 }

@@ -170,6 +170,9 @@ public class MediaFragment extends Fragment {
                                     postModel.setShared_count(postObject.getString("shared_count"));
                                     postModel.setViewed_count(postObject.getString("viewed_count"));
                                     postModel.setDescription(postObject.getString("description"));
+//                                    postModel.setFriend_tag(postObject.getString("tag"));
+//                                    postModel.setFriend_ids(postObject.getString("tag_ids"));
+                                    postModel.setHashtag(postObject.getString("hashtag"));
                                     postModel.setImageWidth(Integer.parseInt(postObject.getString("width")));
                                     postModel.setImageHeight(Integer.parseInt(postObject.getString("height")));
 

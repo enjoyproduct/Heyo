@@ -32,6 +32,7 @@ import com.heyoe.controller.fragments.NewPostFragment;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
+import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
 
 import org.json.JSONObject;
@@ -136,7 +137,7 @@ public class DetailPostActivity extends AppCompatActivity {
         edit = menu.findItem(R.id.ic_edit);
         delete = menu.findItem(R.id.ic_delete);
 
-        if (postModel.getPoster_id().equals(Utils.getFromPreference(mActivity, Constant.USER_ID)) && fromWhere == 1) {
+        if (postModel.getPoster_id().equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
             edit.setVisible(true);
             delete.setVisible(true);
         } else {
