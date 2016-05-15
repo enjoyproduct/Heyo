@@ -65,7 +65,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the text_layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile_info, container, false);
         initVariables();
         initUI(view);

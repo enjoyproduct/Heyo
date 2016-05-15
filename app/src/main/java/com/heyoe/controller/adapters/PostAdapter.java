@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import me.kaede.tagview.Constants;
 import me.kaede.tagview.OnTagClickListener;
 import me.kaede.tagview.Tag;
 import me.kaede.tagview.TagView;
@@ -429,31 +431,99 @@ public class PostAdapter extends BaseAdapter {
         });
 
         //hashtag
-        final TagView hashTagView = (TagView)view.findViewById(R.id.ipff_hashtag);
+//        final TagView hashTagView = (TagView)view.findViewById(R.id.ipff_hashtag);
         List<String> hashTags = new ArrayList<>();
-        if (postModel.getHashtag().length() > 0 && hashTagView != null) {
+        int lineMargin = 10;
+        int tagMargin = 10;
+        int mWidth = UIUtility.getScreenWidth(activity);
+        int total = 0;
+        int listIndex = 1;// List Index
+        int index_bottom = 1;// The Tag to add below
+        int index_header = 1;// The header tag of this line
+
+        RelativeLayout rlTagContainer = (RelativeLayout)view.findViewById(R.id.rl_ipff_tag_container);
+        View view_pre = null;
+        if (postModel.getHashtag().length() > 0) {
            hashTags = Arrays.asList(postModel.getHashtag().split("#"));
+            final List<String> finalHashTags = hashTags;
             for (int j = 0; j < hashTags.size(); j ++) {
-                Tag tag = new Tag("#" + hashTags.get(j));
-                tag.layoutColor = activity.getResources().getColor(R.color.transparent);
-                tag.tagTextColor =  activity.getResources().getColor(R.color.green);
-                hashTagView.addTag(tag);
+//                Tag tag = new Tag("#" + hashTags.get(j));
+//                tag.layoutColor = activity.getResources().getColor(R.color.transparent);
+//                tag.tagTextColor =  activity.getResources().getColor(R.color.green);
+//                hashTagView.addTag(tag);
+                View view1 = activity.getLayoutInflater().inflate(R.layout.text_layout, null);
+                view1.setId(listIndex);
+
+                TextView textView = (TextView)view1.findViewById(R.id.tag);
+                textView.setText("#" + hashTags.get(j));
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) textView.getLayoutParams();
+                params.setMargins(10, 5, 10, 5);
+                textView.setLayoutParams(params);
+                final int finalJ = j;
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (MainFragment.isFavorite) {
+                            HomeActivity.navigateForHashTag(true, finalHashTags.get(finalJ));
+                        } else {
+                            HomeActivity.navigateForHashTag(false, finalHashTags.get(finalJ));
+                        }
+                    }
+                });
+
+                RelativeLayout.LayoutParams tagParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                //tagParams.setMargins(0, 0, 0, 0);
+
+                //add margin of each line
+                tagParams.bottomMargin = lineMargin;
+                // calculate　of tag layout width
+                float tagWidth = textView.getPaint().measureText(textView.getText().toString()) + 10 + 10;
+
+                if (mWidth <= total + tagMargin + tagWidth + me.kaede.tagview.Utils.dpToPx(activity, Constants.LAYOUT_WIDTH_OFFSET)) {
+                    //need to add in new line
+                    tagParams.addRule(RelativeLayout.BELOW, index_bottom);
+                    // initialize total param (layout padding left & layout padding right)
+                    total = rlTagContainer.getPaddingLeft() + rlTagContainer.getPaddingRight();
+                    index_bottom = listIndex;
+                    index_header = listIndex;
+                } else {
+                    //no need to new line
+                    tagParams.addRule(RelativeLayout.ALIGN_TOP, index_header);
+                    //not header of the line
+                    if (listIndex != index_header) {
+                        tagParams.addRule(RelativeLayout.RIGHT_OF, listIndex - 1);
+                        tagParams.leftMargin = tagMargin;
+                        total += tagMargin;
+                        if (view_pre!=null && view_pre.getWidth() < view1.getWidth()) {
+                            index_bottom = listIndex;
+                        }
+                    }
+
+
+                }
+
+
+                total += tagWidth;
+                rlTagContainer.addView(view1, tagParams);
+                view_pre = view1;
+                listIndex++;
             }
         }
-        final List<String> finalHashTags = hashTags;
-        if (hashTagView != null && finalHashTags != null) {
-            hashTagView.setOnTagClickListener(new OnTagClickListener() {
-
-                @Override
-                public void onTagClick(Tag tag, int position) {
-                    if (MainFragment.isFavorite) {
-                        HomeActivity.navigateForHashTag(true, finalHashTags.get(position));
-                    } else {
-                        HomeActivity.navigateForHashTag(false, finalHashTags.get(position));
-                    }
-                }
-            });
-        }
+//        final List<String> finalHashTags = hashTags;
+//        if (hashTagView != null && finalHashTags != null) {
+//            hashTagView.setOnTagClickListener(new OnTagClickListener() {
+//
+//                @Override
+//                public void onTagClick(Tag tag, int position) {
+//                    if (MainFragment.isFavorite) {
+//                        HomeActivity.navigateForHashTag(true, finalHashTags.get(position));
+//                    } else {
+//                        HomeActivity.navigateForHashTag(false, finalHashTags.get(position));
+//                    }
+//                }
+//            });
+//        }
 
         ///social icons
         ImageButton ibLike = (ImageButton)view.findViewById(R.id.ib_ipff_like);

@@ -150,12 +150,11 @@
             android:name=".controller.Black_Friend_Activity"
             android:label="@string/title_activity_black__friend_"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".controller.crop_image.PhotoCropActivity"
-            android:label="@string/title_activity_photo_crop"
-            android:theme="@style/AppTheme.NoActionBar">
 
-        </activity>
+        <activity
+            android:name=".controller.photo_crop.PhotoCropActivity"
+            android:label="@string/title_activity_photo_crop"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

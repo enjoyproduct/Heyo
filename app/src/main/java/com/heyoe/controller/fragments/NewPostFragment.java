@@ -143,7 +143,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the text_layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_new_post, container, false);
         initVariable();
         initUI(view);
@@ -802,7 +802,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 //        arrFriendIds.add(arrFriends.get(position).getUser_id());
 //    }
     private void inputHashTag(String strHashTag) {
-        if (arrHashTags.size() > 7) {
+        if (arrHashTags.size() > 4) {
             return;
         }
         Tag tag = new Tag("#" + strHashTag);
@@ -1297,11 +1297,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     }
     int imageWidth = 0 , imageHeight = 0;
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
     @Override
     public void onClick(View v) {

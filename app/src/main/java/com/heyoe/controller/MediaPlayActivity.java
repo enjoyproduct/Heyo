@@ -26,6 +26,9 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -46,6 +49,11 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
     private ImageView imageView;
     String url;
     String type;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +64,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         setContentView(R.layout.activity_media_play);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        ImageButton ibBack = (ImageButton)toolbar.findViewById(R.id.ib_back);
+        ImageButton ibBack = (ImageButton) toolbar.findViewById(R.id.ib_back);
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +75,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         type = getIntent().getStringExtra("type");
         if (type.equals("youtube")) {
             initYoutube();
-        } else if (type.equals("video")){
+        } else if (type.equals("video")) {
             initVideoview();
         } else if (type.equals("photo")) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -75,7 +83,11 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         }
 
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
     private ScaleGestureDetector scaleGestureDetector;
     private Matrix matrix = new Matrix();
     Matrix savedMatrix = new Matrix();
@@ -87,18 +99,19 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
     static final int ZOOM = 2;
 
     int mode = NONE;
+
     private void initImageView() {
 
         int width = getIntent().getIntExtra("width", 0);
         int height = getIntent().getIntExtra("height", 0);
 
-        imageView = (ImageView)findViewById(R.id.imageview);
+        imageView = (ImageView) findViewById(R.id.imageview);
         imageView.setVisibility(View.VISIBLE);
 //        init imageview size
         if (width != 0 && height != 0) {
-            double ratio = ((double)height / (double)width);
+            double ratio = ((double) height / (double) width);
             double height1 = ratio * UIUtility.getScreenWidth(this);
-            UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(this), (int)height1);
+            UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(this), (int) height1);
         }
         if (!url.equals("")) {
             UrlRectangleImageViewHelper.setUrlDrawable(imageView, url, R.drawable.default_tour, new UrlImageViewCallback() {
@@ -160,7 +173,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
             private float spacing(MotionEvent event) {
                 float x = event.getX(0) - event.getX(1);
                 float y = event.getY(0) - event.getY(1);
-                return FloatMath.sqrt(x * x + y * y);
+                return (float) Math.sqrt(x * x + y * y);
             }
 
             private void midPoint(PointF point, MotionEvent event) {
@@ -173,13 +186,11 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
 
 
     private void initVideoview() {
-        videoView = (VideoView)findViewById(R.id.videoview);
+        videoView = (VideoView) findViewById(R.id.videoview);
         videoView.setVisibility(View.VISIBLE);
         VideoPlay videoPlay = new VideoPlay(this, videoView, url);
         videoPlay.playVideo();
     }
-
-
 
 
     private void initYoutube() {
@@ -188,6 +199,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         // Initializing video player with developer key
         youTubeView.initialize(getResources().getString(R.string.google_android_key), this);
     }
+
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean wasRestored) {
         if (!wasRestored) {
@@ -212,6 +224,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
             Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RECOVERY_DIALOG_REQUEST) {
@@ -224,4 +237,48 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         return (YouTubePlayerView) findViewById(R.id.youtube_view);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (type.equals("youtube")) {
+            // ATTENTION: This was auto-generated to implement the App Indexing API.
+            // See https://g.co/AppIndexing/AndroidStudio for more information.
+            client.connect();
+            Action viewAction = Action.newAction(
+                    Action.TYPE_VIEW, // TODO: choose an action type.
+                    "MediaPlay Page", // TODO: Define a title for the content shown.
+                    // TODO: If you have web page content that matches this app activity's content,
+                    // make sure this auto-generated web page URL is correct.
+                    // Otherwise, set the URL to null.
+                    Uri.parse("http://host/path"),
+                    // TODO: Make sure this auto-generated app deep link URI is correct.
+                    Uri.parse("android-app://com.heyoe/http/host/path")///com.heyoe-> must same as package name in AndroidManifest.xml
+            );
+            AppIndex.AppIndexApi.start(client, viewAction);
+        }
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (type.equals("youtube")) {
+            // ATTENTION: This was auto-generated to implement the App Indexing API.
+            // See https://g.co/AppIndexing/AndroidStudio for more information.
+            Action viewAction = Action.newAction(
+                    Action.TYPE_VIEW, // TODO: choose an action type.
+                    "MediaPlay Page", // TODO: Define a title for the content shown.
+                    // TODO: If you have web page content that matches this app activity's content,
+                    // make sure this auto-generated web page URL is correct.
+                    // Otherwise, set the URL to null.
+                    Uri.parse("http://host/path"),
+                    // TODO: Make sure this auto-generated app deep link URI is correct.
+                    Uri.parse("android-app://com.heyoe/http/host/path")   ///com.heyoe-> must same as package name in AndroidManifest.xml
+            );
+            AppIndex.AppIndexApi.end(client, viewAction);
+            client.disconnect();
+        }
+
+    }
 }

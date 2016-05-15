@@ -1,12 +1,16 @@
 package com.heyoe.controller;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -55,6 +59,7 @@ import com.heyoe.controller.pushnotifications.GcmServiceManager;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
+import com.heyoe.model.PushModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
@@ -104,12 +109,25 @@ public class HomeActivity extends AppCompatActivity implements
 
         getAllUsers();
     }
+    public BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver(){
 
+        public void onReceive(Context context, Intent intent) {
+
+            PushModel data = (PushModel)intent.getExtras().getSerializable(Constant.PUSH_DATA);
+            if (data.type.equals("increase_activity_count")) {
+                showActivityBadge();
+            }
+            if (data.type.equals("increase_message_count")) {
+                showMsgBadge(data.user_id);
+            }
+
+        };
+    };
     private void initVariables() {
         fragmentManager = getSupportFragmentManager();
         mActivity = this;
         arrAllUsers = new ArrayList<>();
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(mHandleMessageReceiver, new IntentFilter("pushData"));
     }
 
     private void initUI() {
@@ -264,7 +282,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void initAutoCompleteTextView() {
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity ,android.R.layout.simple_list_item_1, makeSampleData());
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity ,android.R.text_layout.simple_list_item_1, makeSampleData());
         searchUserAutoCompleteAdapter = new SearchUserAutoCompleteAdapter(mActivity, R.layout.item_search, arrAllUsers);
         autoCompleteTextView.setAdapter(searchUserAutoCompleteAdapter);
         autoCompleteTextView.setThreshold(2);
@@ -780,7 +798,7 @@ public class HomeActivity extends AppCompatActivity implements
             setOffline("off");
         }
         super.onDestroy();
-
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mHandleMessageReceiver);
     }
     public static void showSignOutAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);

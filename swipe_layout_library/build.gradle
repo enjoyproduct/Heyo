@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 17
         targetSdkVersion 22
     }
 }
@@ -13,6 +13,7 @@ android {
 dependencies {
     compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.android.support:support-v4:22.1.1'
+    compile project(':cropper')
 }
 apply from: './gradle-mvn-push.gradle'
 

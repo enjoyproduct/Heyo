@@ -52,6 +52,7 @@ import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.MediaPlayActivity;
 import com.heyoe.controller.ProfileActivity;
 import com.heyoe.controller.UserListActivity;
+import com.heyoe.controller.photo_crop.PhotoCropActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.CommentModel;
 import com.heyoe.model.Constant;
@@ -83,6 +84,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.kaede.tagview.Constants;
 import me.kaede.tagview.OnTagClickListener;
 import me.kaede.tagview.Tag;
 import me.kaede.tagview.TagView;
@@ -129,7 +131,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
+        // Inflate the text_layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         initVariable();
         initUI(view);
@@ -174,11 +176,7 @@ public class ProfileFragment extends Fragment {
         lvMain = mPullRefreshHomeListView.getRefreshableView();
         mProfileAdapter = new ProfileAdapter(mArrPost);
     }
-    @Override
-    public void onResume() {
-        super.onResume();
 
-    }
     public static void setCelebrity() {
 //        if (ivCelebrity != null && isMe()) {
 //            if (Utils.getFromPreference(mActivity, Constant.CELEBRITY).equals("yes")) {
@@ -621,7 +619,8 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         if (isMe()) {
-                            showPictureChooseDialog(0);
+//                            showPictureChooseDialog(0);
+                            cropImage();
                         }
                     }
                 });
@@ -964,27 +963,84 @@ public class ProfileFragment extends Fragment {
                 });
 
                 //hashtag
-                TagView hashTagView = (TagView)view.findViewById(R.id.ipff_hashtag);
                 List<String> hashTags = new ArrayList<>();
+                int lineMargin = 10;
+                int tagMargin = 10;
+                int mWidth = UIUtility.getScreenWidth(mActivity);
+                int total = 0;
+                int listIndex = 1;// List Index
+                int index_bottom = 1;// The Tag to add below
+                int index_header = 1;// The header tag of this line
+
+                RelativeLayout rlTagContainer = (RelativeLayout)view.findViewById(R.id.rl_ipff_tag_container);
+                View view_pre = null;
                 if (postModel.getHashtag().length() > 0) {
                     hashTags = Arrays.asList(postModel.getHashtag().split("#"));
+                    final List<String> finalHashTags = hashTags;
                     for (int j = 0; j < hashTags.size(); j ++) {
+//                Tag tag = new Tag("#" + hashTags.get(j));
+//                tag.layoutColor = activity.getResources().getColor(R.color.transparent);
+//                tag.tagTextColor =  activity.getResources().getColor(R.color.green);
+//                hashTagView.addTag(tag);
+                        View view1 = mActivity.getLayoutInflater().inflate(R.layout.text_layout, null);
+                        view1.setId(listIndex);
 
-                        Tag tag = new Tag("#" + hashTags.get(j));
-//                        tag.radius = 5f;
-                        tag.layoutColor = getResources().getColor(R.color.transparent);
-                        tag.tagTextColor =  getResources().getColor(R.color.green);
-                        hashTagView.addTag(tag);
+                        TextView textView = (TextView)view1.findViewById(R.id.tag);
+                        textView.setText("#" + hashTags.get(j));
+                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) textView.getLayoutParams();
+                        params.setMargins(10, 5, 10, 5);
+                        textView.setLayoutParams(params);
+                        final int finalJ = j;
+                        textView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+//                                if (MainFragment.isFavorite) {
+//                                    HomeActivity.navigateForHashTag(true, finalHashTags.get(finalJ));
+//                                } else {
+//                                    HomeActivity.navigateForHashTag(false, finalHashTags.get(finalJ));
+//                                }
+                            }
+                        });
+
+                        RelativeLayout.LayoutParams tagParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+                        //tagParams.setMargins(0, 0, 0, 0);
+
+                        //add margin of each line
+                        tagParams.bottomMargin = lineMargin;
+                        // calculate　of tag layout width
+                        float tagWidth = textView.getPaint().measureText(textView.getText().toString()) + 10 + 10;
+
+                        if (mWidth <= total + tagMargin + tagWidth + me.kaede.tagview.Utils.dpToPx(mActivity, Constants.LAYOUT_WIDTH_OFFSET)) {
+                            //need to add in new line
+                            tagParams.addRule(RelativeLayout.BELOW, index_bottom);
+                            // initialize total param (layout padding left & layout padding right)
+                            total = rlTagContainer.getPaddingLeft() + rlTagContainer.getPaddingRight();
+                            index_bottom = listIndex;
+                            index_header = listIndex;
+                        } else {
+                            //no need to new line
+                            tagParams.addRule(RelativeLayout.ALIGN_TOP, index_header);
+                            //not header of the line
+                            if (listIndex != index_header) {
+                                tagParams.addRule(RelativeLayout.RIGHT_OF, listIndex - 1);
+                                tagParams.leftMargin = tagMargin;
+                                total += tagMargin;
+                                if (view_pre!=null && view_pre.getWidth() < view1.getWidth()) {
+                                    index_bottom = listIndex;
+                                }
+                            }
+
+
+                        }
+
+
+                        total += tagWidth;
+                        rlTagContainer.addView(view1, tagParams);
+                        view_pre = view1;
+                        listIndex++;
                     }
                 }
-                hashTagView.setOnTagClickListener(new OnTagClickListener() {
-
-                    @Override
-                    public void onTagClick(Tag tag, int position) {
-
-                    }
-                });
-
             }
             return view;
         }
@@ -1211,6 +1267,23 @@ public class ProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
+            case 108:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+//                    Bitmap bitmap = (Bitmap)data.getParcelableExtra("cropped_image");
+                    byte[] byteArray = data.getByteArrayExtra("cropped_image");
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                    if (bitmap != null) {
+                        ivMedia.setImageBitmap(bitmap);
+                        imageWidth = bitmap.getWidth();
+                        imageHeight = bitmap.getHeight();
+                        photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", "heyoe_header_photo.jpg");
+
+                        if (photoPath.length() > 0) {
+                            askToUploadHeaderMedia(1);
+                        }
+                    }
+                }
+                break;
             case change_avatar_from_gallery:
                 if (resultCode == Activity.RESULT_OK) {
 
@@ -1572,6 +1645,10 @@ public class ProfileFragment extends Fragment {
         AlertDialog alert = builder.create();
         alert.show();
     }
+    private void cropImage() {
+        Intent intent = new Intent(mActivity, PhotoCropActivity.class);
+        startActivityForResult(intent, 108);
+    }
     //////////////////take a picture from gallery
     private void takePictureFromGallery(int type)
     {
@@ -1579,7 +1656,8 @@ public class ProfileFragment extends Fragment {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         if (type == 0) {// take picture for header photo
-            startActivityForResult(photoPickerIntent, take_photo_from_gallery);
+//            startActivityForResult(photoPickerIntent, take_photo_from_gallery);
+            cropImage();
         } else {
             startActivityForResult(photoPickerIntent, change_avatar_from_gallery);
         }
@@ -1607,7 +1685,8 @@ public class ProfileFragment extends Fragment {
             avatarPath = "";
         }
         if (type == 0) {// take picture for header photo
-            startActivityForResult(takePictureIntent, take_photo_from_camera);
+//            startActivityForResult(takePictureIntent, take_photo_from_camera);
+            cropImage();
         } else {
             startActivityForResult(takePictureIntent, change_avatar_from_camera);
         }

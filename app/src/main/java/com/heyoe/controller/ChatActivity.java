@@ -91,7 +91,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -103,6 +105,8 @@ public class ChatActivity extends AppCompatActivity {
     private TextView tvName, tvOnlineStatus;
     private LinearLayout llChat;
     private ImageButton ibAttachment;
+
+    RequestQueue requestQueue;
 
     private String opponentID;
 //    private String dialogId;
@@ -139,6 +143,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void initUI() {
         mActivity = this;
+        requestQueue = Volley.newRequestQueue(mActivity);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -234,6 +239,26 @@ public class ChatActivity extends AppCompatActivity {
 
 
     }
+    private void deleteMessage(final String dialogId) {
+        Set<String> messagesIds = new HashSet<String>() {{
+            add(dialogId);
+        }};
+
+        QBChatService.deleteMessages(messagesIds, new QBEntityCallback<Void>() {
+
+            @Override
+            public void onSuccess(Void aVoid, Bundle bundle) {
+                Toast.makeText(mActivity, "Cleared chat history successfully", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(QBResponseException errors) {
+                Toast.makeText(mActivity, "Failed to clear chat history", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
     private void updateStatus(boolean state) {
         if (state) {
             tvOnlineStatus.setText(getResources().getString(R.string.online));
@@ -366,7 +391,7 @@ public class ChatActivity extends AppCompatActivity {
 //        timer2.schedule(timerTask2, 0, 3167);
 //    }
     private void getOnlineStatus() {
-        final RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
@@ -842,7 +867,7 @@ public class ChatActivity extends AppCompatActivity {
     public static final int MEDIA_TYPE_VIDEO = 2;
 
     private void captureVideoFromCamera() {
-// create new Intentwith with Standard Intent action that can be
+    // create new Intentwith with Standard Intent action that can be
         // sent to have the camera application capture an video and return it.
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
@@ -911,12 +936,14 @@ public class ChatActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dispatchTakePictureIntent();
+//                        deleteMessage(opponentUserModel.getDialog_id());
                         dialog.cancel();
                     }
                 });
         builder.setNegativeButton("Gallery",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+//                        deleteMessage(opponentUserModel.getDialog_id());
                         takePictureFromGallery();
                         dialog.cancel();
                     }

@@ -105,6 +105,7 @@
                 android:layout_margin="@dimen/dimen_16dp"
                 android:singleLine="true"
                 android:visibility="visible"
+                android:maxLength="20"
                 />
             <!--youtube link-->
             <EditText

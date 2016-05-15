@@ -33,6 +33,8 @@ public class API {
     public static String NEW_POST = BASE_URL + "new_post";
     public static String GET_NON_FRIENDS = BASE_URL + "get_non_friends";
     public static String INVITE_FRIEND = BASE_URL + "invite_friend";
+    public static String SEND_CHECKIN_REQUEST = BASE_URL + "send_checkin_chat_request";
+    public static String ACCEPT_CHECKIN_REQUEST = BASE_URL + "accept_checkin_chat_request";
     public static String SET_OFFLINE = BASE_URL + "set_offline";
     public static String GET_ONLINE_STATUS = BASE_URL + "get_online_status";
     public static String GET_INVITED_FRIENDS = BASE_URL + "get_invited_users";

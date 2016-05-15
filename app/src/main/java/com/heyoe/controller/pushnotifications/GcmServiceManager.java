@@ -9,12 +9,15 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.heyoe.R;
 import com.heyoe.controller.HomeActivity;
+import com.heyoe.controller.UserListActivity;
 import com.heyoe.model.Constant;
+import com.heyoe.model.PushModel;
 import com.heyoe.utilities.Utils;
 
 public class GcmServiceManager {
@@ -104,7 +107,15 @@ public class GcmServiceManager {
             int count = Utils.getIntFromPreference(activity, Constant.ACTIVITY_COUNT);
             count ++;
             Utils.saveIntToPreference(activity, Constant.ACTIVITY_COUNT, count);
-            HomeActivity.showActivityBadge();
+
+            Intent intentNewPush = new Intent("pushData");
+            PushModel pushModel = new PushModel();
+            pushModel.type = "increase_activity_count";
+            intentNewPush.putExtra(Constant.PUSH_DATA, pushModel);
+
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intentNewPush);
+
+//            HomeActivity.showActivityBadge();
         }
 
     }
@@ -114,7 +125,14 @@ public class GcmServiceManager {
             count ++;
             Utils.saveIntToPreference(activity, Constant.MSG_COUNT, count);
             if (user_id.length() > 0) {
-                HomeActivity.showMsgBadge(user_id);
+                Intent intentNewPush = new Intent("pushData");
+                PushModel pushModel = new PushModel();
+                pushModel.user_id = user_id;
+                pushModel.type = "increase_message_count";
+                intentNewPush.putExtra(Constant.PUSH_DATA, pushModel);
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intentNewPush);
+
+//                HomeActivity.showMsgBadge(user_id);
             }
 
         }
@@ -137,9 +155,34 @@ public class GcmServiceManager {
             message = data.getString("accepted_invite");
         }else if (data.containsKey("rejected_invite")){
             message = data.getString("rejected_invite");
-//        } else if (data.containsKey("user_id")){
-//            message = "qb_" + data.getString("message");
-        } else {
+        } else if (data.containsKey("receive_checkin_chat_request")){
+
+            message = data.getString("receive_checkin_chat_request");
+
+            PushModel pushModel = new PushModel();
+            String[] string = message.split("_receive_checkin_chat_request_");
+            message = "You received checkin chat request from " + string[1];
+
+            pushModel.user_id = string[0];
+            pushModel.type = string[2];
+            Intent intentNewPush = new Intent("pushData");
+            intentNewPush.putExtra(Constant.PUSH_DATA, pushModel);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intentNewPush);
+
+        }else if (data.containsKey("accept_checkin_chat_request")){
+            message = data.getString("accept_checkin_chat_request");
+
+            PushModel pushModel = new PushModel();
+            String[] string = message.split("_accept_checkin_chat_request_");
+            message = string[1] + " accepted your checkin chat request";
+
+            pushModel.user_id = string[0];
+            pushModel.type = string[2];
+            Intent intentNewPush = new Intent("pushData");
+            intentNewPush.putExtra(Constant.PUSH_DATA, pushModel);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intentNewPush);
+
+        }else {
             if (data.containsKey("message")) {
                 String msg = data.getString("message");
                 String[] str = msg.split("_qb_");
@@ -164,6 +207,7 @@ public class GcmServiceManager {
         notificationData = data;
         parseMessage(data);
         if (!message.equals("")) {
+
             if (message.contains("qb_")) {
                 message = message.replace("qb_", "");
                 increaseMsgCount(id);

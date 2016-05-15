@@ -84,7 +84,7 @@ public class MyFriendFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the text_layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_friend, container, false);
         initVariables();
         initUI(view);
@@ -519,16 +519,17 @@ public class MyFriendFragment extends Fragment {
                     mItemManger.closeAllItems();
                 }
             });
-            swipeLayout.findViewById(R.id.clear_chat_history).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (!arrActiveUsers.get(position).getDialog_id().equals("0")) {
-                        deleteMessage(arrActiveUsers.get(position).getDialog_id());
-                    }
-                    mItemManger.closeAllItems();
-                }
-            });
+//            swipeLayout.findViewById(R.id.clear_chat_history).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                    if (!arrActiveUsers.get(position).getDialog_id().equals("0")) {
+//                        deleteMessage(arrActiveUsers.get(position).getDialog_id());
+////                        deleteDialog(arrActiveUsers.get(position).getDialog_id());
+//                    }
+//                    mItemManger.closeAllItems();
+//                }
+//            });
 
             swipeLayout.findViewById(R.id.block_friend).setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.example.demo_cloud_tagview.R;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -259,7 +260,7 @@ public class TagView extends RelativeLayout {
 
 			}
 			total += tagWidth;
-			addView(tagLayout, tagParams);
+			this.addView(tagLayout, tagParams);
 			tag_pre = tag;
 			listIndex++;
 

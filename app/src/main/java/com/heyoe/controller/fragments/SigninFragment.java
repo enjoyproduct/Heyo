@@ -78,7 +78,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the text_layout for this fragment
         View view = inflater.inflate(R.layout.fragment_signin, container, false);
 
         initVaraibles();

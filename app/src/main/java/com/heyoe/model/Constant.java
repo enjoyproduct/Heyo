@@ -56,4 +56,5 @@ public class Constant {
     public static String MSG_COUNT = "msg_count";
     public static String ACTIVITY_COUNT = "activity_count";
 
+    public static String PUSH_DATA = "push_data";
 }

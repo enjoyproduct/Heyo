@@ -25,6 +25,17 @@ public class UserModel implements Serializable {
     String qb_id;
     String blacker_id;
 
+
+    public int getCheckinRequestState() {
+        return checkinRequestState;
+    }
+
+    public void setCheckinRequestState(int checkinRequestState) {
+        this.checkinRequestState = checkinRequestState;
+    }
+
+    int checkinRequestState;
+
     public String getBlacker_id() {
         return blacker_id;
     }

@@ -72,6 +72,12 @@
             app:textPaddingRight="10dp"
             app:textPaddingTop="3dp">
         </me.kaede.tagview.TagView>
+        <RelativeLayout
+            android:id="@+id/rl_ipff_tag_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </RelativeLayout>
     </LinearLayout>
     <!--media-->
     <RelativeLayout
