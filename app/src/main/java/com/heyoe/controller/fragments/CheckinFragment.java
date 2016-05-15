@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,8 +36,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
-import com.heyoe.controller.ChatActivity;
-import com.heyoe.controller.HomeActivity;
+import com.heyoe.controller.QBChatActivity;
 import com.heyoe.controller.UserListActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
@@ -50,7 +48,6 @@ import com.heyoe.widget.MyCircularImageView;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBSettings;
@@ -550,7 +547,7 @@ public class CheckinFragment extends Fragment {
                         sendCheckinRequest(position);
                         arrFriends.get(position).setCheckinRequestState(1);
                         notifyDataSetChanged();
-                    }else if (arrFriends.get(position).getCheckinRequestState() == 2) {
+                    } else if (arrFriends.get(position).getCheckinRequestState() == 2) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                         builder.setTitle(Constant.INDECATOR);
                         builder.setMessage("Do you want accept " + arrFriends.get(position).getFullname() + "'s request?");
@@ -576,9 +573,8 @@ public class CheckinFragment extends Fragment {
                         alert.show();
 
 
-
-                    } else if (arrFriends.get(position).getCheckinRequestState() == 3){
-                        Intent intent = new Intent(mActivity, ChatActivity.class);
+                    } else if (arrFriends.get(position).getCheckinRequestState() == 3) {
+                        Intent intent = new Intent(mActivity, QBChatActivity.class);
                         intent.putExtra("userModel", arrFriends.get(position));
                         startActivity(intent);
                     }
@@ -586,9 +582,12 @@ public class CheckinFragment extends Fragment {
                 }
             });
 
-            tvUnreadMsgCount.setText(String.valueOf(arrFriends.get(position).getUnreadMsgCount()));
-            if (arrFriends.get(position).getCheckinRequestState() == 2) {
+            if (arrFriends.get(position).getCheckinRequestState() == 1 || arrFriends.get(position).getCheckinRequestState() == 2) {
                 tvUnreadMsgCount.setText("?");
+            } else if (arrFriends.get(position).getCheckinRequestState() == 3) {
+                tvUnreadMsgCount.setText(String.valueOf(arrFriends.get(position).getUnreadMsgCount()));
+            } else {
+                tvUnreadMsgCount.setText("");
             }
             return view;
         }
@@ -612,6 +611,7 @@ public class CheckinFragment extends Fragment {
                             if (status.equals("200")) {
                                 arrUsers.get(position).setCheckinRequestState(1);
                                 checkinUserAdapter.notifyDataSetChanged();
+                                Utils.showToast(mActivity, "Sent request successfully");
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -652,6 +652,7 @@ public class CheckinFragment extends Fragment {
                             if (status.equals("200")) {
                                 arrUsers.get(position).setCheckinRequestState(3);
                                 checkinUserAdapter.notifyDataSetChanged();
+                                Utils.showToast(mActivity, "Accepted request successfully");
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {

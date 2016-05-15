@@ -1,4 +1,4 @@
-package com.heyoe.controller.qb_utils.qb;
+package com.heyoe.controller.qb_chat.qb;
 
 import android.util.SparseArray;
 

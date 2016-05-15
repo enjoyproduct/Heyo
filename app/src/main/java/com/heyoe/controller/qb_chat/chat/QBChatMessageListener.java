@@ -1,4 +1,4 @@
-package com.heyoe.controller.qb_utils.chat;
+package com.heyoe.controller.qb_chat.chat;
 
 import com.quickblox.chat.QBChat;
 import com.quickblox.chat.model.QBChatMessage;

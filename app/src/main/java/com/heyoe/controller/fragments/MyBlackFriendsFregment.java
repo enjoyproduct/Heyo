@@ -30,8 +30,7 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
-import com.heyoe.controller.ChatActivity;
-import com.heyoe.controller.HomeActivity;
+import com.heyoe.controller.QBChatActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.model.UserModel;
@@ -42,7 +41,6 @@ import com.heyoe.widget.MyCircularImageView;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBGroupChatManager;
 import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
@@ -606,7 +604,7 @@ public class MyBlackFriendsFregment extends Fragment {
             ivChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, ChatActivity.class);
+                    Intent intent = new Intent(mActivity, QBChatActivity.class);
                     intent.putExtra("userModel", arrActiveUsers.get(position));
                     intent.putExtra("me", user);
                     intent.putExtra("is_black_chat", true);

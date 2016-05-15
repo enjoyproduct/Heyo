@@ -1,11 +1,11 @@
-package com.heyoe.controller.qb_utils.qb;
+package com.heyoe.controller.qb_chat.qb;
 
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.chat.model.QBDialogType;
-import com.heyoe.controller.qb_utils.chat.ChatHelper;
+import com.heyoe.controller.qb_chat.chat.ChatHelper;
 import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;

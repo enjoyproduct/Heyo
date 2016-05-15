@@ -1,4 +1,4 @@
-package com.heyoe.controller.qb_utils.qb;
+package com.heyoe.controller.qb_chat.qb;
 
 import android.support.design.widget.Snackbar;
 import android.util.Log;

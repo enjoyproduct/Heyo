@@ -1,10 +1,9 @@
-package com.heyoe.controller.qb_utils.chat;
+package com.heyoe.controller.qb_chat.chat;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.heyoe.utilities.Utils;
 import com.quickblox.chat.QBChat;
 import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBMessageListener;

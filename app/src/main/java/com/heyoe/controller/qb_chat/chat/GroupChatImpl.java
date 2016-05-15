@@ -1,4 +1,4 @@
-package com.heyoe.controller.qb_utils.chat;
+package com.heyoe.controller.qb_chat.chat;
 
 import android.os.Bundle;
 import android.util.Log;

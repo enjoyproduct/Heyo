@@ -1,9 +1,7 @@
 package com.heyoe.controller.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.heyoe.R;
-import com.heyoe.controller.ChatActivity;
+import com.heyoe.controller.QBChatActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.utilities.Utils;
@@ -38,7 +36,7 @@ public class AdapterPrivateChatRoom extends BaseAdapter {
     private Boolean mineFlag;
     private String opponentAvatar;
 
-    public AdapterPrivateChatRoom(ChatActivity context, ArrayList<QBChatMessage> arr, String avatarURL)
+    public AdapterPrivateChatRoom(QBChatActivity context, ArrayList<QBChatMessage> arr, String avatarURL)
     {
         layoutInflater = LayoutInflater.from(context);
         this.context = context;

@@ -1,4 +1,4 @@
-package com.heyoe.controller.qb_utils.qb.callback;
+package com.heyoe.controller.qb_chat.qb.callback;
 
 import android.os.Bundle;
 import android.os.Handler;

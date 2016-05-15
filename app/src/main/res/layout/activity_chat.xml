@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.heyoe.controller.ChatActivity">
+    tools:context=".controller.QBChatActivity">
 
     <LinearLayout
         android:id="@+id/ll_chat"

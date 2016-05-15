@@ -1,4 +1,4 @@
-package com.heyoe.controller.qb_utils.chat;
+package com.heyoe.controller.qb_chat.chat;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -20,10 +20,10 @@ import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBPagedRequestBuilder;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.core.request.QBRequestUpdateBuilder;
-import com.heyoe.controller.qb_utils.qb.QbDialogUtils;
-import com.heyoe.controller.qb_utils.qb.QbUsersHolder;
-import com.heyoe.controller.qb_utils.qb.callback.QbEntityCallbackTwoTypeWrapper;
-import com.heyoe.controller.qb_utils.qb.callback.QbEntityCallbackWrapper;
+import com.heyoe.controller.qb_chat.qb.QbDialogUtils;
+import com.heyoe.controller.qb_chat.qb.QbUsersHolder;
+import com.heyoe.controller.qb_chat.qb.callback.QbEntityCallbackTwoTypeWrapper;
+import com.heyoe.controller.qb_chat.qb.callback.QbEntityCallbackWrapper;
 import com.quickblox.users.QBUsers;
 import com.quickblox.users.model.QBUser;
 

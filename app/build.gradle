@@ -96,5 +96,6 @@ dependencies {
     compile project(':cropper')
     compile project(':taglibrary')
     compile project(':dribSearch')
+
 }
 

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
@@ -39,8 +37,6 @@ import com.android.volley.Response;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.CustomRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe.R;
 import com.heyoe.controller.adapters.AdapterPrivateChatRoom;
 import com.heyoe.model.API;
@@ -62,11 +58,8 @@ import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBIsTypingListener;
 import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
-import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
-import com.quickblox.content.QBContent;
-import com.quickblox.content.model.QBFile;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
@@ -97,7 +90,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ChatActivity extends AppCompatActivity {
+public class QBChatActivity extends AppCompatActivity {
 
     private ImageView ivSendMessage;
     private EditText etMessage;
@@ -151,7 +144,7 @@ public class ChatActivity extends AppCompatActivity {
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UIUtility.hideSoftKeyboard(ChatActivity.this);
+                UIUtility.hideSoftKeyboard(QBChatActivity.this);
                 finish();
             }
         });
@@ -209,7 +202,7 @@ public class ChatActivity extends AppCompatActivity {
         lvContent = (ListView) findViewById(R.id.lv_messages);
         lvContent.setStackFromBottom(true);
         lvContent.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-        adapterPrivateChat = new AdapterPrivateChatRoom(ChatActivity.this, arrHIstoryMessages, opponentUserModel.getAvatar());
+        adapterPrivateChat = new AdapterPrivateChatRoom(QBChatActivity.this, arrHIstoryMessages, opponentUserModel.getAvatar());
         lvContent.setAdapter(adapterPrivateChat);
 
 
@@ -668,19 +661,19 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
 
-        chatService.removeConnectionListener(connectionListener);
-        chatService.logout(new QBEntityCallback<Void>() {
-            @Override
-            public void onSuccess(Void aVoid, Bundle bundle) {
-                chatService.destroy();
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-
-                showAlert(e.getLocalizedMessage());
-            }
-        });
+//        chatService.removeConnectionListener(connectionListener);
+//        chatService.logout(new QBEntityCallback<Void>() {
+//            @Override
+//            public void onSuccess(Void aVoid, Bundle bundle) {
+//                chatService.destroy();
+//            }
+//
+//            @Override
+//            public void onError(QBResponseException e) {
+//
+//                showAlert(e.getLocalizedMessage());
+//            }
+//        });
         timer.purge();
         UIUtility.hideSoftKeyboard(this);
         super.onDestroy();

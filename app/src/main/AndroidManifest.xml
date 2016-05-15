@@ -138,7 +138,7 @@
             android:label="@string/title_activity_detail_post"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".controller.ChatActivity"
+            android:name=".controller.QBChatActivity"
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />
         <!-- QuickBlox service and receiver -->
