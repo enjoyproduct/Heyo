@@ -155,32 +155,7 @@ public class ChatActivity extends AppCompatActivity {
                 finish();
             }
         });
-//        ibAttachment = (ImageButton)toolbar.findViewById(R.id.ib_chat_attachment);
-//        ibAttachment.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-//                builder.setTitle(Constant.INDECATOR);
-//                builder.setMessage("Choose attachment");
-//                builder.setCancelable(true);
-//                builder.setPositiveButton("Photo",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//
-//                                dialog.cancel();
-//                            }
-//                        });
-//                builder.setNegativeButton("Video",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//                                dialog.cancel();
-//                            }
-//                        });
-//
-//                AlertDialog alert = builder.create();
-//                alert.show();
-//            }
-//        });
+
         tvName = (TextView)toolbar.findViewById(R.id.tv_chat_fullname);
         tvOnlineStatus = (TextView)toolbar.findViewById(R.id.tv_chat_online);
 
@@ -273,49 +248,62 @@ public class ChatActivity extends AppCompatActivity {
         chatService = QBChatService.getInstance();
         chatService.addConnectionListener(connectionListener);
 
-        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
-        QBAuth.createSession(me, new QBEntityCallback<QBSession>() {
-            @Override
-            public void onSuccess(QBSession qbSession, Bundle bundle) {
-                me.setId(qbSession.getUserId());
-                chatService.login(me, new QBEntityCallback() {
-                    @Override
-                    public void onSuccess(Object o, Bundle bundle) {
+        if (chatService.isLoggedIn()) {
+            try {
+                chatService.startAutoSendPresence(30);
+                privateChatManager = chatService.getPrivateChatManager();
+                privateChatManager.addPrivateChatManagerListener(privateChatManagerListener);
+                initQBPrivateChat();
+                createDialog();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-                        try {
-                            chatService.startAutoSendPresence(30);
-                            privateChatManager = chatService.getPrivateChatManager();
-                            privateChatManager.addPrivateChatManagerListener(privateChatManagerListener);
+        } else {
+            QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+            QBAuth.createSession(me, new QBEntityCallback<QBSession>() {
+                @Override
+                public void onSuccess(QBSession qbSession, Bundle bundle) {
+                    me.setId(qbSession.getUserId());
+                    chatService.login(me, new QBEntityCallback() {
+                        @Override
+                        public void onSuccess(Object o, Bundle bundle) {
 
-                            initQBPrivateChat();
-                            createDialog();
+                            try {
+                                chatService.startAutoSendPresence(30);
+                                privateChatManager = chatService.getPrivateChatManager();
+                                privateChatManager.addPrivateChatManagerListener(privateChatManagerListener);
 
-                        } catch (SmackException.NotLoggedInException e) {
-                            e.printStackTrace();
+                                initQBPrivateChat();
+                                createDialog();
+
+                            } catch (SmackException.NotLoggedInException e) {
+                                e.printStackTrace();
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onError(QBResponseException e) {
+                            Utils.hideProgress();
+
+                            showAlert(e.getLocalizedMessage());
                             finish();
                         }
-                    }
+                    });
+                }
 
-                    @Override
-                    public void onError(QBResponseException e) {
-                        Utils.hideProgress();
+                @Override
+                public void onError(QBResponseException e) {
+                    Utils.hideProgress();
+                    showAlert(e.getLocalizedMessage());
+                    finish();
+                }
+            });
+        }
 
-                        showAlert(e.getLocalizedMessage());
-                        finish();
-                    }
-                });
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                Utils.hideProgress();
-                showAlert(e.getLocalizedMessage());
-                finish();
-            }
-        });
     }
-
-    //        /creat private dialog
+    ///creat private dialog
     private void createDialog() {
 
         runOnUiThread(new Runnable() {
@@ -340,7 +328,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
-
     private void getChatHistory() {
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
         requestGetBuilder.setLimit(1000);
@@ -361,6 +348,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
     private void initTimer() {
         timer = new Timer();
         timerTask = new TimerTask() {
@@ -380,16 +368,6 @@ public class ChatActivity extends AppCompatActivity {
         };
         timer.schedule(timerTask, 0, 2000);
     }
-//    private void initTimer2() {
-//        timer2 = new Timer();
-//        timerTask2 = new TimerTask() {
-//            @Override
-//            public void run() {
-//                getOnlineStatus();
-//            }
-//        };
-//        timer2.schedule(timerTask2, 0, 3167);
-//    }
     private void getOnlineStatus() {
 
 
@@ -440,6 +418,7 @@ public class ChatActivity extends AppCompatActivity {
 
         requestQueue.add(signinRequest);
     }
+
     private void sendPush(String id, String name) {
         // recipients
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
@@ -499,6 +478,7 @@ public class ChatActivity extends AppCompatActivity {
             showAlert(e.getLocalizedMessage());
         }
     }
+
     private void sendPhoto() {
 //        File filePhoto = new File(photoPath);
 //        Boolean fileIsPublic = false;
@@ -541,6 +521,7 @@ public class ChatActivity extends AppCompatActivity {
     private void sendVidoe() {
 
     }
+
     QBPrivateChat privateChat;
     private QBPrivateChat initQBPrivateChat() {
         privateChat= privateChatManager.getChat(Integer.parseInt(opponentID));
@@ -550,32 +531,6 @@ public class ChatActivity extends AppCompatActivity {
         privateChat.addIsTypingListener(privateChatIsTypingListener);
         return privateChat;
     }
-
-    private void sendTypingNotification() {
-        if (privateChat != null) {
-            try {
-                privateChat.sendIsTypingNotification();
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-    private void sendStopTypingNotification() {
-        if (privateChat != null) {
-            try {
-                privateChat.sendStopTypingNotification();
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
     //QB listener
     QBIsTypingListener<QBPrivateChat> privateChatIsTypingListener = new QBIsTypingListener<QBPrivateChat>() {
         @Override
@@ -594,7 +549,7 @@ public class ChatActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                   updateStatus(opponentUserModel.isOnline());
+                    updateStatus(opponentUserModel.isOnline());
                 }
             });
 
@@ -668,6 +623,33 @@ public class ChatActivity extends AppCompatActivity {
             qbPrivateChat.addMessageListener(privateChatQBMessageListener);
         }
     };
+
+    private void sendTypingNotification() {
+        if (privateChat != null) {
+            try {
+                privateChat.sendIsTypingNotification();
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    private void sendStopTypingNotification() {
+        if (privateChat != null) {
+            try {
+                privateChat.sendStopTypingNotification();
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
 
     public void showAlert(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -865,7 +847,6 @@ public class ChatActivity extends AppCompatActivity {
     }
     private Uri fileUri;
     public static final int MEDIA_TYPE_VIDEO = 2;
-
     private void captureVideoFromCamera() {
     // create new Intentwith with Standard Intent action that can be
         // sent to have the camera application capture an video and return it.
@@ -959,13 +940,13 @@ public class ChatActivity extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
-    //////////////////take a picture from gallery
+    //take a picture from gallery
     private void takePictureFromGallery() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, take_photo_from_gallery);
     }
-    /////////////capture photo
+    //capture photo
     public void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File f = null;

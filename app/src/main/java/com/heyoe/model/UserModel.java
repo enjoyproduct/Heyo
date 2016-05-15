@@ -1,5 +1,7 @@
 package com.heyoe.model;
 
+import com.quickblox.chat.model.QBDialog;
+
 import java.io.Serializable;
 
 /**
@@ -24,7 +26,15 @@ public class UserModel implements Serializable {
     String time;
     String qb_id;
     String blacker_id;
+    QBDialog qbDialog;
 
+    public QBDialog getQbDialog() {
+        return qbDialog;
+    }
+
+    public void setQbDialog(QBDialog qbDialog) {
+        this.qbDialog = qbDialog;
+    }
 
     public int getCheckinRequestState() {
         return checkinRequestState;

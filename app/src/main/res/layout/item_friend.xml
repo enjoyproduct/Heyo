@@ -9,14 +9,14 @@
         android:tag="item_friend"
         android:layout_width="wrap_content"
         android:layout_height="80dp">
-        <!--<ImageView-->
-            <!--android:id="@+id/clear_chat_history"-->
-            <!--android:src="@drawable/clear_chat_history"-->
-            <!--android:layout_width="70dp"-->
-            <!--android:background="@drawable/bg_green_dark_square"-->
-            <!--android:paddingLeft="22dp"-->
-            <!--android:paddingRight="22dp"-->
-            <!--android:layout_height="match_parent" />-->
+        <ImageView
+            android:id="@+id/clear_chat_history"
+            android:src="@drawable/clear_chat_history"
+            android:layout_width="70dp"
+            android:background="@drawable/bg_green_dark_square"
+            android:paddingLeft="22dp"
+            android:paddingRight="22dp"
+            android:layout_height="match_parent" />
         <ImageView
             android:id="@+id/block_friend"
             android:src="@drawable/block_friend"
