@@ -32,7 +32,6 @@ public class VideoPlay {
             Log.e("Error", e.getMessage());
             e.printStackTrace();
         }
-//        videoView.seekTo(100);
         videoView.requestFocus();
         videoView.start();
 //        videoView.seekTo(100);

@@ -84,9 +84,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -97,13 +95,20 @@ public class QBChatActivity extends AppCompatActivity {
     private ListView lvContent;
     private TextView tvName, tvOnlineStatus;
     private LinearLayout llChat;
-    private ImageButton ibAttachment;
 
     RequestQueue requestQueue;
-
     private String opponentID;
-//    private String dialogId;
     public static UserModel opponentUserModel;
+
+
+    private Timer timer;
+    private TimerTask timerTask;
+    private int timeCounter = 1;
+    Activity mActivity;
+    boolean isBlackFriend;
+    int blacker_id ;
+
+    //QB
     private QBChatService chatService;
     private QBDialog PrivateDialog;
     private QBPrivateChatManager privateChatManager;
@@ -111,19 +116,141 @@ public class QBChatActivity extends AppCompatActivity {
     private AdapterPrivateChatRoom adapterPrivateChat;
     private QBUser me;
 
-    private Timer timer;
-//    private Timer timer2;
-    private TimerTask timerTask, timerTask2;
-    private int timeCounter = 1;
 
-    Activity mActivity;
-    boolean isBlackFriend;
-    int blacker_id ;
+    QBPrivateChat privateChat;
+    private QBPrivateChat initQBPrivateChat() {
+        privateChat= privateChatManager.getChat(Integer.parseInt(opponentID));
+        if (privateChat == null) {
+            privateChat = privateChatManager.createChat(Integer.parseInt(opponentID), privateChatQBMessageListener);
+        }
+        privateChat.addIsTypingListener(privateChatIsTypingListener);
+        return privateChat;
+    }
+    //QB listener
+    QBIsTypingListener<QBPrivateChat> privateChatIsTypingListener = new QBIsTypingListener<QBPrivateChat>() {
+        @Override
+        public void processUserIsTyping(QBPrivateChat privateChat, Integer userId) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tvOnlineStatus.setText(getResources().getString(R.string.typing));
+                }
+            });
+
+        }
+
+        @Override
+        public void processUserStopTyping(QBPrivateChat privateChat, Integer userId) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    updateStatus(opponentUserModel.isOnline());
+                }
+            });
+
+        }
+    };
+
+    ConnectionListener connectionListener = new ConnectionListener() {
+        @Override
+        public void connected(XMPPConnection xmppConnection) {
+
+        }
+
+        @Override
+        public void authenticated(XMPPConnection xmppConnection, boolean b) {
+
+        }
+
+        @Override
+        public void connectionClosed() {
+
+        }
+
+        @Override
+        public void connectionClosedOnError(Exception e) {
+
+        }
+
+        @Override
+        public void reconnectionSuccessful() {
+
+        }
+
+        @Override
+        public void reconnectingIn(int i) {
+
+        }
+
+        @Override
+        public void reconnectionFailed(Exception e) {
+
+        }
+    };
+
+    QBMessageListener<QBPrivateChat> privateChatQBMessageListener = new QBMessageListener<QBPrivateChat>() {
+        @Override
+        public void processMessage(QBPrivateChat qbPrivateChat, final QBChatMessage qbChatMessage) {
+
+            String strReceiveMessage = qbChatMessage.getBody();
+            Log.d("receive", strReceiveMessage);
+            if (qbChatMessage.getDialogId().equals(PrivateDialog.getDialogId())){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        arrHIstoryMessages.add(qbChatMessage);
+                        adapterPrivateChat.updateList(arrHIstoryMessages);
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void processError(QBPrivateChat qbPrivateChat, QBChatException e, QBChatMessage qbChatMessage) {
+
+        }
+    };
+
+    QBPrivateChatManagerListener privateChatManagerListener = new QBPrivateChatManagerListener() {
+        @Override
+        public void chatCreated(QBPrivateChat qbPrivateChat, boolean b) {
+            qbPrivateChat.addMessageListener(privateChatQBMessageListener);
+        }
+    };
+
+    private void sendTypingNotification() {
+        if (privateChat != null) {
+            try {
+                privateChat.sendIsTypingNotification();
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    private void sendStopTypingNotification() {
+        if (privateChat != null) {
+            try {
+                privateChat.sendStopTypingNotification();
+            } catch (XMPPException e) {
+                e.printStackTrace();
+            } catch (SmackException.NotConnectedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_qb_chat);
 
+        initVariables();
         initUI();
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -131,12 +258,18 @@ public class QBChatActivity extends AppCompatActivity {
         loginChatService();
 
         initTimer();
-//        initTimer2();
     }
-
-    private void initUI() {
+    private void initVariables() {
         mActivity = this;
         requestQueue = Volley.newRequestQueue(mActivity);
+        blacker_id = getIntent().getIntExtra("blacker_id", 0);
+        isBlackFriend = getIntent().getBooleanExtra("is_black_chat", false);
+        arrHIstoryMessages = new ArrayList<>();
+        opponentUserModel = (UserModel) getIntent().getSerializableExtra("userModel");
+
+        opponentID = opponentUserModel.getQb_id();
+    }
+    private void initUI() {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -183,18 +316,12 @@ public class QBChatActivity extends AppCompatActivity {
             }
         });
         llChat = (LinearLayout)findViewById(R.id.ll_chat);
-        blacker_id = getIntent().getIntExtra("blacker_id", 0);
-        isBlackFriend = getIntent().getBooleanExtra("is_black_chat", false);
+
         if (isBlackFriend) {
             llChat.setBackgroundColor(getResources().getColor(R.color.black));
             etMessage.setTextColor(getResources().getColor(R.color.white));
         }
-        arrHIstoryMessages = new ArrayList<>();
-        opponentUserModel = (UserModel) getIntent().getSerializableExtra("userModel");
 
-        opponentID = opponentUserModel.getQb_id();
-
-//        me = (QBUser)getIntent().getSerializableExtra("me");
 
         tvName.setText(opponentUserModel.getFullname());
         updateStatus(opponentUserModel.isOnline());
@@ -206,24 +333,6 @@ public class QBChatActivity extends AppCompatActivity {
         lvContent.setAdapter(adapterPrivateChat);
 
 
-    }
-    private void deleteMessage(final String dialogId) {
-        Set<String> messagesIds = new HashSet<String>() {{
-            add(dialogId);
-        }};
-
-        QBChatService.deleteMessages(messagesIds, new QBEntityCallback<Void>() {
-
-            @Override
-            public void onSuccess(Void aVoid, Bundle bundle) {
-                Toast.makeText(mActivity, "Cleared chat history successfully", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(QBResponseException errors) {
-                Toast.makeText(mActivity, "Failed to clear chat history", Toast.LENGTH_SHORT).show();
-            }
-        });
 
     }
 
@@ -234,6 +343,7 @@ public class QBChatActivity extends AppCompatActivity {
             tvOnlineStatus.setText(getResources().getString(R.string.offline));
         }
     }
+
     private void loginChatService() {
         Utils.showProgress(this);
         me = new QBUser(Utils.getFromPreference(this, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
@@ -298,7 +408,6 @@ public class QBChatActivity extends AppCompatActivity {
     }
     ///creat private dialog
     private void createDialog() {
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -307,15 +416,12 @@ public class QBChatActivity extends AppCompatActivity {
                     public void onSuccess(QBDialog dialog, Bundle bundle) {
                         PrivateDialog = dialog;
                         getChatHistory();
-
-
                     }
 
                     @Override
                     public void onError(QBResponseException e) {
                         showAlert(e.getLocalizedMessage());
                         Utils.hideProgress();
-
                     }
                 });
             }
@@ -331,16 +437,20 @@ public class QBChatActivity extends AppCompatActivity {
                 Utils.hideProgress();
                 arrHIstoryMessages = qbChatMessages;
                 adapterPrivateChat.updateList(arrHIstoryMessages);
+
             }
 
             @Override
             public void onError(QBResponseException e) {
-
                 showAlert(e.getLocalizedMessage());
 
             }
         });
     }
+    private void scrollMessageListDown() {
+        lvContent.setSelection(lvContent.getCount() - 1);
+    }
+
 
     private void initTimer() {
         timer = new Timer();
@@ -473,174 +583,30 @@ public class QBChatActivity extends AppCompatActivity {
     }
 
     private void sendPhoto() {
-//        File filePhoto = new File(photoPath);
-//        Boolean fileIsPublic = false;
-//        QBContent.uploadFileTask(filePhoto, fileIsPublic, null, new QBEntityCallback<QBFile>() {
-//            @Override
-//            public void onSuccess(QBFile file, Bundle params) {
-//
-//                // create a message
-//                QBChatMessage chatMessage = new QBChatMessage();
-//                chatMessage.setProperty("save_to_history", "1"); // Save a message to history
-//
-//                // attach a photo
-//                QBAttachment attachment = new QBAttachment("photo");
-//                attachment.setId(file.getId().toString());
-//                chatMessage.addAttachment(attachment);
-//
-//                QBPrivateChat privateChat = privateChatManager.getChat(Integer.parseInt(opponentID));
-//                if (privateChat == null){
-//                    privateChat = privateChatManager.createChat(Integer.parseInt(opponentID), privateChatQBMessageListener);
-//                }
-//
-//                try {
-//                    privateChat.sendMessage(chatMessage);
-//                } catch (SmackException.NotConnectedException e) {
-//                    e.printStackTrace();
-//                }
-//                chatMessage.setDateSent(System.currentTimeMillis() / 1000);
-//                chatMessage.setSenderId(Integer.parseInt(Utils.getFromPreference(mActivity, Constant.QB_ID)));
-//                arrHIstoryMessages.add(chatMessage);
-//                adapterPrivateChat.updateList(arrHIstoryMessages);
-//
-//            }
-//
-//            @Override
-//            public void onError(QBResponseException errors) {
-//                // error
-//            }
-//        });
     }
     private void sendVidoe() {
 
     }
 
-    QBPrivateChat privateChat;
-    private QBPrivateChat initQBPrivateChat() {
-        privateChat= privateChatManager.getChat(Integer.parseInt(opponentID));
-        if (privateChat == null) {
-            privateChat = privateChatManager.createChat(Integer.parseInt(opponentID), privateChatQBMessageListener);
-        }
-        privateChat.addIsTypingListener(privateChatIsTypingListener);
-        return privateChat;
-    }
-    //QB listener
-    QBIsTypingListener<QBPrivateChat> privateChatIsTypingListener = new QBIsTypingListener<QBPrivateChat>() {
-        @Override
-        public void processUserIsTyping(QBPrivateChat privateChat, Integer userId) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    tvOnlineStatus.setText(getResources().getString(R.string.typing));
-                }
-            });
 
-        }
 
-        @Override
-        public void processUserStopTyping(QBPrivateChat privateChat, Integer userId) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    updateStatus(opponentUserModel.isOnline());
-                }
-            });
 
-        }
-    };
 
-    ConnectionListener connectionListener = new ConnectionListener() {
-        @Override
-        public void connected(XMPPConnection xmppConnection) {
 
-        }
 
-        @Override
-        public void authenticated(XMPPConnection xmppConnection, boolean b) {
 
-        }
 
-        @Override
-        public void connectionClosed() {
 
-        }
 
-        @Override
-        public void connectionClosedOnError(Exception e) {
 
-        }
 
-        @Override
-        public void reconnectionSuccessful() {
 
-        }
 
-        @Override
-        public void reconnectingIn(int i) {
 
-        }
 
-        @Override
-        public void reconnectionFailed(Exception e) {
 
-        }
-    };
 
-    QBMessageListener<QBPrivateChat> privateChatQBMessageListener = new QBMessageListener<QBPrivateChat>() {
-        @Override
-        public void processMessage(QBPrivateChat qbPrivateChat, final QBChatMessage qbChatMessage) {
 
-            String strReceiveMessage = qbChatMessage.getBody();
-            Log.d("receive", strReceiveMessage);
-            if (qbChatMessage.getDialogId().equals(PrivateDialog.getDialogId())){
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        arrHIstoryMessages.add(qbChatMessage);
-                        adapterPrivateChat.updateList(arrHIstoryMessages);
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void processError(QBPrivateChat qbPrivateChat, QBChatException e, QBChatMessage qbChatMessage) {
-
-        }
-    };
-
-    QBPrivateChatManagerListener privateChatManagerListener = new QBPrivateChatManagerListener() {
-        @Override
-        public void chatCreated(QBPrivateChat qbPrivateChat, boolean b) {
-
-            qbPrivateChat.addMessageListener(privateChatQBMessageListener);
-        }
-    };
-
-    private void sendTypingNotification() {
-        if (privateChat != null) {
-            try {
-                privateChat.sendIsTypingNotification();
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-    private void sendStopTypingNotification() {
-        if (privateChat != null) {
-            try {
-                privateChat.sendStopTypingNotification();
-            } catch (XMPPException e) {
-                e.printStackTrace();
-            } catch (SmackException.NotConnectedException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 
 
 
@@ -679,16 +645,14 @@ public class QBChatActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-
-
-    private static MenuItem edit, delete;
+    private static MenuItem photo, video;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_chat, menu);
-        edit = menu.findItem(R.id.ic_photo);
-        delete = menu.findItem(R.id.ic_video);
+        photo = menu.findItem(R.id.ic_photo);
+        video = menu.findItem(R.id.ic_video);
         return super.onCreateOptionsMenu(menu);
     }
     @Override
@@ -707,7 +671,6 @@ public class QBChatActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // A place has been received; use requestCode to track the request.
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -1043,6 +1006,7 @@ public class QBChatActivity extends AppCompatActivity {
 //        thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
     }
     int imageWidth = 0 , imageHeight = 0;
+
 
 
 }

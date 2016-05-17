@@ -17,6 +17,7 @@ import com.heyoe.R;
 import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.UserListActivity;
 import com.heyoe.model.Constant;
+import com.heyoe.model.Global;
 import com.heyoe.model.PushModel;
 import com.heyoe.utilities.Utils;
 
@@ -121,9 +122,7 @@ public class GcmServiceManager {
     }
     private void increaseMsgCount(String user_id) {
         if (getActivity() != null) {
-            int count = Utils.getIntFromPreference(activity, Constant.MSG_COUNT);
-            count ++;
-            Utils.saveIntToPreference(activity, Constant.MSG_COUNT, count);
+
             if (user_id.length() > 0) {
                 Intent intentNewPush = new Intent("pushData");
                 PushModel pushModel = new PushModel();
@@ -161,7 +160,7 @@ public class GcmServiceManager {
 
             PushModel pushModel = new PushModel();
             String[] string = message.split("_receive_checkin_chat_request_");
-            message = "You received checkin chat request from " + string[1];
+            message = "qb_request_" + "You received checkin chat request from " + string[1];
 
             pushModel.user_id = string[0];
             pushModel.type = string[2];
@@ -174,7 +173,7 @@ public class GcmServiceManager {
 
             PushModel pushModel = new PushModel();
             String[] string = message.split("_accept_checkin_chat_request_");
-            message = string[1] + " accepted your checkin chat request";
+            message = "qb_request_" + string[1] + " accepted your checkin chat request";
 
             pushModel.user_id = string[0];
             pushModel.type = string[2];
@@ -189,7 +188,7 @@ public class GcmServiceManager {
                 if (str.length > 0) {
                     id = str[0];
                     String name = str[1];
-                    message = "qb_You received message from " + name;
+                    message = "qb_msg_You received message from " + name;
                 }
 
             }
@@ -208,12 +207,14 @@ public class GcmServiceManager {
         parseMessage(data);
         if (!message.equals("")) {
 
-            if (message.contains("qb_")) {
-                message = message.replace("qb_", "");
+            if (message.contains("qb_msg_")) {
+                message = message.replace("qb_msg_", "");
                 increaseMsgCount(id);
+            } else if (message.contains("qb_request_")){
+                message = message.replace("qb_request_", "");
+
             } else {
                 increaseActivityCount();
-
             }
             sendNotification();
         }

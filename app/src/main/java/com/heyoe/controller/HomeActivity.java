@@ -44,9 +44,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe.R;
 import com.heyoe.controller.adapters.SearchUserAutoCompleteAdapter;
 import com.heyoe.controller.fragments.ActivityFragment;
-import com.heyoe.controller.fragments.CheckinFragment;
 import com.heyoe.controller.fragments.FAQFragment;
-import com.heyoe.controller.fragments.InviteFriendFragment;
 import com.heyoe.controller.fragments.MainFragment;
 import com.heyoe.controller.fragments.MainMenuFragment;
 import com.heyoe.controller.fragments.MoreFriendFragment;
@@ -56,13 +54,22 @@ import com.heyoe.controller.fragments.NewPostFragment;
 import com.heyoe.controller.fragments.ProfileFragment;
 import com.heyoe.controller.fragments.RequestFragment;
 import com.heyoe.controller.pushnotifications.GcmServiceManager;
+import com.heyoe.controller.qb_chat.chat.ChatHelper;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
+import com.heyoe.model.Global;
 import com.heyoe.model.PostModel;
 import com.heyoe.model.PushModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.users.model.QBUser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -108,6 +115,8 @@ public class HomeActivity extends AppCompatActivity implements
         initUI();
 
         getAllUsers();
+
+        qb_login();
     }
     public BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver(){
 
@@ -118,11 +127,23 @@ public class HomeActivity extends AppCompatActivity implements
                 showActivityBadge();
             }
             if (data.type.equals("increase_message_count")) {
-                showMsgBadge(data.user_id);
+                if (!isCheckinMsg(data.user_id)) {
+                    Global.getInstance().increaseMessageCount();
+                    showMsgBadge(data.user_id);
+                }
             }
-
-        };
+        }
     };
+    private boolean isCheckinMsg(String user_id) {
+        boolean flag = false;
+        for (UserModel userModel : Global.getInstance().arrCheckinChatUsers) {
+            if (userModel.getQb_id().equals(user_id)) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
     private void initVariables() {
         fragmentManager = getSupportFragmentManager();
         mActivity = this;
@@ -243,16 +264,33 @@ public class HomeActivity extends AppCompatActivity implements
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
                 int msgCount = Utils.getIntFromPreference(mActivity, Constant.MSG_COUNT);
+
                 if (msgCount > 0) {
                     tvMsgCount.setVisibility(View.VISIBLE);
-                    tvMsgCount.setText(String.valueOf(msgCount));
+//                        tvMsgCount.setText(String.valueOf(msgCount));
+                    tvMsgCount.setText("!");
                     if (currentFragmentNum == 1 && !user_id.equals("")) {
                         MyFriendFragment.updateUnreadMsgCount(user_id);
                     }
                 } else {
                     tvMsgCount.setVisibility(View.INVISIBLE);
                 }
+//                if (!Global.getInstance().isChatting && !user_id.equals(Global.getInstance().currentChattingUser)) {
+//                    if (msgCount > 0) {
+//                        tvMsgCount.setVisibility(View.VISIBLE);
+////                        tvMsgCount.setText(String.valueOf(msgCount));
+//                        tvMsgCount.setText("!");
+//                        if (currentFragmentNum == 1 && !user_id.equals("")) {
+//
+//                            MyFriendFragment.updateUnreadMsgCount(user_id);
+//                        }
+//                    } else {
+//                        tvMsgCount.setVisibility(View.INVISIBLE);
+//                    }
+//                }
+
 
 
             }
@@ -794,11 +832,27 @@ public class HomeActivity extends AppCompatActivity implements
 
     @Override
     protected void onDestroy() {
+
         if (Utils.getFromPreference(mActivity, Constant.USER_ID).length() > 0) {
             setOffline("off");
         }
-        super.onDestroy();
+
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mHandleMessageReceiver);
+
+        //logout qb
+        if (chatService != null) {
+            chatService.logout(new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    chatService.destroy();
+                }
+                @Override
+                public void onError(QBResponseException e) {
+                    Utils.showToast(mActivity, e.getLocalizedMessage());
+                }
+            });
+        }
+        super.onDestroy();
     }
     public static void showSignOutAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -904,6 +958,42 @@ public class HomeActivity extends AppCompatActivity implements
 //                    .setPreviewImageUrl(previewImageUrl)
                     .build();
             AppInviteDialog.show(mActivity, content);
+        }
+    }
+
+
+
+
+    QBChatService chatService;
+    private void qb_login() {
+        QBUser user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
+        chatService = QBChatService.getInstance();
+        if (!chatService.isLoggedIn()) {
+            QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+            final QBUser finalUser = user;
+            QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
+                @Override
+                public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                    finalUser.setId(qbSession.getUserId());
+                    Global.getInstance().qbUser = finalUser;
+                    ChatHelper.getInstance().login(finalUser, new QBEntityCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void result, Bundle bundle) {
+//                            Utils.showToast(App.getInstance(), "QB qb_login success");
+                        }
+                        @Override
+                        public void onError(QBResponseException e) {
+                            Utils.showToast(App.getInstance(), "QB qb_login failed");
+                        }
+                    });
+                }
+                @Override
+                public void onError(QBResponseException e) {
+                    Utils.showToast(mActivity, e.getLocalizedMessage());
+                }
+            });
+
         }
     }
 

@@ -27,6 +27,15 @@ public class UserModel implements Serializable {
     String qb_id;
     String blacker_id;
     QBDialog qbDialog;
+    long qbLastMsgSentTime;
+
+    public long getQbLastMsgSentTime() {
+        return qbLastMsgSentTime;
+    }
+
+    public void setQbLastMsgSentTime(long qbLastMsgSentTime) {
+        this.qbLastMsgSentTime = qbLastMsgSentTime;
+    }
 
     public QBDialog getQbDialog() {
         return qbDialog;

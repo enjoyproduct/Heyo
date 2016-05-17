@@ -5,7 +5,11 @@ import android.util.Log;
 
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
+import com.quickblox.chat.QBChat;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBPrivateChat;
+import com.quickblox.chat.listeners.QBIsTypingListener;
+import com.quickblox.chat.listeners.QBMessageListener;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.chat.model.QBDialog;
@@ -159,7 +163,12 @@ public class ChatHelper {
 //            Toaster.shortToast(R.string.public_group_chat_cannot_be_deleted);
         }
     }
-
+    public QBPrivateChat getPrivateChat(int opponentId) {
+        return QBChatService.getInstance().getPrivateChatManager().getChat(opponentId);
+    }
+    public QBPrivateChat createChat(int opponentId, QBMessageListener<QBPrivateChat> privateChatQBMessageListener) {
+        return QBChatService.getInstance().getPrivateChatManager().createChat(opponentId, privateChatQBMessageListener);
+    }
     public void leaveDialog(QBDialog qbDialog, QBEntityCallback<QBDialog> callback) {
         QBRequestUpdateBuilder qbRequestBuilder = new QBRequestUpdateBuilder();
 //        qbRequestBuilder.pullAll("occupants_ids", SharedPreferencesUtil.getQbUser().getId());

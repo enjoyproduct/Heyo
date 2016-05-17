@@ -20,12 +20,12 @@
         "source": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_menu_layout.xml"
     },
     {
-        "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_title_item.xml",
-        "source": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_bar_title_item.xml"
-    },
-    {
         "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\debug\\layout\\abc_popup_menu_item_layout.xml",
         "source": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_popup_menu_item_layout.xml"
+    },
+    {
+        "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\debug\\layout\\abc_action_bar_title_item.xml",
+        "source": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_action_bar_title_item.xml"
     },
     {
         "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\debug\\layout\\abc_activity_chooser_view_list_item.xml",

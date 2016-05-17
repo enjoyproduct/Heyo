@@ -358,8 +358,9 @@ public class BitmapUtility {
         return new BitmapDrawable(context.getResources(), bitmap);
     }
 
-    public static void downloadImageFromURL(Context context, String fileName, String url) {
+    public static String downloadImageFromURL(Context context, String fileName, String url) {
 
+        String path = "";
         final DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
 //        final String fileName = url.substring(url.lastIndexOf('/') + 1);
         ///creat download request
@@ -400,6 +401,7 @@ public class BitmapUtility {
         }catch (Exception e) {
             e.printStackTrace();
         }
+        return path;
     }
     public static Bitmap cropBitmapAnySize(Bitmap bitmap, int imgWidth, int imgHeigh){
 

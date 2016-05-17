@@ -2,6 +2,9 @@ package com.heyoe.model;
 
 import android.os.Environment;
 
+import com.heyoe.R;
+import com.heyoe.controller.qb_chat.qb_utils.ResourceUtils;
+
 /**
  * Created by Administrator on 2/9/2016.
  */
@@ -57,4 +60,6 @@ public class Constant {
     public static String ACTIVITY_COUNT = "activity_count";
 
     public static String PUSH_DATA = "push_data";
+    public static int PREFERRED_IMAGE_SIZE_PREVIEW = ResourceUtils.getDimen(R.dimen.chat_attachment_preview_size);
+    public static int PREFERRED_IMAGE_SIZE_FULL = ResourceUtils.dpToPx(320);
 }

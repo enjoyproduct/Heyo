@@ -1,13 +1,17 @@
 package com.heyoe.controller;
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,11 +38,15 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 import com.heyoe.R;
+import com.heyoe.utilities.BitmapUtility;
 import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.UIUtility;
+import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.VideoPlay;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
+
+import java.io.File;
 
 public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
@@ -75,10 +83,14 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
         type = getIntent().getStringExtra("type");
         if (type.equals("youtube")) {
             initYoutube();
-        } else if (type.equals("video")) {
+        } else if (type.equals("video") || type.equals("qb_video")) {
             initVideoview();
         } else if (type.equals("photo")) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            initImageView();
+        }else if (type.equals("qb_photo")) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//            initImageViewForChatPhoto();
             initImageView();
         }
 
@@ -99,7 +111,65 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
     static final int ZOOM = 2;
 
     int mode = NONE;
+    String DOWNLOAD_IMAGE_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + File.separator;
 
+    private void initImageViewForChatPhoto() {
+        imageView = (ImageView) findViewById(R.id.imageview);
+        imageView.setVisibility(View.VISIBLE);
+
+        final String filename = FileUtility.getFilenameFromPath(url) + ".jpg";
+
+        final DownloadManager manager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+//        final String fileName = url.substring(url.lastIndexOf('/') + 1);
+        ///creat download request
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+
+        if (FileUtility.checkFileExist(filename, DOWNLOAD_IMAGE_PATH)) {
+            File file = new File(DOWNLOAD_IMAGE_PATH + filename);
+            file.delete();
+        }
+        ///set destinatin storage path
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
+        Utils.showProgress(this);
+        final long downloadId = manager.enqueue(request);
+        try {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean downloading = true;
+                    while (downloading) {
+
+                        DownloadManager.Query q = new DownloadManager.Query();
+                        q.setFilterById(downloadId);
+
+                        Cursor cursor = manager.query(q);
+                        cursor.moveToFirst();
+                        int bytes_downloaded = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                        int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                        ///calculate download progress status
+                        final double dl_progress = bytes_total != 0 ? (int) ((bytes_downloaded * 100l) / bytes_total) : 0;
+                        if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
+                            downloading = false;
+                        }
+                        cursor.close();
+                    }
+                    Bitmap bitmap = BitmapUtility.getBitmap(DOWNLOAD_IMAGE_PATH + filename, 1);
+                    int width = bitmap.getWidth();
+                    int height = bitmap.getHeight();
+
+                    double ratio = ((double) height / (double) width);
+                    double height1 = ratio * UIUtility.getScreenWidth(MediaPlayActivity.this);
+                    UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(MediaPlayActivity.this), (int) height1);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    imageView.setImageBitmap(bitmap);
+                    Utils.hideProgress();
+                }
+            });
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void initImageView() {
 
         int width = getIntent().getIntExtra("width", 0);

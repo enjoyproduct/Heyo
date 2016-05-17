@@ -36,4 +36,10 @@
         <attr name="grid_paddingTop" format="dimension" />
         <attr name="grid_paddingBottom" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="MaskedImageView">
+        <attr name="mask" format="integer" />
+    </declare-styleable>
+
+
 </resources>

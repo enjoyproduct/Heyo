@@ -31,8 +31,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
 import com.heyoe.controller.QBChatActivity;
+import com.heyoe.controller.qb_chat.ChatActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
+import com.heyoe.model.Global;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
@@ -483,16 +485,16 @@ public class MyBlackFriendsFregment extends Fragment {
                     mItemManger.closeAllItems();
                 }
             });
-//            swipeLayout.findViewById(R.id.clear_chat_history).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    if (!arrActiveUsers.get(position).getDialog_id().equals("0")) {
-//                        deleteDialog(arrActiveUsers.get(position).getDialog_id());
-//                    }
-//                    mItemManger.closeAllItems();
-//                }
-//            });
+            swipeLayout.findViewById(R.id.clear_chat_history).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (!arrActiveUsers.get(position).getDialog_id().equals("0")) {
+                        deleteChat(position);
+                    }
+                    mItemManger.closeAllItems();
+                }
+            });
 
             swipeLayout.findViewById(R.id.block_friend).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -604,11 +606,13 @@ public class MyBlackFriendsFregment extends Fragment {
             ivChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mActivity, QBChatActivity.class);
+//                    Intent intent = new Intent(mActivity, QBChatActivity.class);
+                    Intent intent = new Intent(mActivity, ChatActivity.class);
                     intent.putExtra("userModel", arrActiveUsers.get(position));
                     intent.putExtra("me", user);
                     intent.putExtra("is_black_chat", true);
                     intent.putExtra("blacker_id", Integer.parseInt(userModel.getBlacker_id()));
+                    intent.putExtra("page", "black_chat");
                     mActivity.startActivity(intent);
                 }
             });
@@ -766,27 +770,12 @@ public class MyBlackFriendsFregment extends Fragment {
     private void createSession()
     {
 //        Utils.showProgress(mActivity);
-        chatService = QBChatService.getInstance();
-        user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
-        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
-        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
-            @Override
-            public void onSuccess(QBSession qbSession, Bundle bundle) {
-
-                user.setId(qbSession.getUserId());
-                getDialogs();
-            }
-
-            @Override
-            public void onError(QBResponseException e) {
-                Utils.hideProgress();
-
-                Utils.showToast(mActivity, e.getLocalizedMessage());
-            }
-        });
+        user = Global.getInstance().qbUser;
+        if (user != null) {
+            getDialogs();
+        }
     }
-    private void getDialogs()
-    {
+    private void getDialogs() {
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
         QBChatService.getChatDialogs(null, requestGetBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
@@ -798,18 +787,20 @@ public class MyBlackFriendsFregment extends Fragment {
                 for(int i = 0; i < arrActiveUsers.size(); i ++) {
                     arrActiveUsers.get(i).setUnreadMsgCount(0);
                     arrActiveUsers.get(i).setDialog_id("0");
+                    arrActiveUsers.get(i).setQbLastMsgSentTime(0);
                     for (QBDialog dialog : arr) {
                         if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrActiveUsers.get(i).getQb_id()))) {
                             ///get unread message count and dialog id
                             arrActiveUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
                             arrActiveUsers.get(i).setDialog_id(dialog.getDialogId());
-
+                            arrActiveUsers.get(i).setQbLastMsgSentTime(dialog.getLastMessageDateSent());
 
                             break;
                         }
                     }
 
                 }
+                arrActiveUsers = Global.getInstance().qsortUsersByMsgDate(arrActiveUsers);
                 friendAdapter.notifyDataSetChanged();
                 mPullRefreshHomeListView.onRefreshComplete();
             }
@@ -820,36 +811,25 @@ public class MyBlackFriendsFregment extends Fragment {
             }
         });
     }
-    private void deleteDialog(final String dialogId) {
-        Set<String> messagesIds = new HashSet<String>() {{
-            add(dialogId);
-        }};
+    private void deleteChat(final int position) {
 
-        QBChatService.deleteMessages(messagesIds, new QBEntityCallback<Void>() {
+        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrActiveUsers.get(position).getQbDialog().getDialogId(),
+                new QBEntityCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid, Bundle bundle) {
+                        Utils.showToast(mActivity, "Cleared chat history successfully");
 
-            @Override
-            public void onSuccess(Void aVoid, Bundle bundle) {
-                Toast.makeText(mActivity, "Cleared chat history successfully", Toast.LENGTH_SHORT).show();
-            }
+                        arrActiveUsers.get(position).setUnreadMsgCount(0);
+                        arrActiveUsers.get(position).setQbDialog(null);
+                        friendAdapter.notifyDataSetChanged();
+                    }
 
-            @Override
-            public void onError(QBResponseException errors) {
-                Toast.makeText(mActivity, "Failed to clear chat history", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-//        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
-//        privateChatManager.deleteDialog(dialogId, new QBEntityCallback<Void>() {
-//
-//            @Override
-//            public void onSuccess(Void aVoid, Bundle bundle) {
-//                Toast.makeText(mActivity, "Cleared chat history successfully", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onError(QBResponseException errors) {
-//
-//            }
-//        });
+                    @Override
+                    public void onError(QBResponseException e) {
+                        Utils.showToast(mActivity, "Failed to clear chat history");
+                    }
+                });
     }
+
+
 }

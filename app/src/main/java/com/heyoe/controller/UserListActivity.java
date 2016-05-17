@@ -102,11 +102,9 @@ public class UserListActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             PushModel data = (PushModel)intent.getExtras().getSerializable(Constant.PUSH_DATA);
-            if (data.type.equals("2")) {
-               changeCheckinChatStatus(data.user_id, "2");
-            }
-            if (data.type.equals("3")) {
-                changeCheckinChatStatus(data.user_id, "3");
+
+            if (currentFragmentNum == 1) {
+                changeCheckinChatStatus(data.user_id, data.type);
             }
 
         };

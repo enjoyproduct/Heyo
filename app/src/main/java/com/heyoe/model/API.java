@@ -50,6 +50,7 @@ public class API {
     public static String EDIT_MY_POST = BASE_URL + "edit_my_post";
 
     public static String GET_FRIEND_LIST = BASE_URL + "get_friend_list";
+    public static String GET_MY_FRIEND_LIST = BASE_URL + "get_my_friend_list";
     public static String BLOCK_FRIEND = BASE_URL + "block_friend";
     public static String DELETE_FRIEND = BASE_URL + "delete_friend";
     public static String RECOVER_FRIEND = BASE_URL + "recover_friend";

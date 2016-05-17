@@ -76,6 +76,7 @@ public class FriendListFragment extends Fragment {
         isLast = false;
         offset = 0;
         arrUsers = new ArrayList<>();
+
     }
     private void initUI(View view) {
 ///create listview
@@ -155,9 +156,11 @@ public class FriendListFragment extends Fragment {
                                     } else {
                                         userModel.setOnline(false);
                                     }
-
-
                                     arrUsers.add(userModel);
+//                                    if (friend_status.equals("active")) {
+//
+//                                    }
+
 
                                 }
                                 friendAdapter.notifyDataSetChanged();
