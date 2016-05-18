@@ -151,18 +151,24 @@
                 android:maxLines="3"
                 />
 
-            <me.kaede.tagview.TagView
-                android:id="@+id/hashtag"
+            <!--<me.kaede.tagview.TagView-->
+                <!--android:id="@+id/hashtag"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--app:lineMargin="5dp"-->
+                <!--app:tagMargin="3dp"-->
+                <!--app:textPaddingBottom="3dp"-->
+                <!--app:textPaddingLeft="10dp"-->
+                <!--app:textPaddingRight="10dp"-->
+                <!--app:textPaddingTop="3dp">-->
+            <!--</me.kaede.tagview.TagView>-->
+            <RelativeLayout
+                android:id="@+id/rl_ipff_tag_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:lineMargin="5dp"
-                app:tagMargin="3dp"
-                app:textPaddingBottom="3dp"
-                app:textPaddingLeft="10dp"
-                app:textPaddingRight="10dp"
-                app:textPaddingTop="3dp">
-            </me.kaede.tagview.TagView>
+                android:layout_height="wrap_content">
+
+            </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
     <!--<TextView-->

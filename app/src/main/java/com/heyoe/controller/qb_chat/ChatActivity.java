@@ -412,26 +412,6 @@ public class ChatActivity extends BaseActivity  {
         skipPagination += ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
     }
 
-//    private void loadDialogUsers() {
-//        ChatHelper.getInstance().getUsersFromDialog(qbDialog, new QBEntityCallback<ArrayList<QBUser>>() {
-//            @Override
-//            public void onSuccess(ArrayList<QBUser> users, Bundle bundle) {
-////                setChatNameToActionBar();
-//                loadChatHistory();
-//            }
-//
-//            @Override
-//            public void onError(QBResponseException e) {
-//                showErrorSnackbar(R.string.chat_load_users_error, e,
-//                        new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                loadDialogUsers();
-//                            }
-//                        });
-//            }
-//        });
-//    }
 
     @Override
     protected View getSnackbarAnchorView() {
@@ -556,7 +536,9 @@ public class ChatActivity extends BaseActivity  {
         try {
             privateChat.sendMessage(chatMessage);
             if (blacker_id == 0 || blacker_id == Integer.parseInt(Utils.getFromPreference(this, Constant.USER_ID))) {
-                sendPush(Utils.getFromPreference(this, Constant.QB_ID), Utils.getFromPreference(this, Constant.FULLNAME));
+                sendPush(Utils.getFromPreference(this, Constant.QB_ID), Utils.getFromPreference(this, Constant.FULLNAME), "white");
+            } else {
+                sendPush(Utils.getFromPreference(this, Constant.QB_ID), Utils.getFromPreference(this, Constant.FULLNAME), "black");
             }
             if (qbDialog.getType() == QBDialogType.PRIVATE) {
                 showMessage(chatMessage);
@@ -577,7 +559,7 @@ public class ChatActivity extends BaseActivity  {
         messagesListView.setSelection(messagesListView.getCount() - 1);
     }
 
-    private void sendPush(String id, String name) {
+    private void sendPush(String id, String name, String type) {
         // recipients
         StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
 //        userIds.add(Integer.valueOf(id));
@@ -588,19 +570,17 @@ public class ChatActivity extends BaseActivity  {
         event.setEnvironment(QBEnvironment.DEVELOPMENT);
         event.setNotificationType(QBNotificationType.PUSH);
         event.setPushType(QBPushType.GCM);
-//        HashMap<String, String> data = new HashMap<String, String>();
-//        data.put("user_id", id);
-//        data.put("message", "You received message from " + name);
-        event.setMessage(id + "_qb_" + name);
-        event.setUserId(Integer.parseInt(id));
-//        event.setId(Integer.parseInt(id));
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("user_id", id);
+        data.put("message", "You received message from " + name);
+        data.put("type", type);
+        event.setMessage(data.toString());
 
         QBPushNotifications.createEvent(event, new QBEntityCallback<QBEvent>() {
             @Override
             public void onSuccess(QBEvent qbEvent, Bundle args) {
                 // sent
             }
-
             @Override
             public void onError(QBResponseException errors) {
 
@@ -734,8 +714,8 @@ public class ChatActivity extends BaseActivity  {
         };
         timer.schedule(timerTask, 0, 2000);
     }
-    private void getOnlineStatus() {
 
+    private void getOnlineStatus() {
 
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
@@ -854,10 +834,6 @@ public class ChatActivity extends BaseActivity  {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 

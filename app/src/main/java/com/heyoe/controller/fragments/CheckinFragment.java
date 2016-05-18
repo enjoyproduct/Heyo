@@ -436,17 +436,13 @@ public class CheckinFragment extends Fragment {
                             arrUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
                             arrUsers.get(i).setDialog_id(dialog.getDialogId());
                             arrUsers.get(i).setQbDialog(dialog);
-
-
                             break;
                         }
                     }
-
                 }
                 checkinUserAdapter.notifyDataSetChanged();
                 mPullRefreshHomeListView.onRefreshComplete();
             }
-
             @Override
             public void onError(QBResponseException e) {
                 Utils.hideProgress();
@@ -712,6 +708,7 @@ public class CheckinFragment extends Fragment {
 
         exitCheckin();
         deleteChatHistories();
+        Global.getInstance().arrCheckinChatUsers = new ArrayList<>();
         super.onDestroy();
     }
     private void setDataAndFinish() {

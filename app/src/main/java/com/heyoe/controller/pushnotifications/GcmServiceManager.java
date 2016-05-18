@@ -120,14 +120,19 @@ public class GcmServiceManager {
         }
 
     }
-    private void increaseMsgCount(String user_id) {
+    private void increaseMsgCount() {
         if (getActivity() != null) {
 
-            if (user_id.length() > 0) {
+            if (id.length() > 0) {
                 Intent intentNewPush = new Intent("pushData");
                 PushModel pushModel = new PushModel();
-                pushModel.user_id = user_id;
-                pushModel.type = "increase_message_count";
+                pushModel.user_id = id;
+                if (type.equals("black")) {
+                    pushModel.type = "increase_black_message_count";
+                } else {
+                    pushModel.type = "increase_message_count";
+                }
+
                 intentNewPush.putExtra(Constant.PUSH_DATA, pushModel);
                 LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intentNewPush);
 
@@ -137,8 +142,33 @@ public class GcmServiceManager {
         }
 
     }
-    String id = "";
+
+    public void setNotificationData(Bundle data) {
+        notificationData = data;
+        parseMessage(data);
+        if (!message.equals("")) {
+
+            if (type.equals("black")) {
+                increaseMsgCount();
+            } else {
+                if (type.equals("white")) {
+                    increaseMsgCount();
+                } else if (message.contains("qb_request_")){
+                    message = message.replace("qb_request_", "");
+
+                } else {
+                    increaseActivityCount();
+                }
+                sendNotification();
+            }
+
+        }
+
+    }
+    String id, type;
     private String parseMessage(Bundle data){
+        id = "";
+        type = "";
         message = "";
         if(data.containsKey("liked_post")){
             message = data.getString("liked_post");
@@ -181,44 +211,33 @@ public class GcmServiceManager {
             intentNewPush.putExtra(Constant.PUSH_DATA, pushModel);
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intentNewPush);
 
-        }else {
+        }else {  /// message notification
             if (data.containsKey("message")) {
                 String msg = data.getString("message");
-                String[] str = msg.split("_qb_");
+                msg = msg.substring(1, msg.length() - 1);
+                String[] str = msg.split(", ");
                 if (str.length > 0) {
-                    id = str[0];
-                    String name = str[1];
-                    message = "qb_msg_You received message from " + name;
+                    for (int i = 0; i < str.length; i ++) {
+                        String[] strData = str[i].split("=");
+                        if (strData.length == 0) {
+                            break;
+                        }
+                        if (strData[0].equals("user_id")) {
+                            id = strData[1];
+                        }
+                        if (strData[0].equals("message")) {
+                            message = strData[1];
+                        }
+                        if (strData[0].equals("type")) {
+                            type = strData[1];
+                        }
+                    }
+
                 }
 
             }
         }
         return message;
-    }
-
-
-
-
-
-
-
-    public void setNotificationData(Bundle data) {
-        notificationData = data;
-        parseMessage(data);
-        if (!message.equals("")) {
-
-            if (message.contains("qb_msg_")) {
-                message = message.replace("qb_msg_", "");
-                increaseMsgCount(id);
-            } else if (message.contains("qb_request_")){
-                message = message.replace("qb_request_", "");
-
-            } else {
-                increaseActivityCount();
-            }
-            sendNotification();
-        }
-
     }
 
     public Bundle getNotificationData() {

@@ -84,6 +84,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 //    private ImageButton ibMenu;
 //    private SearchView searchView;
+    Toolbar toolbar;
     private static AutoCompleteTextView autoCompleteTextView;
     private static DribSearchView dribSearchView;
     private static MaterialMenuDrawable materialMenu;
@@ -114,7 +115,7 @@ public class HomeActivity extends AppCompatActivity implements
         initVariables();
         initUI();
 
-        getAllUsers();
+//        getAllUsers();
 
         qb_login();
     }
@@ -130,6 +131,11 @@ public class HomeActivity extends AppCompatActivity implements
                 if (!isCheckinMsg(data.user_id)) {
                     Global.getInstance().increaseMessageCount();
                     showMsgBadge(data.user_id);
+                }
+            }
+            if (data.type.equals("increase_black_message_count")) {
+                if (currentFragmentNum == 11 && !data.user_id.equals("")) {
+                    MyBlackFriendsFregment.updateUnreadMsgCount(data.user_id);
                 }
             }
         }
@@ -153,7 +159,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     private void initUI() {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         tvTitle = (TextView)findViewById(R.id.tv_home_title);
@@ -164,7 +170,7 @@ public class HomeActivity extends AppCompatActivity implements
 
         //init autocomplete search view/////////////////////////////////////////////////
 
-        autoCompleteTextView = (AutoCompleteTextView)toolbar.findViewById(R.id.sv_menu);
+
 
 
         //init search widget///////////////////////////////////////////////////////////
@@ -182,10 +188,15 @@ public class HomeActivity extends AppCompatActivity implements
             public void onChange(DribSearchView.State state) {
                 switch (state) {
                     case LINE:
+                        getAllUsers();
                         showHideSearchView(true);
                         break;
                     case SEARCH:
-                       showHideSearchView(false);
+                        arrAllUsers = new ArrayList<UserModel>();
+                        searchUserAutoCompleteAdapter = null;
+                        autoCompleteTextView.setAdapter(null);
+                        autoCompleteTextView.removeTextChangedListener(textWatcher);
+                        showHideSearchView(false);
 
                         break;
                 }
@@ -210,7 +221,7 @@ public class HomeActivity extends AppCompatActivity implements
         materialMenu.setNeverDrawTouch(true);
         //////////////////////////////////////////////////////////////////
 
-
+        autoCompleteTextView = (AutoCompleteTextView)toolbar.findViewById(R.id.sv_menu);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.home_drawerlayout);
 
@@ -269,7 +280,6 @@ public class HomeActivity extends AppCompatActivity implements
 
                 if (msgCount > 0) {
                     tvMsgCount.setVisibility(View.VISIBLE);
-//                        tvMsgCount.setText(String.valueOf(msgCount));
                     tvMsgCount.setText("!");
                     if (currentFragmentNum == 1 && !user_id.equals("")) {
                         MyFriendFragment.updateUnreadMsgCount(user_id);
@@ -277,22 +287,6 @@ public class HomeActivity extends AppCompatActivity implements
                 } else {
                     tvMsgCount.setVisibility(View.INVISIBLE);
                 }
-//                if (!Global.getInstance().isChatting && !user_id.equals(Global.getInstance().currentChattingUser)) {
-//                    if (msgCount > 0) {
-//                        tvMsgCount.setVisibility(View.VISIBLE);
-////                        tvMsgCount.setText(String.valueOf(msgCount));
-//                        tvMsgCount.setText("!");
-//                        if (currentFragmentNum == 1 && !user_id.equals("")) {
-//
-//                            MyFriendFragment.updateUnreadMsgCount(user_id);
-//                        }
-//                    } else {
-//                        tvMsgCount.setVisibility(View.INVISIBLE);
-//                    }
-//                }
-
-
-
             }
         });
 
@@ -320,61 +314,64 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void initAutoCompleteTextView() {
+        autoCompleteTextView = (AutoCompleteTextView)toolbar.findViewById(R.id.sv_menu);
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity ,android.R.text_layout.simple_list_item_1, makeSampleData());
         searchUserAutoCompleteAdapter = new SearchUserAutoCompleteAdapter(mActivity, R.layout.item_search, arrAllUsers);
         autoCompleteTextView.setAdapter(searchUserAutoCompleteAdapter);
         autoCompleteTextView.setThreshold(2);
-        autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (arrAllUsers.get(position).getFriendStatus().equals("none")) {
-                    sendFriendRequest(position);
-                } else {
+        autoCompleteTextView.setOnItemClickListener(itemClickListener);
+        autoCompleteTextView.setOnEditorActionListener(editorActionListener);
+        autoCompleteTextView.addTextChangedListener(textWatcher);
+    }
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
+        }
 
-            }
-        });
-        autoCompleteTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE
-                        || actionId == EditorInfo.IME_ACTION_NEXT
-                        || actionId == EditorInfo.IME_ACTION_GO
-                        || actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_SEND) {
-                    String black_pass = autoCompleteTextView.getText().toString().trim();
-                    if (Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD).equals("")
-                            && black_pass.length() > 1
-                            && black_pass.substring(0,1).equals("*")) {
-                        setBlackPassword(black_pass);
-                    }
-                }
-                return false;
-            }
-        });
-        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String black_pass = Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD);
-                if (s.toString().equals(black_pass) && !black_pass.equals("")) {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String black_pass = Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD);
+            if (s.toString().equals(black_pass) && !black_pass.equals("")) {
 //                    Intent intent = new Intent(mActivity, Black_Friend_Activity.class);
 //                    startActivity(intent);
-                    navigateToBlackChat();
+                navigateToBlackChat();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (arrAllUsers.get(position).getFriendStatus().equals("none")) {
+                sendFriendRequest(position);
+            } else {
+
+            }
+        }
+    };
+    private TextView.OnEditorActionListener editorActionListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if (actionId == EditorInfo.IME_ACTION_DONE
+                    || actionId == EditorInfo.IME_ACTION_NEXT
+                    || actionId == EditorInfo.IME_ACTION_GO
+                    || actionId == EditorInfo.IME_ACTION_SEARCH
+                    || actionId == EditorInfo.IME_ACTION_SEND) {
+                String black_pass = autoCompleteTextView.getText().toString().trim();
+                if (Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD).equals("")
+                        && black_pass.length() > 1
+                        && black_pass.substring(0,1).equals("*")) {
+                    setBlackPassword(black_pass);
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-    }
+            return false;
+        }
+    };
     private void setBlackPassword(final String black_pass) {
         Utils.showProgress(mActivity);
         Map<String, String> params = new HashMap<String, String>();
@@ -573,7 +570,7 @@ public class HomeActivity extends AppCompatActivity implements
                 .replace(R.id.fragment_container, fragment)
                 .commit();
 
-        setTitle(hashtag);
+        setTitle("#" + hashtag);
         if (isFavorite) {
             currentFragmentNum = 5;
         } else {
@@ -851,6 +848,7 @@ public class HomeActivity extends AppCompatActivity implements
                     Utils.showToast(mActivity, e.getLocalizedMessage());
                 }
             });
+            chatService.destroy();
         }
         super.onDestroy();
     }

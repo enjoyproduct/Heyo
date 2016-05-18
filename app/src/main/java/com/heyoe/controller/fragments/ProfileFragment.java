@@ -997,7 +997,7 @@ public class ProfileFragment extends Fragment {
 //                                if (MainFragment.isFavorite) {
 //                                    HomeActivity.navigateForHashTag(true, finalHashTags.get(finalJ));
 //                                } else {
-//                                    HomeActivity.navigateForHashTag(false, finalHashTags.get(finalJ));
+                                    HomeActivity.navigateForHashTag(false, finalHashTags.get(finalJ));
 //                                }
                             }
                         });

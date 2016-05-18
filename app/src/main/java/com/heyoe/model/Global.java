@@ -48,7 +48,25 @@ public class Global {
     }
 
     public ArrayList<UserModel> qsortUsersByMsgDate(ArrayList<UserModel> arrayList){
-        ArrayList<UserModel> arrUsers = new ArrayList<>();
-        return arrayList;
+        ArrayList<Long> msgDate = new ArrayList<>();
+        for (UserModel userModel : arrayList) {
+            msgDate.add(userModel.getQbLastMsgSentTime());
+        }
+        //sort by date(timestamp)
+        QSort qSort = new QSort(msgDate);
+        qSort.sort();
+        msgDate.clear();
+        msgDate.addAll(qSort.getResult());
+        //make new user arraylist
+        ArrayList<UserModel> sortedArray = new ArrayList<>();
+        for (int i = msgDate.size() - 1; i >= 0; i --) {
+            for (int k = 0; k < arrayList.size(); k ++) {
+                if( msgDate.get(i) == arrayList.get(k).getQbLastMsgSentTime()) {
+                    sortedArray.add(arrayList.get(k));
+                    break;
+                }
+            }
+        }
+        return sortedArray;
     }
 }

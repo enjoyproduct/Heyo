@@ -60,18 +60,18 @@
             android:layout_marginTop="@dimen/dimen_8dp"
             />
 
-        <me.kaede.tagview.TagView
-            android:id="@+id/ipff_hashtag"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:lineMargin="5dp"
-            app:tagMargin="3dp"
-            app:textPaddingBottom="3dp"
-            app:textPaddingLeft="10dp"
-            app:textPaddingRight="10dp"
-            app:textPaddingTop="3dp">
-        </me.kaede.tagview.TagView>
+        <!--<me.kaede.tagview.TagView-->
+            <!--android:id="@+id/ipff_hashtag"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--app:lineMargin="5dp"-->
+            <!--app:tagMargin="3dp"-->
+            <!--app:textPaddingBottom="3dp"-->
+            <!--app:textPaddingLeft="10dp"-->
+            <!--app:textPaddingRight="10dp"-->
+            <!--app:textPaddingTop="3dp">-->
+        <!--</me.kaede.tagview.TagView>-->
         <RelativeLayout
             android:id="@+id/rl_ipff_tag_container"
             android:layout_width="match_parent"

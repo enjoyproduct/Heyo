@@ -84,21 +84,13 @@ public class MyFriendFragment extends Fragment {
     private int state;
     private int chattingFriendNum;
 
-
-
-
-
-    private QBPrivateChatManager privateChatManager;
-    private QBChatService chatService;
     private QBUser user;
+
     private void createSession() {
         user = Global.getInstance().qbUser;
         if (user != null) {
             getDialogs();
         }
-
-
-
     }
     private void getDialogs() {
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
@@ -109,6 +101,7 @@ public class MyFriendFragment extends Fragment {
                 Utils.hideProgress();
 
                 ArrayList<QBDialog> arr = qbDialogs;
+                //get dialog of active friends
                 for (int i = 0; i < arrActiveUsers.size(); i++) {
                     arrActiveUsers.get(i).setUnreadMsgCount(0);
                     arrActiveUsers.get(i).setDialog_id("0");
@@ -125,9 +118,31 @@ public class MyFriendFragment extends Fragment {
                     }
 
                 }
-                arrActiveUsers = Global.getInstance().qsortUsersByMsgDate(arrActiveUsers);
+
+                ArrayList<UserModel> temp = new ArrayList<UserModel>();
+                temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
+                arrActiveUsers.clear();
+                arrActiveUsers.addAll(temp);
                 friendAdapter.notifyDataSetChanged();
                 mPullRefreshHomeListView.onRefreshComplete();
+
+                //get dialog of blocked friends
+                for (int i = 0; i < arrBlockedUsers.size(); i++) {
+                    arrBlockedUsers.get(i).setUnreadMsgCount(0);
+                    arrBlockedUsers.get(i).setDialog_id("0");
+                    arrBlockedUsers.get(i).setQbLastMsgSentTime(0);
+                    for (QBDialog dialog : arr) {
+                        if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrBlockedUsers.get(i).getQb_id()))) {
+                            ///get unread message count and dialog id
+                            arrBlockedUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
+                            arrBlockedUsers.get(i).setDialog_id(dialog.getDialogId());
+                            arrBlockedUsers.get(i).setQbDialog(dialog);
+                            arrBlockedUsers.get(i).setQbLastMsgSentTime(dialog.getLastMessageDateSent());
+                            break;
+                        }
+                    }
+
+                }
             }
 
             @Override
@@ -137,17 +152,40 @@ public class MyFriendFragment extends Fragment {
             }
         });
     }
-    private void deleteChat(final int position) {
 
+    private void deleteChatOfBlockedFriend(final int position) {
+        if (arrBlockedUsers.get(position).getQbDialog() == null) {
+            return;
+        }
+        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrBlockedUsers.get(position).getQbDialog().getDialogId(),
+                new QBEntityCallback<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid, Bundle bundle) {
+                        Utils.showToast(mActivity, "Cleared chat history successfully");
+                    }
+
+                    @Override
+                    public void onError(QBResponseException e) {
+                        Utils.showToast(mActivity, "Failed to clear chat history");
+                    }
+                });
+    }
+    private void deleteChatOfActiveFriend(final int position) {
+        if (arrActiveUsers.get(position).getQbDialog() == null) {
+           return;
+        }
         QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrActiveUsers.get(position).getQbDialog().getDialogId(),
                 new QBEntityCallback<Void>() {
                     @Override
                     public void onSuccess(Void aVoid, Bundle bundle) {
                         Utils.showToast(mActivity, "Cleared chat history successfully");
 //                        clearBadge(arrActiveUsers.get(position).getQbDialog().getUnreadMessageCount());
-                        arrActiveUsers.get(position).setUnreadMsgCount(0);
-                        arrActiveUsers.get(position).setQbDialog(null);
-                        friendAdapter.notifyDataSetChanged();
+                        if (arrActiveUsers.size() > position) {
+                            arrActiveUsers.get(position).setUnreadMsgCount(0);
+                            arrActiveUsers.get(position).setQbDialog(null);
+                            friendAdapter.notifyDataSetChanged();
+                        }
+
                     }
 
                     @Override
@@ -171,16 +209,9 @@ public class MyFriendFragment extends Fragment {
 
 
 
-
-
-
-
-
     public MyFriendFragment() {
         // Required empty public constructor
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -441,13 +472,21 @@ public class MyFriendFragment extends Fragment {
                             String status = response.getString("status");
                             if (status.equals("200")) {
                                 if (state == 0) {
+                                    deleteChatOfActiveFriend(position);
+
                                     arrActiveUsers.remove(position);
 
                                     friendAdapter.notifyDataSetChanged();
+
+
                                 } else {
+                                    deleteChatOfBlockedFriend(position);
+
                                     arrBlockedUsers.remove(position);
 
                                     blockedFriendAdapter.notifyDataSetChanged();
+
+
                                 }
 
 
@@ -620,7 +659,7 @@ public class MyFriendFragment extends Fragment {
                     if (!arrActiveUsers.get(position).getDialog_id().equals("0")) {
 //                        deleteMessage(arrActiveUsers.get(position).getDialog_id());
                         if (arrActiveUsers.get(position).getQbDialog() != null) {
-                            deleteChat(position);
+                            deleteChatOfActiveFriend(position);
                         }
 
                     }

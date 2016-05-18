@@ -255,22 +255,9 @@ public class BitmapUtility {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-        //get BitmapFactory option
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-
-        options.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeFile(photopath, options);
-        //////
-        options.inSampleSize = 1;
-        options.inJustDecodeBounds = false;
-
         //get bitmap with local path
-        Bitmap yourSelectedImage = BitmapFactory.decodeFile(photopath, options);
+        Bitmap yourSelectedImage = decodeSampledBitmapFromResource(photopath, 800, 800);
         //downsize bitmap
-        Bitmap downsizedBitmap = null;
         Matrix matrix = new Matrix();
         //get current rotation
         int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
@@ -307,18 +294,8 @@ public class BitmapUtility {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //get BitmapFactory option
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-
-        options.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeFile(photopath, options);
-        //////
-        options.inSampleSize = 1;
-        options.inJustDecodeBounds = false;
-
-        //get bitmap with local path
-        Bitmap yourSelectedImage = BitmapFactory.decodeFile(photopath, options);
+               //get bitmap with local path
+        Bitmap yourSelectedImage = decodeSampledBitmapFromResource(photopath, 400, 400);
         //downsize bitmap
         Bitmap downsizedBitmap = null;
         Matrix matrix = new Matrix();
