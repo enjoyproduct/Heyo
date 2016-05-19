@@ -5,23 +5,23 @@ package com.heyoe.model;
  */
 public class API {
 
-//    public static String BASE_URL = "http://www.heyoe.com/heyoe/index.php/api/";
-//    public static String BASE_AVATAR = "http://www.heyoe.com/heyoe/assets/images/avatars/";
-//    public static String BASE_HEADER_PHOTO = "http://www.heyoe.com/heyoe/assets/images/header_photo/";
-//    public static String BASE_POST_PHOTO = "http://www.heyoe.com/heyoe/assets/images/post_photo/";
-//    public static String BASE_THUMBNAIL = "http://www.heyoe.com/heyoe/assets/images/thumb/";
-//    public static String BASE_HEADER_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/header_video/";
-//    public static String BASE_POST_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/post_video/";
-//    public static String BASE_APP = "http://www.heyoe.com/heyoe/assets/images/app.png";
+    public static String BASE_URL = "http://www.heyoe.com/heyoe/index.php/api/";
+    public static String BASE_AVATAR = "http://www.heyoe.com/heyoe/assets/images/avatars/";
+    public static String BASE_HEADER_PHOTO = "http://www.heyoe.com/heyoe/assets/images/header_photo/";
+    public static String BASE_POST_PHOTO = "http://www.heyoe.com/heyoe/assets/images/post_photo/";
+    public static String BASE_THUMBNAIL = "http://www.heyoe.com/heyoe/assets/images/thumb/";
+    public static String BASE_HEADER_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/header_video/";
+    public static String BASE_POST_VIDEO = "http://www.heyoe.com/heyoe/assets/videos/post_video/";
+    public static String BASE_APP = "http://www.heyoe.com/heyoe/assets/images/app.png";
 
-    public static String BASE_URL = "http://192.168.2.17/heyoe/index.php/api/";
-    public static String BASE_AVATAR = "http://192.168.2.17/heyoe/assets/images/avatars/";
-    public static String BASE_HEADER_PHOTO = "http://192.168.2.17/heyoe/assets/images/header_photo/";
-    public static String BASE_POST_PHOTO = "http://192.168.2.17/heyoe/assets/images/post_photo/";
-    public static String BASE_THUMBNAIL = "http://192.168.2.17/heyoe/assets/images/thumb/";
-    public static String BASE_HEADER_VIDEO = "http://192.168.2.17/heyoe/assets/videos/header_video/";
-    public static String BASE_POST_VIDEO = "http://192.168.2.17/heyoe/assets/videos/post_video/";
-    public static String BASE_APP = "http://192.168.2.17/heyoe/assets/images/app.png";
+//    public static String BASE_URL = "http://192.168.2.17/heyoe/index.php/api/";
+//    public static String BASE_AVATAR = "http://192.168.2.17/heyoe/assets/images/avatars/";
+//    public static String BASE_HEADER_PHOTO = "http://192.168.2.17/heyoe/assets/images/header_photo/";
+//    public static String BASE_POST_PHOTO = "http://192.168.2.17/heyoe/assets/images/post_photo/";
+//    public static String BASE_THUMBNAIL = "http://192.168.2.17/heyoe/assets/images/thumb/";
+//    public static String BASE_HEADER_VIDEO = "http://192.168.2.17/heyoe/assets/videos/header_video/";
+//    public static String BASE_POST_VIDEO = "http://192.168.2.17/heyoe/assets/videos/post_video/";
+//    public static String BASE_APP = "http://192.168.2.17/heyoe/assets/images/app.png";
 
 
     public static String BASE_YOUTUB_PREFIX = "http://i1.ytimg.com/vi/";

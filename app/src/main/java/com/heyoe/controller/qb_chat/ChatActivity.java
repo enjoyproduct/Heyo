@@ -201,8 +201,11 @@ public class ChatActivity extends BaseActivity  {
         @Override
         public void onQBChatMessageReceived(QBChat chat, QBChatMessage message) {
             showMessage(message);
-            Global.getInstance().decreaseMessageCount(1);
-            HomeActivity.showMsgBadge(opponentID);
+//            Global.getInstance().decreaseMessageCount(1);
+//            HomeActivity.showMsgBadge(opponentID);
+            int unreadMsgcount = qbDialog.getUnreadMessageCount();
+            unreadMsgcount ++;
+            qbDialog.setUnreadMessageCount(unreadMsgcount);
 //            Utils.showToast(ChatActivity.this, "Message2");
         }
     };
@@ -767,19 +770,21 @@ public class ChatActivity extends BaseActivity  {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
         setDataAndFinish();
     }
 
     private void setDataAndFinish() {
-        if (currentChatPage.equals("checkin_chat")) {
-            Intent intent = getIntent();
-            intent.putExtra("dialog", qbDialog);
-            setResult(RESULT_OK);
-        }
         Global.getInstance().isChatting = false;
         Global.getInstance().currentChattingUser = "";
         Global.getInstance().currentChattingPage = "";
+
+//        if (currentChatPage.equals("checkin_chat")) {
+//        }
+        Intent intent = getIntent();
+        intent.putExtra("dialog", qbDialog);
+        setResult(RESULT_OK, intent);
+
         finish();
     }
     @Override

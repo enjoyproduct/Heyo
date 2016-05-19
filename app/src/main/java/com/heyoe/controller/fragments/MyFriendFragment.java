@@ -594,11 +594,12 @@ public class MyFriendFragment extends Fragment {
         requestQueue.add(signinRequest);
     }
 
-    public static void updateUserState(UserModel userModel) {
+    public static void updateUserState(QBDialog dialog) {
         for (int i = 0; i < arrActiveUsers.size(); i ++) {
-            if (userModel.getUser_id().equals(arrActiveUsers.get(i).getUser_id())) {
-                arrActiveUsers.remove(i);
-                arrActiveUsers.add(i, userModel);
+            if (dialog.getOccupants().contains(Integer.parseInt(arrActiveUsers.get(i).getQb_id()))) {
+                dialog.setUnreadMessageCount(0);
+                arrActiveUsers.get(i).setUnreadMsgCount(0);
+                arrActiveUsers.get(i).setQbDialog(dialog);
                 friendAdapter.notifyDataSetChanged();
                 break;
             }

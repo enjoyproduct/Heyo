@@ -108,13 +108,25 @@
                 android:maxLength="20"
                 />
             <!--youtube link-->
-            <EditText
+            <TextView
                 android:id="@+id/et_compose_youtube_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Paste Youtube video url here"
-                android:layout_margin="@dimen/dimen_16dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
                 android:editable="false"
+                android:textSize="18sp"
+                android:visibility="gone"
+                />
+            <TextView
+                android:id="@+id/tv_compose_youtube_underline"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/dark"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginBottom="16dp"
                 android:visibility="gone"
                 />
             <!--image or video-->

@@ -31,7 +31,7 @@ public class Constant {
     public static String CITY = "city";
     public static String COUNTRY = "country";
     public static String CELEBRITY = "celebrity";
-    public static String ABOUT_ME = "gender";
+    public static String ABOUT_ME = "about_me";
     public static String MEDIA_COUNT = "media_count";
     public static String FRIEND_COUNT = "friend_count";
     public static String HEADER_PHOTO = "header_photo";

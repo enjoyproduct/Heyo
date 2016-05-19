@@ -103,7 +103,7 @@ public class PostAdapter extends BaseAdapter {
                     Intent intent = new Intent(activity, UserListActivity.class);
                     intent.putExtra("type", "like");
                     intent.putExtra("post", postModel);
-                    activity.startActivity(intent);
+                    activity.startActivityForResult(intent, 107);
                 }
             });
 
@@ -113,7 +113,7 @@ public class PostAdapter extends BaseAdapter {
                     Intent intent = new Intent(activity, UserListActivity.class);
                     intent.putExtra("type", "dislike");
                     intent.putExtra("post", postModel);
-                    activity.startActivity(intent);
+                    activity.startActivityForResult(intent, 107);
                 }
             });
             ivComments.setOnClickListener(new View.OnClickListener() {

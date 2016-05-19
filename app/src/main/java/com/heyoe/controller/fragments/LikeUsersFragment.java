@@ -2,6 +2,7 @@ package com.heyoe.controller.fragments;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -252,9 +253,29 @@ public class LikeUsersFragment extends Fragment {
             }else {
                 myCircularImageView.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
             }
+            myCircularImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+                    mActivity.setResult(21, intent);
+                    mActivity.finish();
+                }
+            });
             TextView tvName = (TextView)view.findViewById(R.id.tv_imf_friend_name);
+            tvName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+                    mActivity.setResult(21, intent);
+                    mActivity.finish();
+                }
+            });
             TextView tvAboutMe = (TextView)view.findViewById(R.id.tv_imf_aboutme);
             ImageButton ibAdd = (ImageButton)view.findViewById(R.id.ib_imf_add);
+
+
             if (!arrFriends.get(position).getFriendStatus().equals("none") || arrFriends.get(position).getUser_id().equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
                 ibAdd.setVisibility(View.GONE);
             } else {

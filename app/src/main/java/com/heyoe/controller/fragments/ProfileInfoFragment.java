@@ -222,7 +222,7 @@ public class ProfileInfoFragment extends Fragment implements View.OnClickListene
             editAboutMeStatus = true;
             ibEditAboutMe.setImageDrawable(getResources().getDrawable(R.drawable.check_green));
             etAboutMe    .setEnabled(true);
-            etAboutMe.requestFocus();
+            etAboutMe    .requestFocus();
             UIUtility.showSoftKeyboard(mActivity, etAboutMe);
         }
     }

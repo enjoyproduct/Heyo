@@ -66,6 +66,7 @@ import com.heyoe.utilities.Utils;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
@@ -253,6 +254,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
 
         showActivityBadge();
+        showMsgBadge("");
     }
     public static void showActivityBadge() {
         mActivity.runOnUiThread(new Runnable() {
@@ -292,6 +294,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     }
+
 
     private static void showHideSearchView(boolean flag) {
         if (mActivity == null) {
@@ -623,17 +626,30 @@ public class HomeActivity extends AppCompatActivity implements
         switch (requestCode) {
             case 101:////from detail post in main
                 if (data != null ) {
-                    PostModel postModel = (PostModel) data.getSerializableExtra("post");
-                    if (postModel != null) {
-                        ArrayList<PostModel> postModels = new ArrayList<>();
-                        postModels.add(postModel);
-                        if (resultCode == RESULT_OK) {
-                            MainFragment.updatePostFeed(postModels);
+                    if (resultCode == 41) {
+                        String hashtag = data.getStringExtra("hashtag");
+                        if (hashtag != null && hashtag.length() > 0) {
+                            if (MainFragment.isFavorite) {
+                                navigateForHashTag(true, hashtag);
+                            } else {
+                                navigateForHashTag(false, hashtag);
+                            }
                         }
-                        if (resultCode == 40) {
-                            MainFragment.deletePost(postModels);
+                    } else {
+                        PostModel postModel = (PostModel) data.getSerializableExtra("post");
+                        if (postModel != null) {
+                            ArrayList<PostModel> postModels = new ArrayList<>();
+                            postModels.add(postModel);
+                            if (resultCode == RESULT_OK) {
+                                MainFragment.updatePostFeed(postModels);
+                            }
+                            if (resultCode == 40) {
+                                MainFragment.deletePost(postModels);
+                            }
+
                         }
                     }
+
                 }
                 break;
             case 102://from social sharing
@@ -668,12 +684,31 @@ public class HomeActivity extends AppCompatActivity implements
                 break;
             case 106: //from chat activity
                 if (resultCode == RESULT_OK) {
-                    if (currentFragmentNum == 1) {
-                        UserModel userModel = (UserModel)data.getSerializableExtra("user");
-                        if (userModel != null) {
-                            MyFriendFragment.updateUserState(userModel);
-                        }
+                    if (data != null) {
+                        QBDialog dialog = (QBDialog) data.getSerializableExtra("dialog");
+                        if (dialog != null) {
+                            if (currentFragmentNum == 1) {
+                                Global.getInstance().decreaseMessageCount(dialog.getUnreadMessageCount());
+                                int msgCount = Utils.getIntFromPreference(mActivity, Constant.MSG_COUNT);
+                                if (msgCount == 0) {
+                                    tvMsgCount.setVisibility(View.INVISIBLE);
+                                }
 
+                                MyFriendFragment.updateUserState(dialog);
+                            }
+                            if (currentFragmentNum == 11) {
+                                MyBlackFriendsFregment.updateUserState(dialog);
+                            }
+                        }
+                    }
+
+                }
+                break;
+            case 107://from UserListActivity
+                if (resultCode == 21) {
+                    if (data != null) {
+                        String user_id = data.getStringExtra("user_id");
+                        HomeActivity.navigateToProfile(user_id);
                     }
                 }
                 break;

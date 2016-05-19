@@ -248,7 +248,6 @@ public class DetailPostFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(customRequest);
     }
-
     public  void setLike( final String type) {
         final Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
@@ -395,7 +394,6 @@ public class DetailPostFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(customRequest);
     }
-
     public void sharing(){
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
@@ -404,6 +402,7 @@ public class DetailPostFragment extends Fragment {
         mActivity.startActivityForResult(Intent.createChooser(sharingIntent, "Heyoe"), 102);
 
     }
+
     public static void updateSharedCount() {
         sharePost();
         int shardCount  = Integer.parseInt(postModel.getShared_count());
@@ -606,7 +605,7 @@ public class DetailPostFragment extends Fragment {
                 tvDescription.setText(str2);
 
                 //hashtag
-                TagView hashTagView = (TagView)view.findViewById(R.id.ipff_hashtag);
+                final TagView hashTagView = (TagView)view.findViewById(R.id.ipff_hashtag);
                 List<String> hashTags = new ArrayList<>();
                 if (postModel.getHashtag().length() > 0) {
                     hashTags = Arrays.asList(postModel.getHashtag().split("#"));
@@ -623,7 +622,11 @@ public class DetailPostFragment extends Fragment {
 
                     @Override
                     public void onTagClick(Tag tag, int position) {
-
+                        String strTag = tag.text;
+                        Intent intent = new Intent();
+                        intent.putExtra("hashtag", strTag.replace("#", ""));
+                        mActivity.setResult(41, intent);
+                        mActivity.finish();
                     }
                 });
 

@@ -182,7 +182,6 @@ public class CheckinFragment extends Fragment {
 
             }
         }
-
     }
 
     private void getCheckinUsers() {
@@ -696,6 +695,8 @@ public class CheckinFragment extends Fragment {
     private void updateQBdialog(QBDialog dialog) {
         for (int i = 0; i < arrUsers.size(); i ++) {
             if (dialog.getOccupants().contains(Integer.parseInt(arrUsers.get(i).getQb_id()))) {
+                dialog.setUnreadMessageCount(0);
+                arrUsers.get(i).setUnreadMsgCount(0);
                 arrUsers.get(i).setQbDialog(dialog);
                 checkinUserAdapter.notifyDataSetChanged();
                 break;

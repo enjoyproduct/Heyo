@@ -122,7 +122,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     private ImageView imageView;
 //    private VideoView videoView;
     private ImageButton ibPlay;
-    private EditText etYotubeUrl;
+    private TextView etYotubeUrl, etYoutubeUnderline;
+
     private TagView  hashTagView;
     private EditText etHashTag;
     private ArrayList<String>  arrHashTags;
@@ -205,7 +206,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         tvFullname = (TextView)view.findViewById(R.id.tv_compose_fullname);
         tvFullname.setText(Utils.getFromPreference(mActivity, Constant.FULLNAME));
 
-        etYotubeUrl = (EditText)view.findViewById(R.id.et_compose_youtube_url);
+        etYoutubeUnderline = (TextView)view.findViewById(R.id.tv_compose_youtube_underline);
+        etYotubeUrl = (TextView)view.findViewById(R.id.et_compose_youtube_url);
         etYotubeUrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -251,6 +253,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 }
                 else {
                     etYotubeUrl.setVisibility(View.GONE);
+                    etYoutubeUnderline.setVisibility(View.GONE);
                 }
             }
         });
@@ -887,6 +890,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             case take_photo_from_gallery:
                 if (resultCode == Activity.RESULT_OK) {
                     etYotubeUrl.setVisibility(View.GONE);
+                    etYoutubeUnderline.setVisibility(View.GONE);
                     ibPlay.setVisibility(View.GONE);
 
                     Uri selectedImage = data.getData();
@@ -922,6 +926,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 if (resultCode == Activity.RESULT_OK) {
 
                     etYotubeUrl.setVisibility(View.GONE);
+                    etYoutubeUnderline.setVisibility(View.GONE);
                     ibPlay.setVisibility(View.GONE);
                     setPic();
                 }
@@ -931,6 +936,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 if (resultCode == Activity.RESULT_OK) {
 
                     etYotubeUrl.setVisibility(View.GONE);
+                    etYoutubeUnderline.setVisibility(View.GONE);
 
                     Uri selectedVideoUri = data.getData();
 
@@ -965,6 +971,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 if (resultCode == Activity.RESULT_OK) {
 
                     etYotubeUrl.setVisibility(View.GONE);
+                    etYoutubeUnderline.setVisibility(View.GONE);
 
                     if (videoPath.length() > 0) {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.MINI_KIND);
@@ -1034,6 +1041,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         etYotubeUrl.setVisibility(View.GONE);
+                        etYoutubeUnderline.setVisibility(View.GONE);
+
                         captureVideoFromCamera();
                         dialog.cancel();
                     }
@@ -1042,6 +1051,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         etYotubeUrl.setVisibility(View.GONE);
+                        etYoutubeUnderline.setVisibility(View.GONE);
+
                         takeVideoFromGallery();
                         dialog.cancel();
                     }
@@ -1061,6 +1072,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
     private void takeYoutubeVideoUrl() {
         etYotubeUrl.setVisibility(View.VISIBLE);
+        etYoutubeUnderline.setVisibility(View.VISIBLE);
 
         Intent videoClient = new Intent(Intent.ACTION_VIEW);
 //        videoClient.setData(Uri.parse("http://m.youtube.com/watch?v="+videoId));
