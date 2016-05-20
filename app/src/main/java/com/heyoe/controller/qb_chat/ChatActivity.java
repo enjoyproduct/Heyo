@@ -94,6 +94,7 @@ import com.quickblox.users.model.QBUser;
 
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.json.JSONObject;
 
@@ -154,7 +155,7 @@ public class ChatActivity extends BaseActivity  {
     int blacker_id ;
     String currentChatPage;
 
-    private QBChatService chatService;
+//    private QBChatService chatService;
 //    private QBPrivateChatManager privateChatManager;
     private QBPrivateChat privateChat;
 
@@ -201,12 +202,9 @@ public class ChatActivity extends BaseActivity  {
         @Override
         public void onQBChatMessageReceived(QBChat chat, QBChatMessage message) {
             showMessage(message);
-//            Global.getInstance().decreaseMessageCount(1);
-//            HomeActivity.showMsgBadge(opponentID);
             int unreadMsgcount = qbDialog.getUnreadMessageCount();
             unreadMsgcount ++;
             qbDialog.setUnreadMessageCount(unreadMsgcount);
-//            Utils.showToast(ChatActivity.this, "Message2");
         }
     };
 
@@ -217,11 +215,15 @@ public class ChatActivity extends BaseActivity  {
         }
     }
     private void initChat() {
-        if (qbDialog != null) {
-            chat = new PrivateChatImpl(chatMessageListener, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
-            init();
+        if (QBChatService.getInstance().isLoggedIn()) {
+            if (qbDialog != null) {
+                chat = new PrivateChatImpl(chatMessageListener, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
+                init();
+            } else {
+                createDialog();
+            }
         } else {
-            createDialog();
+            qb_login();
         }
 
     }
@@ -253,6 +255,7 @@ public class ChatActivity extends BaseActivity  {
                     @Override
                     public void onSuccess(QBDialog dialog, Bundle bundle) {
                         qbDialog = dialog;
+                        qbDialog.setUnreadMessageCount(0);
                         init();
                     }
 
@@ -265,13 +268,23 @@ public class ChatActivity extends BaseActivity  {
             }
         });
     }
+
+    private void init() {
+
+//        QBChatService.getInstance().getPrivateChatManager().addPrivateChatManagerListener(privateChatManagerListener);
+        initChatConnectionListener();
+        initQBPrivateChat();
+        loadChatHistory();
+
+    }
+
     private void initChatConnectionListener() {
         chatConnectionListener = new VerboseQbChatConnectionListener(getSnackbarAnchorView()) {
             @Override
             public void connectionClosedOnError(final Exception e) {
                 super.connectionClosedOnError(e);
                 Utils.hideProgress();
-                qb_login();
+
             }
             @Override
             public void reconnectionSuccessful() {
@@ -292,18 +305,20 @@ public class ChatActivity extends BaseActivity  {
                 }
             }
         };
+        QBChatService.getInstance().addConnectionListener(chatConnectionListener);
     }
     private void qb_login() {
         QBUser user = new QBUser(Utils.getFromPreference(this, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
-//                            Utils.showToast(App.getInstance(), "QB qb_login success");
-                createDialog();
+                Utils.showToast(App.getInstance(), "QB qb_login success");
+                initChat();
             }
 
             @Override
             public void onError(QBResponseException e) {
+                Utils.hideProgress();
                 Utils.showToast(App.getInstance(), "QB qb_login failed");
             }
         });
@@ -341,13 +356,7 @@ public class ChatActivity extends BaseActivity  {
 //        }
     }
 
-    private void init() {
 
-//        QBChatService.getInstance().getPrivateChatManager().addPrivateChatManagerListener(privateChatManagerListener);
-        initChatConnectionListener();
-        loadChatHistory();
-        initQBPrivateChat();
-    }
 
     private void loadChatHistory() {
         ChatHelper.getInstance().loadChatHistory(qbDialog, skipPagination, new QBEntityCallback<ArrayList<QBChatMessage>>() {
@@ -539,9 +548,11 @@ public class ChatActivity extends BaseActivity  {
         try {
             privateChat.sendMessage(chatMessage);
             if (blacker_id == 0 || blacker_id == Integer.parseInt(Utils.getFromPreference(this, Constant.USER_ID))) {
-                sendPush(Utils.getFromPreference(this, Constant.QB_ID), Utils.getFromPreference(this, Constant.FULLNAME), "white");
+//                sendPush(Utils.getFromPreference(this, Constant.QB_ID), Utils.getFromPreference(this, Constant.FULLNAME), "white");
+                sendPush_manual(Utils.getFromPreference(this, Constant.USER_ID), opponentUserModel.getUser_id(), "white");
             } else {
-                sendPush(Utils.getFromPreference(this, Constant.QB_ID), Utils.getFromPreference(this, Constant.FULLNAME), "black");
+//                sendPush(Utils.getFromPreference(this, Constant.QB_ID), Utils.getFromPreference(this, Constant.FULLNAME), "black");
+                sendPush_manual(Utils.getFromPreference(this, Constant.USER_ID),opponentUserModel.getUser_id(), "black");
             }
             if (qbDialog.getType() == QBDialogType.PRIVATE) {
                 showMessage(chatMessage);
@@ -590,7 +601,45 @@ public class ChatActivity extends BaseActivity  {
             }
         });
     }
+    private void sendPush_manual(String my_id, String friend_id, String type) {
 
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(this, Constant.DEVICE_TOKEN));
+        params.put("my_id", my_id);
+        params.put("user_id", friend_id);
+        params.put("type", type);
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.SEND_MESSAGE, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(ChatActivity.this, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(ChatActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(signinRequest);
+
+    }
 
 
 
@@ -636,7 +685,10 @@ public class ChatActivity extends BaseActivity  {
             qbPrivateChat.addMessageListener(privateChatQBMessageListener);
         }
     };
+
     private QBPrivateChat initQBPrivateChat() {
+//        QBChatService.getInstance().getPrivateChatManager().addPrivateChatManagerListener(privateChatManagerListener);
+
         privateChat= ChatHelper.getInstance().getPrivateChat(Integer.parseInt(opponentID));
         if (privateChat == null) {
             privateChat = ChatHelper.getInstance().createChat(Integer.parseInt(opponentID), privateChatQBMessageListener);
@@ -789,11 +841,15 @@ public class ChatActivity extends BaseActivity  {
     }
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+
+        QBChatService.getInstance().removeConnectionListener(chatConnectionListener);
         if (timer != null) {
             timer.cancel();
             timer.purge();
         }
+
+        super.onDestroy();
+
 
     }
 

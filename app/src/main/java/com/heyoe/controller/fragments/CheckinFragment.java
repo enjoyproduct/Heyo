@@ -108,7 +108,7 @@ public class CheckinFragment extends Fragment {
             @Override
             public void onLastItemVisible() {
                 if (!isLast) {
-                    getCheckinUsers();
+//                    getCheckinUsers();
                 }
                 mPullRefreshHomeListView.onRefreshComplete();
 
@@ -203,10 +203,10 @@ public class CheckinFragment extends Fragment {
                             if (status.equals("200")) {
                                 JSONArray jsonArray = response.getJSONArray("data");
                                 int userCount = jsonArray.length();
-                                if (userCount == 0) {
-                                    isLast = true;
-                                }
-                                offset ++;
+//                                if (userCount == 0) {
+//                                    isLast = true;
+//                                }
+//                                offset ++;
                                 for (int i = 0; i < userCount; i ++)  {
 
                                     JSONObject userObject = jsonArray.getJSONObject(i);

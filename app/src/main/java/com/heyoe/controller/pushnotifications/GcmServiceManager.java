@@ -28,7 +28,6 @@ public class GcmServiceManager {
     private String  message;
     private Bundle notificationData;
     public static String PROJECT_NUMBER = "535417836265";
-    
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     public static GcmServiceManager getInstance() {
@@ -105,9 +104,6 @@ public class GcmServiceManager {
 
     private void increaseActivityCount() {
         if (getActivity() != null) {
-            int count = Utils.getIntFromPreference(activity, Constant.ACTIVITY_COUNT);
-            count ++;
-            Utils.saveIntToPreference(activity, Constant.ACTIVITY_COUNT, count);
 
             Intent intentNewPush = new Intent("pushData");
             PushModel pushModel = new PushModel();
@@ -115,10 +111,7 @@ public class GcmServiceManager {
             intentNewPush.putExtra(Constant.PUSH_DATA, pushModel);
 
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intentNewPush);
-
-//            HomeActivity.showActivityBadge();
         }
-
     }
     private void increaseMsgCount() {
         if (getActivity() != null) {
@@ -211,31 +204,41 @@ public class GcmServiceManager {
             intentNewPush.putExtra(Constant.PUSH_DATA, pushModel);
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intentNewPush);
 
-        }else {  /// message notification
-            if (data.containsKey("message")) {
-                String msg = data.getString("message");
-                msg = msg.substring(1, msg.length() - 1);
-                String[] str = msg.split(", ");
-                if (str.length > 0) {
-                    for (int i = 0; i < str.length; i ++) {
-                        String[] strData = str[i].split("=");
-                        if (strData.length == 0) {
-                            break;
-                        }
-                        if (strData[0].equals("user_id")) {
-                            id = strData[1];
-                        }
-                        if (strData[0].equals("message")) {
-                            message = strData[1];
-                        }
-                        if (strData[0].equals("type")) {
-                            type = strData[1];
-                        }
-                    }
+        }else if (data.containsKey("send_message")){  /// message notification
+            message = data.getString("send_message");
 
-                }
-
+            String[] string = message.split("_send_message_");
+            if (string.length > 1) {
+                id = string[0];
+                message = "You received message from " + string[1];
+                type = string[2];
             }
+
+
+//            if (data.containsKey("message")) {
+//                String msg = data.getString("message");
+//                msg = msg.substring(1, msg.length() - 1);
+//                String[] str = msg.split(", ");
+//                if (str.length > 0) {
+//                    for (int i = 0; i < str.length; i ++) {
+//                        String[] strData = str[i].split("=");
+//                        if (strData.length == 0) {
+//                            break;
+//                        }
+//                        if (strData[0].equals("user_id")) {
+//                            id = strData[1];
+//                        }
+//                        if (strData[0].equals("message")) {
+//                            message = strData[1];
+//                        }
+//                        if (strData[0].equals("type")) {
+//                            type = strData[1];
+//                        }
+//                    }
+//
+//                }
+//
+//            }
         }
         return message;
     }

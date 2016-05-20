@@ -37,6 +37,11 @@ public class Global {
         count ++;
         Utils.saveIntToPreference(App.getInstance(), Constant.MSG_COUNT, count);
     }
+    public void increaseActivityCount() {
+        int count = Utils.getIntFromPreference(App.getInstance(), Constant.ACTIVITY_COUNT);
+        count ++;
+        Utils.saveIntToPreference(App.getInstance(), Constant.ACTIVITY_COUNT, count);
+    }
     public void decreaseMessageCount(int count) {
         int unreadMsgCount = Utils.getIntFromPreference(App.getInstance(), Constant.MSG_COUNT);
         if (count > unreadMsgCount) {

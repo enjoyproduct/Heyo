@@ -424,7 +424,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
         params.put("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
 
-        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_FRIEND_LIST, params,
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_MY_FRIEND_LIST, params,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -451,7 +451,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                                     String avatar = userObject.getString("avatar");
                                     String header_photo_url = userObject.getString("header_photo");
                                     String header_video_url = userObject.getString("header_video");
-
+                                    String friend_status = userObject.getString("status");
 
                                     UserModel userModel = new UserModel();
 
@@ -469,7 +469,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                                     userModel.setHeader_photo(header_photo_url);
                                     userModel.setHeader_video(header_video_url);
 
-                                    String friend_status = userObject.getString("status");
+
                                     if (friend_status.equals("active")) {
                                         arrFriends.add(userModel);
                                     } else {

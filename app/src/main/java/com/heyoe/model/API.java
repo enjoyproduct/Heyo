@@ -82,4 +82,6 @@ public class API {
 
     public static String ENTER_CHECKIN = BASE_URL + "enter_checkin";
     public static String EXIT_CHECKIN = BASE_URL + "exit_checkin";
+
+    public static String SEND_MESSAGE = BASE_URL + "send_message";
 }

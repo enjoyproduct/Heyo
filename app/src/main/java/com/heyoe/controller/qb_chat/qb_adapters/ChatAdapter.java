@@ -221,7 +221,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
     private void setMessageAuthor(ViewHolder holder, QBChatMessage chatMessage) {
         if (isIncoming(chatMessage)) {
             QBUser sender = QbUsersHolder.getInstance().getUserById(chatMessage.getSenderId());
-            holder.messageAuthorTextView.setText(sender.getFullName());
+//            holder.messageAuthorTextView.setText(sender.getFullName());
             holder.messageAuthorTextView.setVisibility(View.GONE);
 
             if (hasAttachments(chatMessage)) {

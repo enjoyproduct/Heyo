@@ -14,7 +14,7 @@ public class App extends Application {
         instance = this;
     }
 
-    public static synchronized App getInstance() {
+    public static  App getInstance() {
         return instance;
     }
 }

@@ -110,8 +110,12 @@ public class HomeActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        GcmServiceManager gcmServiceManager = GcmServiceManager.getInstance();
-        gcmServiceManager.startGcmService(this);
+//        GcmServiceManager gcmServiceManager = GcmServiceManager.getInstance();
+//        gcmServiceManager.startGcmService(this);
+
+        //INIT QB SDK
+        QBSettings.getInstance().init(this, Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(Constant.ACCOUNT_KEY);
 
         initVariables();
         initUI();
@@ -126,6 +130,7 @@ public class HomeActivity extends AppCompatActivity implements
 
             PushModel data = (PushModel)intent.getExtras().getSerializable(Constant.PUSH_DATA);
             if (data.type.equals("increase_activity_count")) {
+                Global.getInstance().increaseActivityCount();
                 showActivityBadge();
             }
             if (data.type.equals("increase_message_count")) {
@@ -878,12 +883,13 @@ public class HomeActivity extends AppCompatActivity implements
                 public void onSuccess(Void aVoid, Bundle bundle) {
                     chatService.destroy();
                 }
+
                 @Override
                 public void onError(QBResponseException e) {
                     Utils.showToast(mActivity, e.getLocalizedMessage());
                 }
             });
-            chatService.destroy();
+
         }
         super.onDestroy();
     }

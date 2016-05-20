@@ -41,9 +41,7 @@ public class SignActivity extends AppCompatActivity {
             Utils.saveToPreference(this, Constant.DEVICE_ID, deviceID);
         }
 
-        //INIT QB SDK
-        QBSettings.getInstance().init(this, Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
-        QBSettings.getInstance().setAccountKey(Constant.ACCOUNT_KEY);
+
 
         initVariable();
         initUI();
