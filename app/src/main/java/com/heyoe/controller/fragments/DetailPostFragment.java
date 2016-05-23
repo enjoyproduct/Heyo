@@ -1,6 +1,7 @@
 package com.heyoe.controller.fragments;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +20,8 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,6 +41,7 @@ import com.heyoe.controller.DetailPostActivity;
 import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.MediaPlayActivity;
 import com.heyoe.controller.ProfileActivity;
+import com.heyoe.controller.adapters.FriendTagAdapter;
 import com.heyoe.controller.adapters.RecyclerAdapter;
 import com.heyoe.model.API;
 import com.heyoe.model.CommentModel;
@@ -53,6 +58,7 @@ import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -85,6 +91,10 @@ public class DetailPostFragment extends Fragment {
 
     ImageButton ibLike, ibDislike, ibComment;
 
+    EditText etComment;
+    private ArrayList<UserModel> arrFriends;
+    private ArrayList<UserModel> arrTagedFriends;
+    String tagedFriendIds;
 
     public DetailPostFragment() {
         // Required empty public constructor
@@ -103,13 +113,17 @@ public class DetailPostFragment extends Fragment {
 
         initVariables();
         initUI(view);
+        getFriends();
         viewedPost();
+
         return view;
     }
     private void initVariables() {
         mActivity = getActivity();
         postModel = DetailPostActivity.postModel;
         layoutInflater = LayoutInflater.from(mActivity);
+        arrFriends        = new ArrayList<>();
+        arrTagedFriends   = new ArrayList<>();
     }
 
     private void initUI(View view) {
@@ -118,7 +132,10 @@ public class DetailPostFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCommentDlg();
+//                showCommentDlg();
+                tagedFriendIds = "";
+                DialogFragment selectWeekDayFragment = new ShowCommentDialog();
+                selectWeekDayFragment.show(getFragmentManager(), "");
             }
         });
 
@@ -128,6 +145,88 @@ public class DetailPostFragment extends Fragment {
         listView.setAdapter(userAdpater);
     }
 
+    private void getFriends() {
+        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("user_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.GET_MY_FRIEND_LIST, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                JSONArray jsonArray = response.getJSONArray("data");
+                                int userCount = jsonArray.length();
+                                for (int i = 0; i < userCount; i ++)  {
+
+                                    JSONObject userObject = jsonArray.getJSONObject(i);
+
+                                    String user_id = userObject.getString("user_id");
+                                    String fullname = userObject.getString("fullname");
+                                    String email = userObject.getString("email");
+                                    String city = userObject.getString("city");
+                                    String country = userObject.getString("country");
+                                    String birthday = userObject.getString("birthday");
+                                    String gender = userObject.getString("gender");
+                                    String celebrity = userObject.getString("celebrity");
+                                    String about_you = userObject.getString("about_you");
+                                    String friend_count = userObject.getString("friend_count");
+                                    String avatar = userObject.getString("avatar");
+                                    String header_photo_url = userObject.getString("header_photo");
+                                    String header_video_url = userObject.getString("header_video");
+                                    String friend_status = userObject.getString("status");
+
+                                    UserModel userModel = new UserModel();
+
+                                    userModel.setUser_id(user_id);
+                                    userModel.setFullname("@" + fullname);
+                                    userModel.setEmail(email);
+                                    userModel.setCity(city);
+                                    userModel.setCountry(country);
+                                    userModel.setBirthday(birthday);
+                                    userModel.setGender(gender);
+                                    userModel.setCelebrity(celebrity);
+                                    userModel.setAbout_you(about_you);
+                                    userModel.setFriend_count(friend_count);
+                                    userModel.setAvatar(avatar);
+                                    userModel.setHeader_photo(header_photo_url);
+                                    userModel.setHeader_video(header_video_url);
+
+
+                                    if (friend_status.equals("active")) {
+                                        arrFriends.add(userModel);
+                                    } else {
+                                    }
+
+                                }
+
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
+    }
     public void viewedPost() {
 
         Map<String, String> params = new HashMap<String, String>();
@@ -248,7 +347,8 @@ public class DetailPostFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(customRequest);
     }
-    public  void setLike( final String type) {
+
+    public void setLike(final String type) {
         final Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
         params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
@@ -319,35 +419,93 @@ public class DetailPostFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(customRequest);
     }
-    public  void showCommentDlg() {
+    @SuppressLint("ValidFragment")
+    public class ShowCommentDialog extends DialogFragment {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setTitle(mActivity.getResources().getString(R.string.type_comment_below));
-        builder.setCancelable(true);
-        View customView = layoutInflater.inflate(R.layout.custom_comment, null);
-        final EditText etComment = (EditText)customView.findViewById(R.id.et_comment);
-        UIUtility.showSoftKeyboard(mActivity, etComment);
-        builder.setView(customView);
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.custom_comment, container, true);
+            etComment = (EditText)view.findViewById(R.id.et_comment);
+            UIUtility.showSoftKeyboard(mActivity, etComment);
+            Button btnTag = (Button)view.findViewById(R.id.btn_comment_tag);
+            Button btnCancel = (Button)view.findViewById(R.id.btn_comment_cancel);
+            Button btnSend = (Button)view.findViewById(R.id.btn_comment_send);
 
-        builder.setPositiveButton("Send",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (etComment.getText().toString().length() > 0) {
-                            writeComment(etComment.getText().toString());
+            btnTag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showTagDialog();
+                }
+            });
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+            btnSend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (etComment.getText().toString().length() > 0) {
+                        for (int i = 0; i < arrTagedFriends.size(); i ++) {
+                            if (etComment.getText().toString().contains(arrTagedFriends.get(i).getFullname().replace("@", ""))) {
+                                tagedFriendIds = tagedFriendIds + arrTagedFriends.get(i).getUser_id() + ",";
+                                continue;
+                            } else {
+
+                            }
                         }
-                        dialog.cancel();
+                        writeComment(Html.toHtml(etComment.getText()));
                     }
-                });
-        builder.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alert = builder.create();
-        alert.show();
+                    dismiss();
+                }
+            });
+            return view;
+        }
     }
+//    public  void showCommentDlg() {
+//        tagedFriendIds = "";
+//
+//        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+//        builder.setTitle(mActivity.getResources().getString(R.string.type_comment_below));
+//        builder.setCancelable(true);
+//        View customView = layoutInflater.inflate(R.layout.custom_comment, null);
+//        etComment = (EditText)customView.findViewById(R.id.et_comment);
+//        UIUtility.showSoftKeyboard(mActivity, etComment);
+//        builder.setView(customView);
+//
+//        builder.setPositiveButton("Send",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        if (etComment.getText().toString().length() > 0) {
+//                            for (int i = 0; i < arrTagedFriends.size(); i ++) {
+//                                if (etComment.getText().toString().contains(arrTagedFriends.get(i).getFullname().replace("@", ""))) {
+//                                    tagedFriendIds = tagedFriendIds + arrTagedFriends.get(i).getUser_id() + ",";
+//                                    continue;
+//                                } else {
+//
+//                                }
+//                            }
+//                            writeComment(etComment.getText().toString());
+//                        }
+//                        dialog.cancel();
+//                    }
+//                });
+//        builder.setNegativeButton("Cancel",
+//                new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.cancel();
+//                    }
+//                });
+//        builder.setNeutralButton("Tag", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                showTagDialog();
+//            }
+//        });
+//        AlertDialog alert = builder.create();
+//        alert.show();
+//    }
     public void writeComment( final String comment) {
         Utils.showProgress(mActivity);
 
@@ -357,6 +515,7 @@ public class DetailPostFragment extends Fragment {
         params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
         params.put("post_id", postModel.getPost_id());
         params.put("comment", comment);
+        params.put("taged_friend_ids", tagedFriendIds);
 
         CustomRequest customRequest = new CustomRequest(Request.Method.POST, API.COMMENT_POST, params,
                 new Response.Listener<JSONObject>() {
@@ -393,6 +552,38 @@ public class DetailPostFragment extends Fragment {
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(customRequest);
+    }
+    AlertDialog.Builder builder1;
+    public void showTagDialog(){
+        builder1 = new AlertDialog.Builder(mActivity);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        final View dialogView = inflater.inflate(R.layout.dlg_tag_selection, null);
+
+        FriendTagAdapter friendTagAdapter = new FriendTagAdapter(mActivity, arrFriends);
+        builder1.setCancelable(true);
+        builder1.setView(dialogView);
+        builder1.setAdapter(friendTagAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                inputTag(arrFriends.get(which).getFullname().replace("@", ""));
+                arrTagedFriends.add(arrFriends.get(which));
+
+            }
+        });
+        builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder1.create();
+        alert.show();
+    }
+    public void inputTag(String strTag) {
+        String str = "<b>  " + strTag + " </b>";
+        etComment.append(Html.fromHtml(str));
     }
     public void sharing(){
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
@@ -685,7 +876,10 @@ public class DetailPostFragment extends Fragment {
                 ibComment.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showCommentDlg();
+//                        showCommentDlg();
+                        tagedFriendIds = "";
+                        DialogFragment selectWeekDayFragment = new ShowCommentDialog();
+                        selectWeekDayFragment.show(getFragmentManager(), "");
                     }
                 });
                 ImageButton ibShare = (ImageButton)view.findViewById(R.id.ib_ipff_share);
@@ -709,7 +903,9 @@ public class DetailPostFragment extends Fragment {
 
                 CommentModel commentModel = mArrComments.get(position - 1);
                 fullname.setText(commentModel.getFullname());
-                comment.setText(commentModel.getComment());
+                String str1 = commentModel.getComment();
+                CharSequence str2 = StringUtility.trimTrailingWhitespace(Html.fromHtml(str1));
+                comment.setText(str2);
                 date.setText(TimeUtility.countTime(mActivity, Long.parseLong(commentModel.getTime())));
                 if (!commentModel.getAvatar().equals("")) {
                     UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + commentModel.getAvatar(), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {

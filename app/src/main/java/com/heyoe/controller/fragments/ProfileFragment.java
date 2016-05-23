@@ -772,7 +772,9 @@ public class ProfileFragment extends Fragment {
                 for (int i = 0; i < commentCount; i ++) {
                     CommentModel commentModel = postModel.getArrComments().get(i);
                     tvNames[i].setText(commentModel.getFullname());
-                    tvComments[i].setText(commentModel.getComment());
+                    String str1 = commentModel.getComment();
+                    CharSequence str2 = StringUtility.trimTrailingWhitespace(Html.fromHtml(str1));
+                    tvComments[i].setText(str2);
                     llComments[i].setVisibility(View.VISIBLE);
                 }
                 TextView tvCheckoutAllComments = (TextView)view.findViewById(R.id.tv_ipff_checkout_all_comments);

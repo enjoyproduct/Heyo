@@ -659,7 +659,7 @@ public class HomeActivity extends AppCompatActivity implements
                 break;
             case 102://from social sharing
 
-                if (resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK || resultCode == RESULT_CANCELED) {
                     MainFragment.updateSharedCount();
                 }
                 break;

@@ -25,6 +25,7 @@ import com.heyoe.controller.fragments.LikeUsersFragment;
 import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
 import com.heyoe.model.PushModel;
+import com.heyoe.model.UserModel;
 
 import org.w3c.dom.Text;
 
@@ -92,11 +93,7 @@ public class UserListActivity extends AppCompatActivity {
         tvTitle.setText(title);
     }
 
-    public static void changeCheckinChatStatus(String id, String type) {
-        if (currentFragmentNum == 1) {
-            CheckinFragment.updateCheckinRequest(id, type);
-        }
-    }
+
     public BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver(){
 
         public void onReceive(Context context, Intent intent) {
@@ -104,10 +101,23 @@ public class UserListActivity extends AppCompatActivity {
             PushModel data = (PushModel)intent.getExtras().getSerializable(Constant.PUSH_DATA);
 
             if (currentFragmentNum == 1) {
-                changeCheckinChatStatus(data.user_id, data.type);
-            }
+                if (data.type.equals("receive_invite") || data.type.equals("accept_friend")) {
+                    CheckinFragment.updateFriendRequestState(data.user_id, data.type);
+                } else if (data.type.equals("enter_checkin") || data.type.equals("exit_checkin")) {
+                    UserModel userModel = new UserModel();
+                    userModel.setUser_id(data.user_id);
+                    userModel.setFullname(data.fullname);
+                    userModel.setQb_id(data.qb_id);
+                    userModel.setAvatar(data.avatar);
+                    userModel.setFriendStatus(data.friend_status);
+                    CheckinFragment.addNewUser(userModel, data.type);
 
-        };
+                } else {
+                    CheckinFragment.updateCheckinRequest(data.user_id, data.type);
+
+                }
+            }
+        }
     };
 
     @Override

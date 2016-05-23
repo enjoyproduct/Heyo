@@ -161,7 +161,8 @@ public class ActivityFragment extends Fragment {
                                     if (userObject.getString("type").equals("like") ||
                                             userObject.getString("type").equals("dislike") ||
                                             userObject.getString("type").equals("comment") ||
-                                            userObject.getString("type").equals("share")) {
+                                            userObject.getString("type").equals("share") ||
+                                            userObject.getString("type").equals("taged")) {
 
                                         JSONObject postObject = userObject.getJSONObject("post");
 
@@ -182,12 +183,9 @@ public class ActivityFragment extends Fragment {
                                         postModel.setViewed_count(postObject.getString("viewed_count"));
                                         postModel.setLike(postObject.getString("like"));
                                         postModel.setDescription(postObject.getString("description"));
-//                                        postModel.setFriend_tag(postObject.getString("tag"));
-//                                        postModel.setFriend_ids(postObject.getString("tag_ids"));
                                         postModel.setHashtag(postObject.getString("hashtag"));
                                         postModel.setCommented(postObject.getString("commented"));
                                         postModel.setFavorite(postObject.getString("favorite"));
-//                                        postModel.setFriendStatus(postObject.getString("friend_status"));
                                         postModel.setImageWidth(Integer.parseInt(postObject.getString("width")));
                                         postModel.setImageHeight(Integer.parseInt(postObject.getString("height")));
 
@@ -214,7 +212,6 @@ public class ActivityFragment extends Fragment {
                                 }
                                 clearBadge();
                                 activityAdapter.notifyDataSetChanged();
-
                             } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -318,6 +315,9 @@ public class ActivityFragment extends Fragment {
             } else if (activityModel.getType().equals("reject")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_cross_line_white49));
                 str = "<b>" + activityModel.getFullname() + "</b>" + " rejected your friend request";
+            } else if (activityModel.getType().equals("taged")) {
+                ivType.setImageDrawable(getResources().getDrawable(R.drawable.ic_small_comment_white));
+                str = "<b>" + activityModel.getFullname() + "</b>" + " taged you in post";
             }
             tvFullname.setText(Html.fromHtml(str));
             ivButton.setOnClickListener(new View.OnClickListener() {
@@ -327,9 +327,6 @@ public class ActivityFragment extends Fragment {
                         HomeActivity.menuNavigateTo(1);
                     }else if (activityModel.getType().equals("accept") ||
                             activityModel.getType().equals("reject")) {
-//                        Intent intent = new Intent(mActivity, ProfileActivity.class);
-//                        intent.putExtra("user_id", activityModel.getUser_id());
-//                        mActivity.startActivity(intent);
                         HomeActivity.navigateToProfile(activityModel.getUser_id());
                     } else {
                         if (activityModel.getPostModel() != null) {

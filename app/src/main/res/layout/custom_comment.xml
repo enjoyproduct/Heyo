@@ -2,11 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <EditText
-        android:id="@+id/et_comment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/abc_dialog_padding_material"
-        android:layout_marginRight="@dimen/abc_dialog_padding_material"
-        />
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/et_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/abc_dialog_padding_material"
+            android:layout_marginRight="@dimen/abc_dialog_padding_material"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <Button
+                android:id="@+id/btn_comment_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:textColor="@color/green"
+                android:background="@color/transparent"
+                android:text="Tag"/>
+            <Button
+                android:id="@+id/btn_comment_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Send"
+                android:inputType="text"
+                android:textColor="@color/green"
+                android:background="@color/transparent"
+                android:layout_alignParentRight="true"
+               />
+            <Button
+                android:id="@+id/btn_comment_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:inputType="text"
+                android:textColor="@color/green"
+                android:background="@color/transparent"
+                android:layout_toLeftOf="@+id/btn_comment_send"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+
 </LinearLayout>

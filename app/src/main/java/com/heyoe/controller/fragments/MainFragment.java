@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.heyoe.model.CommentModel;
 import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
+import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.TimeUtility;
 import com.heyoe.utilities.Utils;
 
@@ -441,8 +443,15 @@ public class MainFragment extends Fragment {
         shardPostNum = position;
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, mArrPost.get(position).getPoster_fullname());
-        sharingIntent.putExtra(Intent.EXTRA_TEXT, "http://heyoe.com/");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Heyoe - " + Html.fromHtml(mArrPost.get(position).getDescription()));
+//        sharingIntent.putExtra(Intent.EXTRA_TEXT, "http://heyoe.com/");
+        if (mArrPost.get(position).getMedia_type().equals("post_photo")) {
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, API.BASE_POST_PHOTO + mArrPost.get(position).getMedia_url());
+        } else if (mArrPost.get(position).getMedia_type().equals("post_video")) {
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, API.BASE_POST_VIDEO + mArrPost.get(position).getMedia_url());
+        } else if (mArrPost.get(position).getMedia_type().equals("youtube")) {
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, mArrPost.get(position).getMedia_url());
+        }
         mActivity.startActivityForResult(Intent.createChooser(sharingIntent, "Heyoe"), 102);
 
     }

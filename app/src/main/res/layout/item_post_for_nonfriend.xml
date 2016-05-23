@@ -80,7 +80,7 @@
             android:id="@+id/civ_ipff_avatar"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
-            android:src="@drawable/user1"
+            android:src="@drawable/default_user"
             android:layout_alignBottom="@+id/iv_ipff_media"
             android:layout_marginBottom="-28dp"
             android:layout_marginLeft="21dp"/>

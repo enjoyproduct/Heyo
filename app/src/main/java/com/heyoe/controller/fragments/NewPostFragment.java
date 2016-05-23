@@ -120,7 +120,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     private static TextView tvTextCount;
     private static RichEditText richEditor;
     private ImageView imageView;
-//    private VideoView videoView;
     private ImageButton ibPlay;
     private TextView etYotubeUrl, etYoutubeUnderline;
 
@@ -134,7 +133,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
     private ArrayList<UserModel> arrFriends;
-
+    private ArrayList<UserModel> arrTagedFriends;
     boolean isEdit;
     PostModel postModel;
 
@@ -160,34 +159,31 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         } else {
             mAlbumStorageDirFactory = new BaseAlbumDirFactory();
         }
-        arrFriends    = new ArrayList<>();
-//        arrFriendTags = new ArrayList<>();
-//        arrFriendIds  = new ArrayList<>();
-        arrHashTags   = new ArrayList<>();
+        arrFriends        = new ArrayList<>();
+        arrHashTags       = new ArrayList<>();
+        arrTagedFriends   = new ArrayList<>();
 
-        isEdit = getArguments().getBoolean("isEdit");
+        isEdit            = getArguments().getBoolean("isEdit");
         if (isEdit) {
-            postModel = (PostModel)getArguments().getSerializable("post");
+            postModel     = (PostModel)getArguments().getSerializable("post");
         }
 
-        checkin = "";
-        description = "";
-//        friendTag = "";
-//        friendId = "";
-        hashtag = "";
+        checkin           = "";
+        description       = "";
+        hashtag           = "";
 
     }
     private void initMediaPath() {
-        photoPath = "";
+        photoPath   = "";
         youtubePath = "";
-        videoPath = "";
-        thumbPath = "";
-        mediaType = "";
+        videoPath   = "";
+        thumbPath   = "";
+        mediaType   = "";
 
     }
     private void initUI(View view) {
         myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_compose_avatar);
-        String avatar = Utils.getFromPreference(mActivity, Constant.AVATAR);
+        String avatar       = Utils.getFromPreference(mActivity, Constant.AVATAR);
         if (!avatar.equals("")) {
             UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + avatar, R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
@@ -203,11 +199,11 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         } else {
             myCircularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
         }
-        tvFullname = (TextView)view.findViewById(R.id.tv_compose_fullname);
+        tvFullname         = (TextView)view.findViewById(R.id.tv_compose_fullname);
         tvFullname.setText(Utils.getFromPreference(mActivity, Constant.FULLNAME));
 
         etYoutubeUnderline = (TextView)view.findViewById(R.id.tv_compose_youtube_underline);
-        etYotubeUrl = (TextView)view.findViewById(R.id.et_compose_youtube_url);
+        etYotubeUrl        = (TextView)view.findViewById(R.id.et_compose_youtube_url);
         etYotubeUrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,16 +253,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 }
             }
         });
-//        friendTagView = (TagView)view.findViewById(R.id.friend_tagview);
-//        friendTagView.setOnTagDeleteListener(new OnTagDeleteListener() {
-//            @Override
-//            public void onTagDeleted(Tag tag, int position) {
-//                if (arrFriendTags.size() > position) {
-//                    arrFriendTags.remove(position);
-//                    arrFriendIds.remove(position);
-//                }
-//            }
-//        });
         hashTagView   =  (TagView)view.findViewById(R.id.hashtagview);
         hashTagView.setOnTagDeleteListener(new OnTagDeleteListener() {
             @Override
@@ -368,14 +354,15 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         UIUtility.setImageViewSize(imageView, UIUtility.getScreenWidth(mActivity), UIUtility.getScreenWidth(mActivity));
         setData();
     }
+    //for edit
     private void setData() {
         if (isEdit && postModel != null) {
 
-            String str1 = postModel.getDescription();
+            String str1       = postModel.getDescription();
             CharSequence str2 = StringUtility.trimTrailingWhitespace(Html.fromHtml(str1));
             richEditor.setText(str2);
 
-            String imageUrl = "";
+            String imageUrl   = "";
             if (postModel.getMedia_type().equals("youtube")) {
                 imageUrl = API.BASE_YOUTUB_PREFIX + FileUtility.getFilenameFromPath(postModel.getMedia_url()) + API.BASE_YOUTUB_SURFIX;
             } else if (postModel.getMedia_type().endsWith("post_photo")) {
@@ -399,7 +386,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     }
                 });
             } else {
-//                imageView.setVisibility(View.GONE);
+
             }
 
             if (postModel.getHashtag().length() > 0) {
@@ -412,6 +399,17 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     tag.layoutColor = getResources().getColor(R.color.green);
                     hashTagView.addTag(tag);
                 }
+            }
+        }
+    }
+    private void setTagedFriendId() {
+        description = Html.toHtml(richEditor.getText());
+        for (int i = 0; i < arrFriends.size(); i ++) {
+            if (description.contains(arrFriends.get(i).getFullname().replace("@", ""))) {
+                arrTagedFriends.add(arrFriends.get(i));
+                continue;
+            } else {
+
             }
         }
     }
@@ -476,9 +474,9 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                                     }
 
                                 }
-
-
-
+                                if (isEdit) {
+                                    setTagedFriendId();
+                                }
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -502,32 +500,19 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
     String mediaType;
     String description, hashtag;
+    String tagedFriendIds;
     private boolean checkValue() {
-        description = "";
-//        friendTag = "";
-//        friendId = "";
-        hashtag = "";
-
-//        for (int i = 0; i < arrFriendTags.size(); i ++) {
-//            friendTag  = friendTag + arrFriendTags.get(i);
-//            friendId = friendId + arrFriendIds.get(i);
-//        }
-//        if (friendTag.length() > 1) {
-//            friendTag = friendTag.substring(1, friendTag.length() - 1);
-//        }
-//        if (friendId.length() > 1) {
-//            friendId = friendId.substring(1, friendId.length() - 1);
-//        }
+        description    = "";
+        hashtag        = "";
+        tagedFriendIds = "";
         for (int i = 0; i < arrHashTags.size(); i ++) {
             hashtag  = hashtag + arrHashTags.get(i);
         }
         if (hashtag.length() > 1) {
-            hashtag = hashtag.substring(1, hashtag.length());
+            hashtag  = hashtag.substring(1, hashtag.length());
         }
-//        description = richEditor.getText().toString();
-//        description = TextUtils.htmlEncode(richEditor.getText().toString());
         description = Html.toHtml(richEditor.getText());
-        mediaType = "";
+        mediaType   = "";
         if (description.length() < 1) {
             Utils.showOKDialog(mActivity, getResources().getString(R.string.input_description));
             return false;
@@ -544,6 +529,14 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         }
         if (youtubePath.length() > 0) {
             mediaType = "youtube";
+        }
+        for (int i = 0; i < arrTagedFriends.size(); i ++) {
+            if (description.contains(arrTagedFriends.get(i).getFullname().replace("@", ""))) {
+                tagedFriendIds = tagedFriendIds + arrTagedFriends.get(i).getUser_id() + ",";
+                continue;
+            } else {
+
+            }
         }
         return true;
     }
@@ -609,9 +602,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 .addStringPart("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID))
                 .addStringPart("media_type", mediaType)
                 .addStringPart("checkin", checkin)
-//                .addStringPart("tag", friendTag)
-//                .addStringPart("tag_ids", friendId)
                 .addStringPart("hashtag", hashtag)
+                .addStringPart("taged_friend_ids", tagedFriendIds)
                 .addStringPart("description", description);
         customMultipartRequest.addStringPart("width", String.valueOf(imageWidth));
         customMultipartRequest.addStringPart("height", String.valueOf(imageHeight));
@@ -630,28 +622,14 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             customMultipartRequest.addStringPart("width", "0");
             customMultipartRequest.addStringPart("height", "0");
         }
-
-
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(customMultipartRequest);
 
     }
     private void editMedia() {
-        description = "";
-//        friendTag = "";
-//        friendId = "";
-        hashtag = "";
-
-//        for (int i = 0; i < arrFriendTags.size(); i ++) {
-//            friendTag  = friendTag + arrFriendTags.get(i);
-//            friendId = friendId + arrFriendIds.get(i);
-//        }
-//        if (friendTag.length() > 1) {
-//            friendTag = friendTag.substring(1, friendTag.length() - 1);
-//        }
-//        if (friendId.length() > 1) {
-//            friendId = friendId.substring(1, friendId.length() - 1);
-//        }
+        description    = "";
+        hashtag        = "";
+        tagedFriendIds = "";
         for (int i = 0; i < arrHashTags.size(); i ++) {
             hashtag  = hashtag + arrHashTags.get(i);
         }
@@ -672,6 +650,14 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             mediaType = "post_video";
         } else if (youtubePath.length() > 0) {
             mediaType = "youtube";
+        }
+        for (int i = 0; i < arrTagedFriends.size(); i ++) {
+            if (description.contains(arrTagedFriends.get(i).getFullname().replace("@", ""))) {
+                tagedFriendIds = tagedFriendIds + arrTagedFriends.get(i).getUser_id() + ",";
+                continue;
+            } else {
+
+            }
         }
         Utils.showProgress(mActivity);
         CustomMultipartRequest customMultipartRequest = new CustomMultipartRequest(API.EDIT_MY_POST,
@@ -748,9 +734,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 .addStringPart("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID))
                 .addStringPart("post_id", postModel.getPost_id())
                 .addStringPart("checkin", checkin)
-//                .addStringPart("tag", friendTag)
-//                .addStringPart("tag_ids", friendId)
                 .addStringPart("hashtag", hashtag)
+                .addStringPart("taged_friend_ids", tagedFriendIds)
                 .addStringPart("description", description);
 
 
@@ -786,24 +771,11 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
-
     public static void inputTag(String strTag) {
-        String str = "<b>" + strTag + "</b>";
+        String str = "<b>  " + strTag + " </b>";
         tvTextCount.setText(String.valueOf(richEditor.getText().toString().length() + strTag.length()));
         richEditor.append(Html.fromHtml(str));
     }
-//    private void inputFrendTag(int position) {
-//        if (arrFriendTags.size() > 10) {
-//            return;
-//        }
-//        Tag tag = new Tag(arrFriends.get(position).getFullname());
-//        tag.isDeletable=true;
-//        tag.layoutColor = getResources().getColor(R.color.green);
-//        friendTagView.addTag(tag);
-//
-//        arrFriendTags.add(arrFriends.get(position).getFullname());
-//        arrFriendIds.add(arrFriends.get(position).getUser_id());
-//    }
     private void inputHashTag(String strHashTag) {
         if (arrHashTags.size() > 4) {
             return;
@@ -829,6 +801,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             public void onClick(DialogInterface dialog, int which) {
 //                inputFrendTag(which);
                 inputTag(arrFriends.get(which).getFullname().replace("@", ""));
+                arrTagedFriends.add(arrFriends.get(which));
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -859,8 +832,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     .show();
         }
     }
-
-
 
     // A place has been received; use requestCode to track the request.
     @Override
@@ -948,7 +919,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         ibPlay.setVisibility(View.VISIBLE);
                         //crop thumbnail
                         Bitmap cropBitmap = BitmapUtility.cropBitmapCenter(thumbnail);
-//                        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(thumbnail, thumbnail.getWidth(), thumbnail.getWidth());
+
                         // save croped thumbnail
                         thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
 
@@ -961,10 +932,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         imageHeight = bitmap.getHeight();
 
                         thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
-
-
                     }
-
                 }
                 break;
             case take_video_from_camera:
@@ -979,7 +947,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         ibPlay.setVisibility(View.VISIBLE);
                         //crop thumbnail
                         Bitmap cropBitmap = BitmapUtility.cropBitmapCenter(thumbnail);
-//                        Bitmap cropBitmap = BitmapUtility.cropBitmapAnySize(thumbnail, thumbnail.getWidth(), thumbnail.getWidth());
+
                         // save croped thumbnail
                         thumbPath = BitmapUtility.saveBitmap(cropBitmap, Constant.MEDIA_PATH, "heyoe_thumb");
 
@@ -993,8 +961,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
 //                        FileUtility.deleteFile(thumbPath);
                         thumbPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(thumbPath));
-
-
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     // User cancelled the video capture
@@ -1075,7 +1041,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         etYoutubeUnderline.setVisibility(View.VISIBLE);
 
         Intent videoClient = new Intent(Intent.ACTION_VIEW);
-//        videoClient.setData(Uri.parse("http://m.youtube.com/watch?v="+videoId));
         videoClient.setData(Uri.parse("http://m.youtube.com/"));
         startActivityForResult(videoClient, 1234);
     }
@@ -1091,25 +1056,19 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     public static final int MEDIA_TYPE_VIDEO = 2;
 
     private void captureVideoFromCamera() {
-// create new Intentwith with Standard Intent action that can be
+        // create new Intentwith with Standard Intent action that can be
         // sent to have the camera application capture an video and return it.
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
         // create a file to save the video
         fileUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
         initMediaPath();
         videoPath = fileUri.getPath();
         // set the image file name
         intent.putExtra(MediaStore.EXTRA_OUTPUT,fileUri);
-
         // set the video image quality to high
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-
         // set max time limit
-        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
-//        or
-//        intent.putExtra("android.intent.extra.durationLimit", 30000);
-
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10);
         // start the Video Capture Intent
         startActivityForResult(intent, take_video_from_camera);
     }
@@ -1125,42 +1084,28 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         // Check that the SDCard is mounted
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "HeyoeVideo");
-
-
         // Create the storage directory(MyCameraVideo) if it does not exist
         if (! mediaStorageDir.exists()){
-
             if (! mediaStorageDir.mkdirs()){
-
-
                 Toast.makeText(mActivity, "Failed to create directory HeyoeVideo.",
                         Toast.LENGTH_LONG).show();
-
                 Log.d("MyCameraVideo", "Failed to create directory HeyoeVideo.");
                 return null;
             }
         }
-
-
-        // Create a media file name
-
         // For unique file name appending current timeStamp with file name
         java.util.Date date= new java.util.Date();
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
                 .format(date.getTime());
-
         File mediaFile;
-
         if(type == MEDIA_TYPE_VIDEO) {
 
             // For unique video file name appending current timeStamp with file name
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     VIDEO_FILE_PREFIX + timeStamp + VIDEO_FILE_SUFFIX);
-
         } else {
             return null;
         }
-
         return mediaFile;
     }
 
@@ -1207,10 +1152,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, take_photo_from_gallery);
-
-//        Intent intent = new Intent(mActivity, TakeMediaActivity.class);
-//        intent.putExtra("mediaType", 0);
-//        startActivity(intent);
     }
     /////////////capture photo
     public void dispatchTakePictureIntent() {

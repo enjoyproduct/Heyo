@@ -69,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@color/transparent"
+                android:layout_marginBottom="8dp"
                 >
 
                 <!--<ImageButton-->
@@ -82,13 +83,12 @@
                     <!--/>-->
                 <EditText
                     android:layout_width="fill_parent"
-                    android:layout_height="36dp"
+                    android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/button_chat_send"
 
                     android:layout_marginLeft="8dp"
                     android:background="@drawable/bg_message"
                     android:layout_centerVertical="true"
-                    android:maxLines="5"
                     android:minHeight="36dp"
                     android:paddingLeft="5dp"
 
@@ -98,6 +98,7 @@
                     android:layout_width="64dp"
                     android:layout_height="44dp"
                     android:layout_alignParentRight="true"
+                    android:layout_alignBottom="@+id/edit_chat_message"
                     android:background="@drawable/bg_normal_change"
                     android:src="@drawable/img_send"
                     android:onClick="onSendChatClick"

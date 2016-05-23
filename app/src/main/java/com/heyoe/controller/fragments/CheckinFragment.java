@@ -36,7 +36,6 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
-import com.heyoe.controller.QBChatActivity;
 import com.heyoe.controller.UserListActivity;
 import com.heyoe.controller.qb_chat.ChatActivity;
 import com.heyoe.model.API;
@@ -47,12 +46,10 @@ import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
-import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
-import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.users.model.QBUser;
@@ -70,9 +67,9 @@ import java.util.Map;
 public class CheckinFragment extends Fragment {
 
     private ListView lvHome;
-    private PullToRefreshListView mPullRefreshHomeListView;
+    private static PullToRefreshListView mPullRefreshHomeListView;
     private static CheckinUserAdapter checkinUserAdapter;
-    private Activity mActivity;
+    private static Activity mActivity;
     static boolean isLast;
     static int offset;
     private static ArrayList<UserModel> arrUsers;
@@ -264,13 +261,11 @@ public class CheckinFragment extends Fragment {
                                 }
                                 Global.getInstance().arrCheckinChatUsers = arrUsers;
                                 if (userCount > 0) {
-                                    createSession();
+                                    getDialogs();
                                 } else {
                                     Utils.hideProgress();
                                     mPullRefreshHomeListView.onRefreshComplete();
                                 }
-
-
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -311,6 +306,49 @@ public class CheckinFragment extends Fragment {
                                 arrUsers.get(position).setFriendStatus("waiting");
                                 checkinUserAdapter.notifyDataSetChanged();
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.invite_sucess));
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("402")) {
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
+    }
+    private void acceptFriend(final int position) {
+
+        String user_id = arrUsers.get(position).getUser_id();
+        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID));
+        params.put("fullname", Utils.getFromPreference(mActivity, Constant.FULLNAME));
+        params.put("user_id", user_id);
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.ACCEPT_FRIEND, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                arrUsers.get(position).setFriendStatus("active");
+                                checkinUserAdapter.notifyDataSetChanged();
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.accept_success));
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -407,17 +445,14 @@ public class CheckinFragment extends Fragment {
     }
 
     private QBChatService chatService;
-    private QBUser user;
+    private static QBUser user;
 
-    private void createSession(){
-//        Utils.showProgress(mActivity);
+
+    private static void getDialogs(){
         user = Global.getInstance().qbUser;
-        if (user != null) {
-            getDialogs();
+        if (user == null) {
+            return;
         }
-
-    }
-    private void getDialogs(){
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
         QBChatService.getChatDialogs(null, requestGetBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
@@ -442,6 +477,7 @@ public class CheckinFragment extends Fragment {
                 checkinUserAdapter.notifyDataSetChanged();
                 mPullRefreshHomeListView.onRefreshComplete();
             }
+
             @Override
             public void onError(QBResponseException e) {
                 Utils.hideProgress();
@@ -521,6 +557,8 @@ public class CheckinFragment extends Fragment {
                 public void onClick(View v) {
                     if (arrFriends.get(position).getFriendStatus().equals("none")) {
                         sendFriendRequest(arrFriends.get(position).getUser_id(), position);
+                    } else if (arrFriends.get(position).getFriendStatus().equals("waiting")) {
+                        acceptFriend(position);
                     }
 
                 }
@@ -629,7 +667,7 @@ public class CheckinFragment extends Fragment {
         requestQueue.add(signinRequest);
     }
 
-    private void acceptCheckinRequest(final int position) {
+    private static void acceptCheckinRequest(final int position) {
         Utils.showProgress(mActivity);
 
         Map<String, String> params = new HashMap<String, String>();
@@ -650,7 +688,7 @@ public class CheckinFragment extends Fragment {
                                 checkinUserAdapter.notifyDataSetChanged();
                                 Utils.showToast(mActivity, "Accepted request successfully");
                             } else  if (status.equals("400")) {
-                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                                Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
@@ -670,10 +708,16 @@ public class CheckinFragment extends Fragment {
         requestQueue.add(signinRequest);
     }
     public static void updateCheckinRequest (String user_id, String type) {
+
         if (!type.equals("increase_message_count")) {
             for (int i = 0; i < arrUsers.size(); i ++) {
                 if (arrUsers.get(i).getUser_id().equals(user_id)) {
                     arrUsers.get(i).setCheckinRequestState(Integer.parseInt(type));
+                    if (type.equals("2")) {
+                        showAcceptAlert(i);
+                    } else if (type.equals("3")) {
+                        showAcceptedAlert(i);
+                    }
                     break;
                 }
             }
@@ -692,6 +736,91 @@ public class CheckinFragment extends Fragment {
 
         checkinUserAdapter.notifyDataSetChanged();
     }
+    private static void showAcceptedAlert(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        View view = mActivity.getLayoutInflater().inflate(R.layout.item_more_friend, null);
+        RelativeLayout relativeLayout = (RelativeLayout)view.findViewById(R.id.rl_imf_social);
+        relativeLayout.setVisibility(View.GONE);
+        TextView tvMsg = (TextView)view.findViewById(R.id.tv_imf_friend_name);
+        tvMsg.setText(arrUsers.get(position).getFullname() + " accepted your request");
+        MyCircularImageView circularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
+        if (!arrUsers.get(position).equals("")) {
+            UrlRectangleImageViewHelper.setUrlDrawable(circularImageView, API.BASE_AVATAR +arrUsers.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                @Override
+                public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                    if (!loadedFromCache) {
+                        ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                        scale.setDuration(10);
+                        scale.setInterpolator(new OvershootInterpolator());
+                        imageView.startAnimation(scale);
+                    }
+                }
+            });
+        } else {
+            circularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
+        }
+        builder.setView(view);
+//        builder.setMessage("Do you want accept " + arrUsers.get(position).getFullname() + "'s request?");
+        builder.setCancelable(true);
+
+        builder.setNegativeButton("Close",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    private static void showAcceptAlert(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        View view = mActivity.getLayoutInflater().inflate(R.layout.item_more_friend, null);
+        RelativeLayout relativeLayout = (RelativeLayout)view.findViewById(R.id.rl_imf_social);
+        relativeLayout.setVisibility(View.GONE);
+        TextView tvMsg = (TextView)view.findViewById(R.id.tv_imf_friend_name);
+        tvMsg.setText("Do you want accept " + arrUsers.get(position).getFullname() + "'s request?");
+        MyCircularImageView circularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
+        if (!arrUsers.get(position).equals("")) {
+            UrlRectangleImageViewHelper.setUrlDrawable(circularImageView, API.BASE_AVATAR +arrUsers.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                @Override
+                public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                    if (!loadedFromCache) {
+                        ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                        scale.setDuration(10);
+                        scale.setInterpolator(new OvershootInterpolator());
+                        imageView.startAnimation(scale);
+                    }
+                }
+            });
+        } else {
+            circularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
+        }
+        builder.setView(view);
+//        builder.setMessage("Do you want accept " + arrUsers.get(position).getFullname() + "'s request?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("Accept",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        acceptCheckinRequest(position);
+                        arrUsers.get(position).setCheckinRequestState(3);
+                        checkinUserAdapter.notifyDataSetChanged();
+
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
     private void updateQBdialog(QBDialog dialog) {
         for (int i = 0; i < arrUsers.size(); i ++) {
             if (dialog.getOccupants().contains(Integer.parseInt(arrUsers.get(i).getQb_id()))) {
@@ -703,6 +832,39 @@ public class CheckinFragment extends Fragment {
             }
         }
     }
+    public static void updateFriendRequestState(String user_id, String type) {
+        if (type.equals("receive_invite")) {
+            for (int i = 0; i < arrUsers.size(); i ++) {
+                if (arrUsers.get(i).getUser_id().equals(user_id)) {
+                    arrUsers.get(i).setFriendStatus("waiting");
+                    break;
+                }
+            }
+        } else if (type.equals("accept_friend")) {
+            for (int i = 0; i < arrUsers.size(); i ++) {
+                if (arrUsers.get(i).getUser_id().equals(user_id)) {
+                    arrUsers.get(i).setFriendStatus("active");
+                    break;
+                }
+            }
+        }
+        checkinUserAdapter.notifyDataSetChanged();
+    }
+    public static void addNewUser(UserModel userModel, String type) {
+        if (type.equals("enter_checkin")) {
+            arrUsers.add(0, userModel);
+            getDialogs();
+        } else if (type.equals("exit_checkin")) {
+            for (int i = 0; i < arrUsers.size(); i ++) {
+                if (arrUsers.get(i).getUser_id().equals(userModel.getUser_id())) {
+                    arrUsers.remove(i);
+                    break;
+                }
+            }
+            checkinUserAdapter.notifyDataSetChanged();
+        }
+
+    }
 
     @Override
     public void onDestroy() {
@@ -712,30 +874,34 @@ public class CheckinFragment extends Fragment {
         Global.getInstance().arrCheckinChatUsers = new ArrayList<>();
         super.onDestroy();
     }
-    private void setDataAndFinish() {
 
-    }
     private void deleteChatHistories() {
+        QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
         for (int i = 0; i < arrUsers.size(); i ++) {
-            if (!arrUsers.get(i).getFriendStatus().equals("active") && arrUsers.get(i).getQbDialog() != null) {
-                deleteChat(i);
+            if (!arrUsers.get(i).getFriendStatus().equals("active")
+                    && arrUsers.get(i).getQbDialog() != null
+                    && privateChatManager != null) {
+                deleteChat(i, privateChatManager);
             }
         }
     }
-    private void deleteChat(final int position) {
+    private void deleteChat(final int position, QBPrivateChatManager privateChatManager) {
 
-        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrUsers.get(position).getQbDialog().getDialogId(),
-                new QBEntityCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid, Bundle bundle) {
+        if (privateChatManager != null) {
+            privateChatManager.deleteDialog(arrUsers.get(position).getQbDialog().getDialogId(),
+                    new QBEntityCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid, Bundle bundle) {
 //                        Utils.showToast(mActivity, "Cleared chat history successfully");
 //
-                    }
+                        }
 
-                    @Override
-                    public void onError(QBResponseException e) {
-                        Utils.showToast(mActivity, "Failed to clear chat history");
-                    }
-                });
+                        @Override
+                        public void onError(QBResponseException e) {
+                            Utils.showToast(mActivity, "Failed to clear chat history");
+                        }
+                    });
+        }
+
     }
 }

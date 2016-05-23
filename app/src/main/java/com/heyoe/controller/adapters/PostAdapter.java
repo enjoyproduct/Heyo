@@ -176,7 +176,9 @@ public class PostAdapter extends BaseAdapter {
             for (int i = 0; i < commentCount; i ++) {
                 CommentModel commentModel = postModel.getArrComments().get(i);
                 tvNames[i].setText(commentModel.getFullname());
-                tvComments[i].setText(commentModel.getComment());
+                String str1 = commentModel.getComment();
+                CharSequence str2 = StringUtility.trimTrailingWhitespace(Html.fromHtml(str1));
+                tvComments[i].setText(str2);
                 llComments[i].setVisibility(View.VISIBLE);
             }
             TextView tvCheckoutAllComments = (TextView)view.findViewById(R.id.tv_ipff_checkout_all_comments);
@@ -219,7 +221,7 @@ public class PostAdapter extends BaseAdapter {
                 }
                 if (i < 3) {
                     civFriends[i].setVisibility(View.VISIBLE);
-                    if (!postModel.getMedia_url().equals("")) {
+                    if (!postModel.getArrLiked_friends().get(i).getAvatar().equals("")) {
                         UrlRectangleImageViewHelper.setUrlDrawable(civFriends[i], API.BASE_AVATAR + postModel.getArrLiked_friends().get(i).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                             @Override
                             public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
