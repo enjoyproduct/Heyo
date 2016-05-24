@@ -157,44 +157,97 @@ public class MyFriendFragment extends Fragment {
         if (arrBlockedUsers.get(position).getQbDialog() == null) {
             return;
         }
-        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrBlockedUsers.get(position).getQbDialog().getDialogId(),
-                new QBEntityCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid, Bundle bundle) {
-                        Utils.showToast(mActivity, "Cleared chat history successfully");
-                    }
-
-                    @Override
-                    public void onError(QBResponseException e) {
-                        Utils.showToast(mActivity, "Failed to clear chat history");
-                    }
-                });
+        clear_chat_history(position, "block");
+//        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrBlockedUsers.get(position).getQbDialog().getDialogId(),
+//                new QBEntityCallback<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid, Bundle bundle) {
+//                        Utils.showToast(mActivity, "Cleared chat history successfully");
+//                    }
+//
+//                    @Override
+//                    public void onError(QBResponseException e) {
+//                        Utils.showToast(mActivity, "Failed to clear chat history");
+//                    }
+//                });
     }
     private void deleteChatOfActiveFriend(final int position) {
         if (arrActiveUsers.get(position).getQbDialog() == null) {
            return;
         }
-        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrActiveUsers.get(position).getQbDialog().getDialogId(),
-                new QBEntityCallback<Void>() {
+        clear_chat_history(position, "active");
+//        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrActiveUsers.get(position).getQbDialog().getDialogId(),
+//                new QBEntityCallback<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid, Bundle bundle) {
+//                        Utils.showToast(mActivity, "Cleared chat history successfully");
+////                        clearBadge(arrActiveUsers.get(position).getQbDialog().getUnreadMessageCount());
+//                        if (arrActiveUsers.size() > position) {
+//                            arrActiveUsers.get(position).setUnreadMsgCount(0);
+//                            arrActiveUsers.get(position).setQbDialog(null);
+//                            friendAdapter.notifyDataSetChanged();
+//                        }
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(QBResponseException e) {
+//                        Utils.showToast(mActivity, "Failed to clear chat history");
+//                    }
+//                });
+    }
+    private void clear_chat_history(final int position, final String type) {
+
+        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_email", Utils.getFromPreference(mActivity, Constant.EMAIL));
+        if (type.equals("active")) {
+            params.put("friend_email", arrActiveUsers.get(position).getEmail());
+            params.put("dialog_id", arrActiveUsers.get(position).getQbDialog().getDialogId());
+        } else {
+            params.put("friend_email", arrBlockedUsers.get(position).getEmail());
+            params.put("dialog_id", arrBlockedUsers.get(position).getQbDialog().getDialogId());
+        }
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.CLEAR_CHAT_HISTORY, params,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onSuccess(Void aVoid, Bundle bundle) {
-                        Utils.showToast(mActivity, "Cleared chat history successfully");
-//                        clearBadge(arrActiveUsers.get(position).getQbDialog().getUnreadMessageCount());
-                        if (arrActiveUsers.size() > position) {
-                            arrActiveUsers.get(position).setUnreadMsgCount(0);
-                            arrActiveUsers.get(position).setQbDialog(null);
-                            friendAdapter.notifyDataSetChanged();
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                Utils.showToast(mActivity, "Cleared chat history successfully");
+                                if (type.equals("active")) {
+                                    if (arrActiveUsers.size() > position) {
+                                        arrActiveUsers.get(position).setUnreadMsgCount(0);
+                                        arrActiveUsers.get(position).setQbDialog(null);
+                                        friendAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("401")) {
+                                Utils.showToast(mActivity, "Failed to clear chat history");
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
                         }
-
                     }
-
+                },
+                new Response.ErrorListener() {
                     @Override
-                    public void onError(QBResponseException e) {
-                        Utils.showToast(mActivity, "Failed to clear chat history");
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
     }
-
     public static void updateUnreadMsgCount(String userId) {
         for(int i = 0; i < arrActiveUsers.size(); i ++ ) {
             if (arrActiveUsers.get(i).getQb_id().equals(userId)) {

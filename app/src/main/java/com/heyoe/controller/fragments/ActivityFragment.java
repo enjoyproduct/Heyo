@@ -317,7 +317,7 @@ public class ActivityFragment extends Fragment {
                 str = "<b>" + activityModel.getFullname() + "</b>" + " rejected your friend request";
             } else if (activityModel.getType().equals("taged")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.ic_small_comment_white));
-                str = "<b>" + activityModel.getFullname() + "</b>" + " taged you in post";
+                str = "<b>" + activityModel.getFullname() + "</b>" + " tagged you in post";
             }
             tvFullname.setText(Html.fromHtml(str));
             ivButton.setOnClickListener(new View.OnClickListener() {

@@ -1561,7 +1561,7 @@ public class ProfileFragment extends Fragment {
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
 
         // set max time limit
-        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 15);
 //        or
 //        intent.putExtra("android.intent.extra.durationLimit", 30000);
 

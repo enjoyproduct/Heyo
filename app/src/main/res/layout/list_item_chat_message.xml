@@ -14,29 +14,35 @@
         android:src="@drawable/default_user"
         android:layout_gravity="bottom"
         />
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/layout_message_content_container"
-        style="@style/MessageContentContainerStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         tools:background="@drawable/bubble_left"
+        android:orientation="horizontal"
        >
         <RelativeLayout
             android:id="@+id/rl_chat_item_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             >
 
             <TextView
                 android:id="@+id/text_image_message"
                 style="@style/MessageTextStyle"
                 android:layout_below="@+id/text_message_author"
-                tools:text="Test message" />
+                tools:text="Test message"
+                android:maxWidth="220dp"/>
 
             <com.heyoe.widget.MaskedImageView
                 android:id="@+id/image_message_attachment"
                 android:layout_width="@dimen/chat_message_attachment_size"
                 android:layout_height="@dimen/chat_message_attachment_size"
                 android:scaleType="centerCrop"
-                app:mask="@drawable/bubble_left" />
+                app:mask="@drawable/bubble_left"
+                android:visibility="visible"
+                />
             <ImageView
                 android:id="@+id/video_message_attachment_play"
                 android:layout_width="wrap_content"
@@ -47,22 +53,24 @@
             <ProgressBar
                 android:id="@+id/progress_message_attachment"
                 style="@style/CenterProgressBarStyle"
-                android:theme="@style/AppTheme.BlueAccent"/>
+                android:theme="@style/AppTheme.BlueAccent"
+               />
 
             <TextView
                 android:id="@+id/text_message_author"
                 style="@style/MessageAuthorStyle"
                 android:layout_alignParentTop="true"
-                tools:text="User 2" />
+                tools:text="User Name" />
         </RelativeLayout>
         <TextView
             android:id="@+id/text_message_info"
             style="@style/MessageInfoStyle"
             tools:text="10:50"
-            android:layout_toRightOf="@+id/rl_chat_item_container"
             android:layout_alignBottom="@+id/rl_chat_item_container"
+            android:singleLine="true"
+            android:layout_gravity="bottom"
             />
-    </RelativeLayout>
+    </LinearLayout>
 
 
 

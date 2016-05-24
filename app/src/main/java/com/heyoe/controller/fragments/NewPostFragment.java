@@ -1066,9 +1066,9 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         // set the image file name
         intent.putExtra(MediaStore.EXTRA_OUTPUT,fileUri);
         // set the video image quality to high
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 2);
         // set max time limit
-        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10);
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
         // start the Video Capture Intent
         startActivityForResult(intent, take_video_from_camera);
     }

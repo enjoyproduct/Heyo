@@ -21,6 +21,8 @@ import com.heyoe.utilities.Utils;
 
 public class GcmIntentService extends IntentService {
 
+    int i = 0;
+
     public GcmIntentService() {
         super("GcmIntentService");
     }
@@ -50,14 +52,13 @@ public class GcmIntentService extends IntentService {
             } else {
                 if (type.equals("white")) {
                     increaseMsgCount();
-                } else if (type.equals("activity")) {
+                } else if (type.equals("activity") ||
+                        type.equals("taged")) {
                     increaseActivityCount();
                 }
                 sendNotification();
             }
-
         }
-
     }
 
     private void increaseActivityCount() {
@@ -80,11 +81,23 @@ public class GcmIntentService extends IntentService {
         }
     }
     private void sendNotification() {
+        Intent intent = new Intent(this, SignActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (type.equals("activity") ||
+                type.equals("receive_invite") ||
+                type.equals("accept_friend") ||
+                type.equals("taged")) {
+//            intent.putExtra("page_num", 6);
+            intent.putExtra("type", "activity");
+        } else if (type.equals("white")) {
+            intent.putExtra("type", "message");
+        }
+
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, SignActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, i++,
+                intent,  PendingIntent.FLAG_ONE_SHOT);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -139,6 +152,7 @@ public class GcmIntentService extends IntentService {
 
         }else if (data.containsKey("rejected_invite")){
             message = data.getString("rejected_invite");
+            type = "activity";
         } else if (data.containsKey("receive_checkin_chat_request")){
 
             message = data.getString("receive_checkin_chat_request");

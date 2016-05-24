@@ -19,6 +19,7 @@ import com.heyoe.controller.fragments.SignupFragment;
 import com.heyoe.controller.fragments.TermsOfUseFragment;
 import com.heyoe.controller.pushnotifications.GetNotificationRegID;
 import com.heyoe.model.Constant;
+import com.heyoe.model.Global;
 import com.heyoe.utilities.Utils;
 import com.quickblox.core.QBSettings;
 
@@ -27,6 +28,7 @@ public class SignActivity extends AppCompatActivity {
     public static FragmentManager fragmentManager;
     public static Fragment[] fragments;
     private static int currentPageNum;
+    public static String type;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,14 @@ public class SignActivity extends AppCompatActivity {
     private void initVariable() {
         fragmentManager = getSupportFragmentManager();
         fragments = new Fragment[4];
+        type = getIntent().getStringExtra("type");
+        if (type != null) {
+            if (type.equals("activity")) {
+                Global.getInstance().increaseActivityCount();
+            } else if (type.equals("message")) {
+                Global.getInstance().increaseMessageCount();
+            }
+        }
 
     }
     private void initUI() {

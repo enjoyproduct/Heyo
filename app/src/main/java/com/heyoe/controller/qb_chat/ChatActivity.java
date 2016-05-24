@@ -70,11 +70,13 @@ import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChat;
 import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.QBMessageStatusesManager;
 import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.exception.QBChatException;
 import com.quickblox.chat.listeners.QBIsTypingListener;
 import com.quickblox.chat.listeners.QBMessageListener;
+import com.quickblox.chat.listeners.QBMessageStatusListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBAttachment;
 import com.quickblox.chat.model.QBChatMessage;
@@ -205,6 +207,9 @@ public class ChatActivity extends BaseActivity  {
             int unreadMsgcount = qbDialog.getUnreadMessageCount();
             unreadMsgcount ++;
             qbDialog.setUnreadMessageCount(unreadMsgcount);
+
+            //send read status
+            processMessage(privateChat, message);
         }
     };
 
@@ -272,6 +277,7 @@ public class ChatActivity extends BaseActivity  {
     private void init() {
 
 //        QBChatService.getInstance().getPrivateChatManager().addPrivateChatManagerListener(privateChatManagerListener);
+        messageStatusesManager.addMessageStatusListener(messageStatusListener);
         initChatConnectionListener();
         initQBPrivateChat();
         loadChatHistory();
@@ -513,6 +519,7 @@ public class ChatActivity extends BaseActivity  {
             }
             unShownMessages.add(message);
         }
+
     }
 
     public void onSendChatClick(View view) {
@@ -543,6 +550,7 @@ public class ChatActivity extends BaseActivity  {
             chatMessage.setBody(text);
         }
         chatMessage.setProperty(PROPERTY_SAVE_TO_HISTORY, "1");
+        chatMessage.setMarkable(true);
         chatMessage.setDateSent(System.currentTimeMillis() / 1000);
 
         try {
@@ -641,6 +649,30 @@ public class ChatActivity extends BaseActivity  {
 
     }
 
+    @Override
+    public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
+        if(chatMessage.isMarkable()){
+            try {
+                privateChat.readMessage(chatMessage);
+            } catch (XMPPException e) {
+
+            } catch (SmackException.NotConnectedException e) {
+
+            }
+        }
+    }
+    private QBMessageStatusesManager messageStatusesManager = QBChatService.getInstance().getMessageStatusesManager();
+    private QBMessageStatusListener messageStatusListener  = new QBMessageStatusListener() {
+        @Override
+        public void processMessageDelivered(String messageId, String dialogId, Integer userId) {
+
+        }
+
+        @Override
+        public void processMessageRead(String messageId, String dialogId, Integer userId) {
+
+        }
+    };
 
 
 

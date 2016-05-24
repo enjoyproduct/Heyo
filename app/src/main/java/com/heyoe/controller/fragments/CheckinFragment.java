@@ -558,7 +558,9 @@ public class CheckinFragment extends Fragment {
                     if (arrFriends.get(position).getFriendStatus().equals("none")) {
                         sendFriendRequest(arrFriends.get(position).getUser_id(), position);
                     } else if (arrFriends.get(position).getFriendStatus().equals("waiting")) {
-                        acceptFriend(position);
+                        mActivity.setResult(22);
+                        mActivity.finish();
+//                        acceptFriend(position);
                     }
 
                 }
@@ -852,6 +854,11 @@ public class CheckinFragment extends Fragment {
     }
     public static void addNewUser(UserModel userModel, String type) {
         if (type.equals("enter_checkin")) {
+            if (userModel.getFriendStatus().equals("active")) {
+                userModel.setCheckinRequestState(3);
+            } else {
+                userModel.setCheckinRequestState(0);
+            }
             arrUsers.add(0, userModel);
             getDialogs();
         } else if (type.equals("exit_checkin")) {

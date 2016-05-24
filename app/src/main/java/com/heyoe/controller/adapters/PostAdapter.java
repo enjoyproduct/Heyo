@@ -205,6 +205,42 @@ public class PostAdapter extends BaseAdapter {
 
             TextView tvBanner = (TextView)view.findViewById(R.id.tv_ipff_banner_text);
 
+            tvBanner.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity, UserListActivity.class);
+                    intent.putExtra("type", "like");
+                    intent.putExtra("post", postModel);
+                    activity.startActivityForResult(intent, 107);
+                }
+            });
+            civFriends[0].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity, UserListActivity.class);
+                    intent.putExtra("type", "like");
+                    intent.putExtra("post", postModel);
+                    activity.startActivityForResult(intent, 107);
+                }
+            });
+            civFriends[1].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity, UserListActivity.class);
+                    intent.putExtra("type", "like");
+                    intent.putExtra("post", postModel);
+                    activity.startActivityForResult(intent, 107);
+                }
+            });
+            civFriends[2].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(activity, UserListActivity.class);
+                    intent.putExtra("type", "like");
+                    intent.putExtra("post", postModel);
+                    activity.startActivityForResult(intent, 107);
+                }
+            });
             ////make banner text ==start
             int friendCount = postModel.getArrLiked_friends().size();
 

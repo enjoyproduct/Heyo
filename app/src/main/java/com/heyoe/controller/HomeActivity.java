@@ -129,7 +129,9 @@ public class HomeActivity extends AppCompatActivity implements
         public void onReceive(Context context, Intent intent) {
 
             PushModel data = (PushModel)intent.getExtras().getSerializable(Constant.PUSH_DATA);
-            if (data.type.equals("increase_activity_count")) {
+            if (data.type.equals("increase_activity_count") ||
+                    data.type.equals("receive_invite") ||
+                    data.type.equals("accept_friend")) {
                 Global.getInstance().increaseActivityCount();
                 showActivityBadge();
             }
@@ -478,7 +480,7 @@ public class HomeActivity extends AppCompatActivity implements
                 showHideSearchView(false);
                 Intent intent = new Intent(mActivity, UserListActivity.class);
                 intent.putExtra("type", "checkin");
-                mActivity.startActivity(intent);
+                mActivity.startActivityForResult(intent, 107);
                 break;
             case 4:
                 showHideSearchView(false);
@@ -715,6 +717,9 @@ public class HomeActivity extends AppCompatActivity implements
                         String user_id = data.getStringExtra("user_id");
                         HomeActivity.navigateToProfile(user_id);
                     }
+                }
+                if (resultCode == 22) {
+                    menuNavigateTo(1);
                 }
                 break;
         }

@@ -15,6 +15,8 @@ import com.heyoe.controller.qb_chat.chat.ChatHelper;
 import com.heyoe.controller.qb_chat.qb.QbAuthUtils;
 import com.heyoe.controller.qb_chat.qb.QbSessionStateCallback;
 import com.heyoe.controller.qb_chat.qb_utils.ErrorUtils;
+import com.quickblox.chat.QBPrivateChat;
+import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.exception.QBResponseException;
 
@@ -68,6 +70,8 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
         return ErrorUtils.showSnackbar(getSnackbarAnchorView(), resId, e,
                 R.string.dlg_retry, clickListener);
     }
+
+    abstract void processMessage(QBPrivateChat privateChat, QBChatMessage chatMessage);
 
 //    private void recreateChatSession() {
 //        Log.d(TAG, "Need to recreate chat session");

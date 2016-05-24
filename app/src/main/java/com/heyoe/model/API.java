@@ -84,4 +84,5 @@ public class API {
     public static String EXIT_CHECKIN = BASE_URL + "exit_checkin";
 
     public static String SEND_MESSAGE = BASE_URL + "send_message";
+    public static String CLEAR_CHAT_HISTORY = BASE_URL + "clear_chat_history";
 }

@@ -36,6 +36,7 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.auth.api.signin.SignInAccount;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.heyoe.R;
@@ -411,7 +412,8 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 Utils.saveToPreference(mActivity, Constant.HEADER_VIDEO, header_video_url);
                                 Utils.saveToPreference(mActivity, Constant.QB_ID, qb_id);
 
-                                startActivity(new Intent(mActivity, HomeActivity.class));
+                                Intent intent = new Intent(mActivity, HomeActivity.class);
+                                startActivity(intent);
                                 getActivity().finish();
                             } else  if (status.equals("401")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.email_unregistered));

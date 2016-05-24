@@ -74,7 +74,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
             holder.messageBodyTextView = (TextView) convertView.findViewById(R.id.text_image_message);
             holder.messageAuthorTextView = (TextView) convertView.findViewById(R.id.text_message_author);
             holder.messageContainerLayout = (LinearLayout) convertView.findViewById(R.id.layout_chat_message_container);
-            holder.messageBodyContainerLayout = (RelativeLayout) convertView.findViewById(R.id.layout_message_content_container);
+            holder.messageBodyContainerLayout = (LinearLayout) convertView.findViewById(R.id.layout_message_content_container);
             holder.messageInfoTextView = (TextView) convertView.findViewById(R.id.text_message_info);
             holder.attachmentImageView = (MaskedImageView) convertView.findViewById(R.id.image_message_attachment);
             holder.ibPlay = (ImageView) convertView.findViewById(R.id.video_message_attachment_play);
@@ -328,7 +328,7 @@ public class ChatAdapter extends BaseListAdapter<QBChatMessage> implements Stick
         public TextView messageAuthorTextView;
         public TextView messageInfoTextView;
         public LinearLayout messageContainerLayout;
-        public RelativeLayout messageBodyContainerLayout;
+        public LinearLayout messageBodyContainerLayout;
         public MaskedImageView attachmentImageView;
         public ImageView ibPlay;
         public ProgressBar attachmentProgressBar;
