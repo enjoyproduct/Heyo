@@ -335,7 +335,7 @@ public class BitmapUtility {
         return new BitmapDrawable(context.getResources(), bitmap);
     }
 
-    public static String downloadImageFromURL(Context context, String fileName, String url) {
+    public static String downloadFileFromURL(Context context, String fileName, String url) {
 
         String path = "";
         final DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);

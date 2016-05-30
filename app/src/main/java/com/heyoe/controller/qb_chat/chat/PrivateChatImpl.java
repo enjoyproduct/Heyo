@@ -5,6 +5,7 @@ import android.util.Log;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.QBPrivateChatManager;
+import com.quickblox.chat.listeners.QBIsTypingListener;
 import com.quickblox.chat.listeners.QBMessageSentListener;
 import com.quickblox.chat.listeners.QBPrivateChatManagerListener;
 import com.quickblox.chat.model.QBChatMessage;
@@ -64,4 +65,5 @@ public class PrivateChatImpl extends BaseChatImpl<QBPrivateChat>
     public void processMessageFailed(QBPrivateChat qbPrivateChat, QBChatMessage qbChatMessage) {
 
     }
+
 }

@@ -75,7 +75,7 @@ public class MyFriendFragment extends Fragment {
     private PullToRefreshListView mPullRefreshHomeListView;
     private static FriendAdapter friendAdapter;
     private BlockedFriendAdapter blockedFriendAdapter;
-    private Activity mActivity;
+    private static Activity mActivity;
     static boolean isLast;
     static int offset;
     private static ArrayList<UserModel> arrActiveUsers;
@@ -86,11 +86,34 @@ public class MyFriendFragment extends Fragment {
 
     private QBUser user;
 
+//    private void createSession() {
+//        user = Global.getInstance().qbUser;
+//        if (user != null) {
+//            getDialogs();
+//        }
+//
+//    }
     private void createSession() {
         user = Global.getInstance().qbUser;
-        if (user != null) {
-            getDialogs();
+        if (user == null) {
+            user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
         }
+        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+        final QBUser finalUser = user;
+        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                finalUser.setId(qbSession.getUserId());
+                Global.getInstance().qbUser = finalUser;
+                getDialogs();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.showToast(mActivity, e.getLocalizedMessage());
+            }
+        });
     }
     private void getDialogs() {
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
@@ -104,13 +127,11 @@ public class MyFriendFragment extends Fragment {
                 //get dialog of active friends
                 for (int i = 0; i < arrActiveUsers.size(); i++) {
                     arrActiveUsers.get(i).setUnreadMsgCount(0);
-                    arrActiveUsers.get(i).setDialog_id("0");
                     arrActiveUsers.get(i).setQbLastMsgSentTime(0);
                     for (QBDialog dialog : arr) {
                         if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrActiveUsers.get(i).getQb_id()))) {
                             ///get unread message count and dialog id
                             arrActiveUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
-                            arrActiveUsers.get(i).setDialog_id(dialog.getDialogId());
                             arrActiveUsers.get(i).setQbDialog(dialog);
                             arrActiveUsers.get(i).setQbLastMsgSentTime(dialog.getLastMessageDateSent());
                             break;
@@ -119,23 +140,16 @@ public class MyFriendFragment extends Fragment {
 
                 }
 
-                ArrayList<UserModel> temp = new ArrayList<UserModel>();
-                temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
-                arrActiveUsers.clear();
-                arrActiveUsers.addAll(temp);
-                friendAdapter.notifyDataSetChanged();
-                mPullRefreshHomeListView.onRefreshComplete();
+
 
                 //get dialog of blocked friends
                 for (int i = 0; i < arrBlockedUsers.size(); i++) {
                     arrBlockedUsers.get(i).setUnreadMsgCount(0);
-                    arrBlockedUsers.get(i).setDialog_id("0");
                     arrBlockedUsers.get(i).setQbLastMsgSentTime(0);
                     for (QBDialog dialog : arr) {
                         if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrBlockedUsers.get(i).getQb_id()))) {
                             ///get unread message count and dialog id
                             arrBlockedUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
-                            arrBlockedUsers.get(i).setDialog_id(dialog.getDialogId());
                             arrBlockedUsers.get(i).setQbDialog(dialog);
                             arrBlockedUsers.get(i).setQbLastMsgSentTime(dialog.getLastMessageDateSent());
                             break;
@@ -143,7 +157,21 @@ public class MyFriendFragment extends Fragment {
                     }
 
                 }
+                if (state == 0) {
+//                    ArrayList<UserModel> temp = new ArrayList<UserModel>();
+//                    temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
+//                    arrActiveUsers = new ArrayList<UserModel>();
+//                    arrActiveUsers.addAll(temp);
+                    friendAdapter = new FriendAdapter(arrActiveUsers);
+                    lvHome.setAdapter(friendAdapter);
+
+                } else {
+                    blockedFriendAdapter = new BlockedFriendAdapter(arrBlockedUsers);
+                    lvHome.setAdapter(blockedFriendAdapter);
+                }
+                mPullRefreshHomeListView.onRefreshComplete();
             }
+
 
             @Override
             public void onError(QBResponseException e) {
@@ -220,7 +248,6 @@ public class MyFriendFragment extends Fragment {
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
-                                Utils.showToast(mActivity, "Cleared chat history successfully");
                                 if (type.equals("active")) {
                                     if (arrActiveUsers.size() > position) {
                                         arrActiveUsers.get(position).setUnreadMsgCount(0);
@@ -231,7 +258,7 @@ public class MyFriendFragment extends Fragment {
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("401")) {
-                                Utils.showToast(mActivity, "Failed to clear chat history");
+                                Utils.showToast(mActivity, "Failed to delete friend");
                             }
                         }catch (Exception e) {
                             e.printStackTrace();
@@ -248,9 +275,9 @@ public class MyFriendFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
-    public static void updateUnreadMsgCount(String userId) {
+    public static void updateUnreadMsgCount(String userId, String receiver_id) {
         for(int i = 0; i < arrActiveUsers.size(); i ++ ) {
-            if (arrActiveUsers.get(i).getQb_id().equals(userId)) {
+            if (arrActiveUsers.get(i).getQb_id().equals(userId) && Utils.getFromPreference(mActivity, Constant.QB_ID).equals(receiver_id)) {
                 int unreadMsgCount = arrActiveUsers.get(i).getUnreadMsgCount();
                 unreadMsgCount ++;
                 arrActiveUsers.get(i).setUnreadMsgCount(unreadMsgCount);
@@ -354,7 +381,7 @@ public class MyFriendFragment extends Fragment {
     private void clearBadge() {
 //        Global.getInstance().decreaseMessageCount(count);
         Utils.saveIntToPreference(App.getInstance(), Constant.MSG_COUNT, 0);
-        HomeActivity.showMsgBadge("");
+        HomeActivity.showMsgBadge("", "");
     }
     private void getFriends() {
         Utils.showProgress(mActivity);
@@ -524,25 +551,16 @@ public class MyFriendFragment extends Fragment {
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
+                                Utils.showToast(mActivity, "Deleted friend successfully");
                                 if (state == 0) {
                                     deleteChatOfActiveFriend(position);
-
                                     arrActiveUsers.remove(position);
-
                                     friendAdapter.notifyDataSetChanged();
-
-
                                 } else {
                                     deleteChatOfBlockedFriend(position);
-
                                     arrBlockedUsers.remove(position);
-
                                     blockedFriendAdapter.notifyDataSetChanged();
-
-
                                 }
-
-
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -653,10 +671,11 @@ public class MyFriendFragment extends Fragment {
                 dialog.setUnreadMessageCount(0);
                 arrActiveUsers.get(i).setUnreadMsgCount(0);
                 arrActiveUsers.get(i).setQbDialog(dialog);
-                friendAdapter.notifyDataSetChanged();
+
                 break;
             }
         }
+        friendAdapter.notifyDataSetChanged();
     }
 
     public class FriendAdapter extends BaseSwipeAdapter {
@@ -692,6 +711,7 @@ public class MyFriendFragment extends Fragment {
 
 
             final View view = LayoutInflater.from(mActivity).inflate(R.layout.item_friend, null);
+
             SwipeLayout swipeLayout = (SwipeLayout)view.findViewById(getSwipeLayoutResourceId(position));
             swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
             swipeLayout.addDrag(SwipeLayout.DragEdge.Right, swipeLayout.findViewWithTag("item_friend"));
@@ -710,14 +730,11 @@ public class MyFriendFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    if (!arrActiveUsers.get(position).getDialog_id().equals("0")) {
-//                        deleteMessage(arrActiveUsers.get(position).getDialog_id());
-                        if (arrActiveUsers.get(position).getQbDialog() != null) {
-                            deleteChatOfActiveFriend(position);
-                        }
-
-                    }
-                    mItemManger.closeAllItems();
+                if (arrActiveUsers.get(position).getQbDialog() != null) {
+                    Utils.showToast(mActivity, "Cleared chat history successfully");
+                    deleteChatOfActiveFriend(position);
+                }
+                mItemManger.closeAllItems();
                 }
             });
 
@@ -806,9 +823,6 @@ public class MyFriendFragment extends Fragment {
             myCircularImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-//                    intent.putExtra("user_id", userModel.getUser_id());
-//                    mActivity.startActivity(intent);
                     HomeActivity.navigateToProfile(userModel.getUser_id());
                 }
             });
@@ -818,21 +832,16 @@ public class MyFriendFragment extends Fragment {
             tvFullname.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-//                    intent.putExtra("user_id", userModel.getUser_id());
-//                    mActivity.startActivity(intent);
+
                     HomeActivity.navigateToProfile(userModel.getUser_id());
                 }
             });
-//            TextView tvLastMsg = (TextView)convertView.findViewById(R.id.tv_if_last_msg);
 
             ImageView ivChat = (ImageView)convertView.findViewById(R.id.iv_if_chat);
             ivChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    clearBadge(arrActiveUsers.get(position).getUnreadMsgCount());
                     chattingFriendNum = position;
-//                    Intent intent = new Intent(mActivity, QBChatActivity.class);
                     Intent intent = new Intent(mActivity, ChatActivity.class);
                     intent.putExtra("userModel", arrActiveUsers.get(position));
                     intent.putExtra("blacker_id", Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()));
@@ -886,7 +895,6 @@ public class MyFriendFragment extends Fragment {
 
         @Override
         public View generateView(final int position, ViewGroup parent) {
-
 
             final View view = LayoutInflater.from(mActivity).inflate(R.layout.item_friend_blocked, null);
             SwipeLayout swipeLayout = (SwipeLayout)view.findViewById(getSwipeLayoutResourceId(position));

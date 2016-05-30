@@ -1,5 +1,7 @@
 package com.heyoe.utilities;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 import android.telephony.TelephonyManager;
@@ -28,5 +30,14 @@ public class DeviceUtility {
         TelephonyManager telemamanger = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String getSimSerialNumber = telemamanger.getSimSerialNumber();
         return getSimSerialNumber;
+    }
+    public static long getFreeRamSize(Activity activity) {
+        ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+        ActivityManager activityManager = (ActivityManager)activity. getSystemService(Context.ACTIVITY_SERVICE);
+        activityManager.getMemoryInfo(mi);
+        long availableMegs = mi.availMem / 1048576L;
+
+        long percentAvail = mi.availMem / mi.totalMem;
+        return availableMegs;
     }
 }

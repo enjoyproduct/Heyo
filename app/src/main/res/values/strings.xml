@@ -244,6 +244,7 @@
     <string name="reconnect_alert">Reconnecting in %s seconds</string>
     <string name="chat_info_add_people_error">Add people errors</string>
     <string name="dialogs_deletion_error">Dialog deletion errors</string>
+    <string name="error_recreate_session">Login Chat error</string>
 
     <string name="please_wait">Please wait…</string>
 

@@ -99,12 +99,22 @@ public class DetailPostActivity extends AppCompatActivity {
                 break;
             case 1:
                 Bundle bundle1 = new Bundle();
-                bundle1.putBoolean("isEdit", true);
+                bundle1.putInt("isEdit", 1);
                 bundle1.putSerializable("post", postModel);
                 NewPostFragment fragobj = new NewPostFragment();
                 fragobj.setArguments(bundle1);
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, fragobj)
+                        .commit();
+                break;
+            case 2:
+                Bundle bundle2 = new Bundle();
+                bundle2.putInt("isEdit", 2);
+                bundle2.putSerializable("post", postModel);
+                NewPostFragment fragobj1 = new NewPostFragment();
+                fragobj1.setArguments(bundle2);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragobj1)
                         .commit();
                 break;
         }

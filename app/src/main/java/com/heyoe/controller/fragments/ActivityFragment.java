@@ -259,10 +259,8 @@ public class ActivityFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            if (view == null) {
-                view = mlayoutInflater.inflate(R.layout.item_activity, null);
-            }
+            View view = mlayoutInflater.inflate(R.layout.item_activity, null);
+
             final ActivityModel activityModel = arrActivity.get(position);
 
             RelativeLayout relativeLayout = (RelativeLayout)view.findViewById(R.id.rl_activity);

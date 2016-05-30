@@ -256,10 +256,13 @@ public class LikeUsersFragment extends Fragment {
             myCircularImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.putExtra("user_id", arrFriends.get(position).getUser_id());
-                    mActivity.setResult(21, intent);
-                    mActivity.finish();
+                    if (!arrFriends.get(position).getFriendStatus().equals("block")) {
+                        Intent intent = new Intent();
+                        intent.putExtra("user_id", arrFriends.get(position).getUser_id());
+                        mActivity.setResult(21, intent);
+                        mActivity.finish();
+                    }
+
                 }
             });
             TextView tvName = (TextView)view.findViewById(R.id.tv_imf_friend_name);

@@ -15,6 +15,8 @@ import com.heyoe.controller.qb_chat.chat.ChatHelper;
 import com.heyoe.controller.qb_chat.qb.QbAuthUtils;
 import com.heyoe.controller.qb_chat.qb.QbSessionStateCallback;
 import com.heyoe.controller.qb_chat.qb_utils.ErrorUtils;
+import com.heyoe.controller.qb_chat.qb_utils.SharedPreferencesUtil;
+import com.heyoe.utilities.Utils;
 import com.quickblox.chat.QBPrivateChat;
 import com.quickblox.chat.model.QBChatMessage;
 import com.quickblox.core.QBEntityCallback;
@@ -47,7 +49,7 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
             @Override
             public void run() {
                 if (needToRestoreSession) {
-//                    recreateChatSession();
+                    recreateChatSession();
                     isAppSessionActive = false;
                 } else {
                     onSessionCreated(true);
@@ -73,44 +75,46 @@ public abstract class BaseActivity extends CoreBaseActivity implements QbSession
 
     abstract void processMessage(QBPrivateChat privateChat, QBChatMessage chatMessage);
 
-//    private void recreateChatSession() {
-//        Log.d(TAG, "Need to recreate chat session");
-//
-//        QBUser user = SharedPreferencesUtil.getQbUser();
-//        if (user == null) {
-//            throw new RuntimeException("User is null, can't restore session");
-//        }
-//
-//        reloginToChat(user);
-//    }
-//
-//    private void reloginToChat(final QBUser user) {
+    private void recreateChatSession() {
+        Log.d(TAG, "Need to recreate chat session");
+
+        QBUser user = SharedPreferencesUtil.getQbUser();
+        if (user == null) {
+            throw new RuntimeException("User is null, can't restore session");
+        }
+
+        reloginToChat(user);
+    }
+
+    private void reloginToChat(final QBUser user) {
 //        ProgressDialogFragment.show(getSupportFragmentManager(), R.string.dlg_restoring_chat_session);
-//
-//        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
-//            @Override
-//            public void onSuccess(Void result, Bundle bundle) {
-//                Log.v(TAG, "Chat login onSuccess()");
-//                isAppSessionActive = true;
-//                onSessionCreated(true);
-//
+        Utils.showProgress(this);
+        ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
+            @Override
+            public void onSuccess(Void result, Bundle bundle) {
+                Log.v(TAG, "Chat login onSuccess()");
+                isAppSessionActive = true;
+                onSessionCreated(true);
+
 //                ProgressDialogFragment.hide(getSupportFragmentManager());
-//            }
-//
-//            @Override
-//            public void onError(QBResponseException e) {
-//                isAppSessionActive = false;
+                Utils.hideProgress();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                isAppSessionActive = false;
 //                ProgressDialogFragment.hide(getSupportFragmentManager());
-//                Log.w(TAG, "Chat login onError(): " + e);
-//                showErrorSnackbar(R.string.error_recreate_session, e,
-//                        new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                reloginToChat(user);
-//                            }
-//                        });
-//                onSessionCreated(false);
-//            }
-//        });
-//    }
+                Utils.hideProgress();
+                Log.w(TAG, "Chat login onError(): " + e);
+                showErrorSnackbar(R.string.error_recreate_session, e,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                reloginToChat(user);
+                            }
+                        });
+                onSessionCreated(false);
+            }
+        });
+    }
 }

@@ -4,6 +4,7 @@ package com.heyoe.controller.fragments;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -46,10 +47,13 @@ import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
 import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.users.model.QBUser;
@@ -101,27 +105,27 @@ public class CheckinFragment extends Fragment {
     private void initUI(View view) {
         ///create listview
         mPullRefreshHomeListView = (PullToRefreshListView) view.findViewById(R.id.lv_checkin_user);
-        mPullRefreshHomeListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
-            @Override
-            public void onLastItemVisible() {
-                if (!isLast) {
+//        mPullRefreshHomeListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
+//            @Override
+//            public void onLastItemVisible() {
+//                if (!isLast) {
+////                    getCheckinUsers();
+//                }
+//                mPullRefreshHomeListView.onRefreshComplete();
+//
+//            }
+//        });
+//        mPullRefreshHomeListView.setOnPullEventListener(new PullToRefreshBase.OnPullEventListener<ListView>() {
+//            @Override
+//            public void onPullEvent(PullToRefreshBase<ListView> refreshView, PullToRefreshBase.State state, PullToRefreshBase.Mode direction) {
+//                if (state == PullToRefreshBase.State.RELEASE_TO_REFRESH && direction == PullToRefreshBase.Mode.PULL_FROM_START) {
+//                    isLast = false;
+//                    offset = 0;
+//                    arrUsers.clear();
 //                    getCheckinUsers();
-                }
-                mPullRefreshHomeListView.onRefreshComplete();
-
-            }
-        });
-        mPullRefreshHomeListView.setOnPullEventListener(new PullToRefreshBase.OnPullEventListener<ListView>() {
-            @Override
-            public void onPullEvent(PullToRefreshBase<ListView> refreshView, PullToRefreshBase.State state, PullToRefreshBase.Mode direction) {
-                if (state == PullToRefreshBase.State.RELEASE_TO_REFRESH && direction == PullToRefreshBase.Mode.PULL_FROM_START) {
-                    isLast = false;
-                    offset = 0;
-                    arrUsers.clear();
-                    getCheckinUsers();
-                }
-            }
-        });
+//                }
+//            }
+//        });
 
         lvHome = mPullRefreshHomeListView.getRefreshableView();
         lvHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -261,7 +265,8 @@ public class CheckinFragment extends Fragment {
                                 }
                                 Global.getInstance().arrCheckinChatUsers = arrUsers;
                                 if (userCount > 0) {
-                                    getDialogs();
+//                                    getDialogs();
+                                    createSession();
                                 } else {
                                     Utils.hideProgress();
                                     mPullRefreshHomeListView.onRefreshComplete();
@@ -447,12 +452,33 @@ public class CheckinFragment extends Fragment {
     private QBChatService chatService;
     private static QBUser user;
 
-
-    private static void getDialogs(){
+    private void createSession() {
         user = Global.getInstance().qbUser;
         if (user == null) {
-            return;
+            user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
         }
+        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+        final QBUser finalUser = user;
+        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                finalUser.setId(qbSession.getUserId());
+                Global.getInstance().qbUser = finalUser;
+                getDialogs();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.showToast(mActivity, e.getLocalizedMessage());
+            }
+        });
+    }
+    private static void getDialogs(){
+//        user = Global.getInstance().qbUser;
+//        if (user == null) {
+//            return;
+//        }
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
         QBChatService.getChatDialogs(null, requestGetBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
             @Override
@@ -463,12 +489,10 @@ public class CheckinFragment extends Fragment {
                 ArrayList<QBDialog> arr = qbDialogs;
                 for (int i = 0; i < arrUsers.size(); i++) {
                     arrUsers.get(i).setUnreadMsgCount(0);
-                    arrUsers.get(i).setDialog_id("0");
                     for (QBDialog dialog : arr) {
                         if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrUsers.get(i).getQb_id()))) {
                             ///get unread message count and dialog id
                             arrUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
-                            arrUsers.get(i).setDialog_id(dialog.getDialogId());
                             arrUsers.get(i).setQbDialog(dialog);
                             break;
                         }
@@ -510,10 +534,8 @@ public class CheckinFragment extends Fragment {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            View view = convertView;
-            if (view == null) {
-                view = mlayoutInflater.inflate(R.layout.item_checkin_user, null);
-            }
+            View view = mlayoutInflater.inflate(R.layout.item_checkin_user, null);
+
             MyCircularImageView myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
             if (!arrFriends.get(position).getAvatar().equals("")) {
                 UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
@@ -568,10 +590,12 @@ public class CheckinFragment extends Fragment {
 
             if (arrFriends.get(position).getFriendStatus().equals("waiting")) {
                 ibAdd.setImageDrawable(getResources().getDrawable(R.drawable.sandglass_small));
-            } else if (arrFriends.get(position).getFriendStatus().equals("none")){
-                ibAdd.setImageDrawable(getResources().getDrawable(R.drawable.ic_green_plus));
+//            } else if (arrFriends.get(position).getFriendStatus().equals("none")){
+//                ibAdd.setImageDrawable(getResources().getDrawable(R.drawable.ic_green_plus));
             } else if (arrFriends.get(position).getFriendStatus().equals("active")){
                 ibAdd.setVisibility(View.INVISIBLE);
+            } else {
+                ibAdd.setImageDrawable(getResources().getDrawable(R.drawable.ic_green_plus));
             }
 
             ibChat.setOnClickListener(new View.OnClickListener() {
@@ -859,8 +883,18 @@ public class CheckinFragment extends Fragment {
             } else {
                 userModel.setCheckinRequestState(0);
             }
-            arrUsers.add(0, userModel);
-            getDialogs();
+            boolean isExist = false;
+            for (UserModel userModel1 : arrUsers) {
+                if (userModel.getUser_id().equals(userModel1.getUser_id())) {
+                    isExist = true;
+                    break;
+                }
+            }
+            if (!isExist) {
+                arrUsers.add(0, userModel);
+                getDialogs();
+            }
+
         } else if (type.equals("exit_checkin")) {
             for (int i = 0; i < arrUsers.size(); i ++) {
                 if (arrUsers.get(i).getUser_id().equals(userModel.getUser_id())) {
@@ -882,13 +916,15 @@ public class CheckinFragment extends Fragment {
         super.onDestroy();
     }
 
+
     private void deleteChatHistories() {
         QBPrivateChatManager privateChatManager = QBChatService.getInstance().getPrivateChatManager();
         for (int i = 0; i < arrUsers.size(); i ++) {
             if (!arrUsers.get(i).getFriendStatus().equals("active")
                     && arrUsers.get(i).getQbDialog() != null
                     && privateChatManager != null) {
-                deleteChat(i, privateChatManager);
+//                deleteChat(i, privateChatManager);
+                clear_chat_history(i);
             }
         }
     }
@@ -910,5 +946,49 @@ public class CheckinFragment extends Fragment {
                     });
         }
 
+    }
+    private void clear_chat_history(final int position) {
+
+//        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_email", Utils.getFromPreference(mActivity, Constant.EMAIL));
+        params.put("friend_email", arrUsers.get(position).getEmail());
+        params.put("dialog_id", arrUsers.get(position).getQbDialog().getDialogId());
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.CLEAR_CHAT_HISTORY, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                if (arrUsers.size() > position) {
+//                                    arrUsers.get(position).setUnreadMsgCount(0);
+//                                    arrUsers.get(position).setQbDialog(null);
+//                                    checkinUserAdapter.notifyDataSetChanged();
+                                }
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("401")) {
+                                Utils.showToast(mActivity, "Failed to clear history");
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
     }
 }

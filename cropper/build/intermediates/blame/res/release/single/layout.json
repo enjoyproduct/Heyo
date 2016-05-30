@@ -1,15 +1,15 @@
 [
     {
-        "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\release\\layout\\abc_alert_dialog_material.xml",
-        "source": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_alert_dialog_material.xml"
+        "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_simple.xml",
+        "source": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_screen_simple.xml"
     },
     {
         "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\release\\layout\\notification_template_part_time.xml",
         "source": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\notification_template_part_time.xml"
     },
     {
-        "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\release\\layout\\abc_screen_simple.xml",
-        "source": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_screen_simple.xml"
+        "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\release\\layout\\abc_alert_dialog_material.xml",
+        "source": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\22.2.1\\res\\layout\\abc_alert_dialog_material.xml"
     },
     {
         "merged": "E:\\Android_work(2016)\\Heyoe\\cropper\\build\\intermediates\\res\\merged\\release\\layout\\crop_image_activity.xml",

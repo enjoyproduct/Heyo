@@ -31,6 +31,7 @@ public class API {
     public static String SINGIN = BASE_URL + "sign_in";
     public static String SINGIN_SOCIAL = BASE_URL + "sign_in_social";
     public static String NEW_POST = BASE_URL + "new_post";
+    public static String REPOST = BASE_URL + "repost";
     public static String GET_NON_FRIENDS = BASE_URL + "get_non_friends";
     public static String INVITE_FRIEND = BASE_URL + "invite_friend";
     public static String SEND_CHECKIN_REQUEST = BASE_URL + "send_checkin_chat_request";

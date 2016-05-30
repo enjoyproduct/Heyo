@@ -628,10 +628,14 @@ public class PostAdapter extends BaseAdapter {
         ibShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainFragment.sharing(position);
+//                MainFragment.sharing(position);
+                HomeActivity.navigateToRepost(postModel);
             }
         });
 
         return view;
+    }
+    private void showAlertToShare(int position) {
+
     }
 }

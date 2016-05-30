@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -49,6 +50,7 @@ public class UserListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         initVariables();
         initUI();
 
@@ -72,7 +74,12 @@ public class UserListActivity extends AppCompatActivity {
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                if (currentFragmentNum == 1) {
+                    navigateToCheckinMap();
+                } else {
+                    finish();
+                }
+
             }
         });
 
@@ -82,17 +89,29 @@ public class UserListActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, new LikeUsersFragment())
                     .commit();
         } else {
-            currentFragmentNum = 1;
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new CheckinFragment())
-                    .commit();
+            navigateToCheckinMap();
         }
 
+    }
+    private void navigateToCheckinMap() {
+        currentFragmentNum = 1;
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, new CheckinFragment())
+                .commit();
     }
     public static void setTitle(String title) {
         tvTitle.setText(title);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (currentFragmentNum == 1){
+            navigateToCheckinMap();
+        } else {
+            super.onBackPressed();
+        }
+
+    }
 
     public BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver(){
 

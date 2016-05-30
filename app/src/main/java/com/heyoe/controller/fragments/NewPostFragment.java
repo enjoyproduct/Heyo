@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -58,7 +57,6 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe.R;
@@ -70,6 +68,7 @@ import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.BitmapUtility;
+import com.heyoe.utilities.DeviceUtility;
 import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.StringUtility;
 import com.heyoe.utilities.UIUtility;
@@ -134,7 +133,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
     private ArrayList<UserModel> arrFriends;
     private ArrayList<UserModel> arrTagedFriends;
-    boolean isEdit;
+    int isEdit; //0:new post, 1: edit, 2: repost
     PostModel postModel;
 
     public NewPostFragment() {
@@ -163,8 +162,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         arrHashTags       = new ArrayList<>();
         arrTagedFriends   = new ArrayList<>();
 
-        isEdit            = getArguments().getBoolean("isEdit");
-        if (isEdit) {
+        isEdit            = getArguments().getInt("isEdit", 0);
+        if (isEdit > 0) {
             postModel     = (PostModel)getArguments().getSerializable("post");
         }
 
@@ -288,7 +287,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
         btnPost   = (Button)view.findViewById(R.id.btn_compose_post);
 
-
         ibTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -305,7 +303,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         ibPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 showPictureChooseDialog();
             }
         });
@@ -315,16 +312,22 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 showVideoChooseDialog();
             }
         });
+        if (isEdit == 2) {
+            ibPhoto.setClickable(false);
+            ibVideo.setClickable(false);
+        }
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UIUtility.hideSoftKeyboard(getActivity());
-                if (isEdit) {
-                    editMedia();
-                } else {
+                if (isEdit == 0) {
                     if (checkValue()) {
                         postMedia();
                     }
+                } else if (isEdit == 1) {
+                    editMedia();
+                } else {
+                    rePostMedia();
                 }
             }
         });
@@ -356,51 +359,57 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     }
     //for edit
     private void setData() {
-        if (isEdit && postModel != null) {
+        if (postModel != null) {
+            if (isEdit == 1) {
+                String str1       = postModel.getDescription();
+                CharSequence str2 = StringUtility.trimTrailingWhitespace(Html.fromHtml(str1));
+                richEditor.setText(str2);
 
-            String str1       = postModel.getDescription();
-            CharSequence str2 = StringUtility.trimTrailingWhitespace(Html.fromHtml(str1));
-            richEditor.setText(str2);
+                if (postModel.getHashtag().length() > 0) {
+                    List<String> hashTags = Arrays.asList(postModel.getHashtag().split("#"));
+                    for (int j = 0; j < hashTags.size(); j ++) {
+                        arrHashTags.add("#" + hashTags.get(j));
 
-            String imageUrl   = "";
-            if (postModel.getMedia_type().equals("youtube")) {
-                imageUrl = API.BASE_YOUTUB_PREFIX + FileUtility.getFilenameFromPath(postModel.getMedia_url()) + API.BASE_YOUTUB_SURFIX;
-            } else if (postModel.getMedia_type().endsWith("post_photo")) {
-                imageUrl = API.BASE_POST_PHOTO + postModel.getMedia_url();
-            } else if (postModel.getMedia_type().endsWith("post_video")){
-                ibPlay.setVisibility(View.VISIBLE);
-                imageUrl = API.BASE_THUMBNAIL + postModel.getMedia_url().substring(0, postModel.getMedia_url().length() - 3) + "jpg";
-            }
-            if (!postModel.getMedia_url().equals("")) {
-                imageView.setVisibility(View.VISIBLE);
-                UrlRectangleImageViewHelper.setUrlDrawable(imageView, imageUrl, R.drawable.default_tour, new UrlImageViewCallback() {
-                    @Override
-                    public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
-                        if (!loadedFromCache) {
-
-                            ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
-                            scale.setDuration(500);
-                            scale.setInterpolator(new OvershootInterpolator());
-                            imageView.startAnimation(scale);
-                        }
+                        Tag tag = new Tag("#" + hashTags.get(j));
+                        tag.isDeletable=true;
+                        tag.layoutColor = getResources().getColor(R.color.green);
+                        hashTagView.addTag(tag);
                     }
-                });
-            } else {
-
-            }
-
-            if (postModel.getHashtag().length() > 0) {
-                List<String> hashTags = Arrays.asList(postModel.getHashtag().split("#"));
-                for (int j = 0; j < hashTags.size(); j ++) {
-                    arrHashTags.add("#" + hashTags.get(j));
-
-                    Tag tag = new Tag("#" + hashTags.get(j));
-                    tag.isDeletable=true;
-                    tag.layoutColor = getResources().getColor(R.color.green);
-                    hashTagView.addTag(tag);
                 }
             }
+            if (isEdit > 0) {
+                String imageUrl   = "";
+                if (postModel.getMedia_type().equals("youtube")) {
+                    imageUrl = API.BASE_YOUTUB_PREFIX + FileUtility.getFilenameFromPath(postModel.getMedia_url()) + API.BASE_YOUTUB_SURFIX;
+                } else if (postModel.getMedia_type().endsWith("post_photo")) {
+                    imageUrl = API.BASE_POST_PHOTO + postModel.getMedia_url();
+                } else if (postModel.getMedia_type().endsWith("post_video")){
+                    ibPlay.setVisibility(View.VISIBLE);
+                    imageUrl = API.BASE_THUMBNAIL + postModel.getMedia_url().substring(0, postModel.getMedia_url().length() - 3) + "jpg";
+                }
+                if (!postModel.getMedia_url().equals("")) {
+                    imageView.setVisibility(View.VISIBLE);
+                    UrlRectangleImageViewHelper.setUrlDrawable(imageView, imageUrl, R.drawable.default_tour, new UrlImageViewCallback() {
+                        @Override
+                        public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                            if (!loadedFromCache) {
+
+                                ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                                scale.setDuration(500);
+                                scale.setInterpolator(new OvershootInterpolator());
+                                imageView.startAnimation(scale);
+                            }
+                        }
+                    });
+                } else {
+
+                }
+            }
+            if (isEdit == 2) {
+
+            }
         }
+
     }
     private void setTagedFriendId() {
         description = Html.toHtml(richEditor.getText());
@@ -474,7 +483,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                                     }
 
                                 }
-                                if (isEdit) {
+                                if (isEdit == 1) {
                                     setTagedFriendId();
                                 }
                             } else  if (status.equals("400")) {
@@ -525,6 +534,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 Utils.showToast(mActivity, "Cannot get thumbnail");
                 return false;
             }
+            if (checkFileSize(videoPath)) {
+                Utils.showToast(mActivity, "Video size is too big");
+                return false;
+            }
             mediaType = "post_video";
         }
         if (youtubePath.length() > 0) {
@@ -540,6 +553,41 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         }
         return true;
     }
+    private boolean checkFileSize(String filePath) {
+        boolean isBigger = false;
+        File file =new File(filePath);
+        if(file.exists()){
+
+            double bytes = file.length();
+            double kilobytes = (bytes / 1024);
+            double megabytes = (kilobytes / 1024);
+            double gigabytes = (megabytes / 1024);
+            double terabytes = (gigabytes / 1024);
+            double petabytes = (terabytes / 1024);
+            double exabytes = (petabytes / 1024);
+            double zettabytes = (exabytes / 1024);
+            double yottabytes = (zettabytes / 1024);
+
+            System.out.println("bytes : " + bytes);
+            System.out.println("kilobytes : " + kilobytes);
+            System.out.println("megabytes : " + megabytes);
+            System.out.println("gigabytes : " + gigabytes);
+            System.out.println("terabytes : " + terabytes);
+            System.out.println("petabytes : " + petabytes);
+            System.out.println("exabytes : " + exabytes);
+            System.out.println("zettabytes : " + zettabytes);
+            System.out.println("yottabytes : " + yottabytes);
+
+            if (megabytes * 5 > DeviceUtility.getFreeRamSize(mActivity)) {
+                isBigger = true;
+            }
+        }else{
+            System.out.println("File does not exists!");
+        }
+
+        return isBigger;
+    }
+
     private void postMedia() {
         Utils.showProgress(mActivity);
         CustomMultipartRequest customMultipartRequest = new CustomMultipartRequest(API.NEW_POST,
@@ -626,6 +674,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         requestQueue.add(customMultipartRequest);
 
     }
+
     private void editMedia() {
         description    = "";
         hashtag        = "";
@@ -643,14 +692,6 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             Utils.showOKDialog(mActivity, getResources().getString(R.string.input_description));
             return ;
         }
-        mediaType = "";
-        if (photoPath.length() > 0) {
-            mediaType = "post_photo";
-        } else if (videoPath.length() > 0) {
-            mediaType = "post_video";
-        } else if (youtubePath.length() > 0) {
-            mediaType = "youtube";
-        }
         for (int i = 0; i < arrTagedFriends.size(); i ++) {
             if (description.contains(arrTagedFriends.get(i).getFullname().replace("@", ""))) {
                 tagedFriendIds = tagedFriendIds + arrTagedFriends.get(i).getUser_id() + ",";
@@ -659,6 +700,16 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
             }
         }
+
+        mediaType = "";
+        if (photoPath.length() > 0) {
+            mediaType = "post_photo";
+        } else if (videoPath.length() > 0) {
+            mediaType = "post_video";
+        } else if (youtubePath.length() > 0) {
+            mediaType = "youtube";
+        }
+
         Utils.showProgress(mActivity);
         CustomMultipartRequest customMultipartRequest = new CustomMultipartRequest(API.EDIT_MY_POST,
                 new Response.Listener<JSONObject>() {
@@ -767,6 +818,101 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         requestQueue.add(customMultipartRequest);
 
     }
+    private void rePostMedia() {
+        description    = "";
+        hashtag        = "";
+        tagedFriendIds = "";
+        for (int i = 0; i < arrHashTags.size(); i ++) {
+            hashtag  = hashtag + arrHashTags.get(i);
+        }
+        if (hashtag.length() > 1) {
+            hashtag = hashtag.substring(1, hashtag.length());
+        }
+
+        description = Html.toHtml(richEditor.getText());
+
+        if (description.length() < 1) {
+            Utils.showOKDialog(mActivity, getResources().getString(R.string.input_description));
+            return ;
+        }
+        for (int i = 0; i < arrTagedFriends.size(); i ++) {
+            if (description.contains(arrTagedFriends.get(i).getFullname().replace("@", ""))) {
+                tagedFriendIds = tagedFriendIds + arrTagedFriends.get(i).getUser_id() + ",";
+                continue;
+            } else {
+
+            }
+        }
+
+        Utils.showProgress(mActivity);
+        CustomMultipartRequest customMultipartRequest = new CustomMultipartRequest(API.REPOST,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                Utils.showToast(mActivity, getResources().getString(R.string.post_success));
+
+                                if (mediaType.equals("post_video")) {
+                                    FileUtility.deleteFile(videoPath);
+                                    FileUtility.deleteFile(thumbPath);
+
+                                } else if (mediaType.equals("post_photo")) {
+                                    FileUtility.deleteFile(photoPath);
+                                }
+
+                                HomeActivity.navigateTo(0);
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            }else  if (status.equals("401")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
+                            }
+
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+                            Toast.makeText(mActivity, "TimeoutError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof AuthFailureError) {
+                            //TODO
+                            Toast.makeText(mActivity, "AuthFailureError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ServerError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ServerError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof NetworkError) {
+                            //TODO
+                            Toast.makeText(mActivity, "NetworkError", Toast.LENGTH_LONG).show();
+                        } else if (error instanceof ParseError) {
+                            //TODO
+                            Toast.makeText(mActivity, "ParseError", Toast.LENGTH_LONG).show();
+                        } else {
+                            //TODO
+                            Toast.makeText(mActivity, "UnknownError", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+        customMultipartRequest
+                .addStringPart(Constant.DEVICE_TYPE, Constant.ANDROID)
+                .addStringPart(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN))
+                .addStringPart("my_id", Utils.getFromPreference(mActivity, Constant.USER_ID))
+                .addStringPart("post_id", postModel.getPost_id())
+                .addStringPart("checkin", "")
+                .addStringPart("hashtag", hashtag)
+                .addStringPart("taged_friend_ids", tagedFriendIds)
+                .addStringPart("description", description);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(customMultipartRequest);
+
+    }
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
@@ -795,7 +941,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
         FriendTagAdapter friendTagAdapter = new FriendTagAdapter(mActivity, arrFriends);
         builder.setCancelable(true);
-        builder.setView(dialogView);
+//        builder.setView(dialogView);
         builder.setAdapter(friendTagAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -877,7 +1023,9 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     cursor.close();
 
                     Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
-
+                    if (bitmap == null) {
+                        return;
+                    }
                     imageView.setImageBitmap(bitmap);
 
                     imageWidth = bitmap.getWidth();
@@ -915,7 +1063,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
                     if (videoPath != null && videoPath.length() > 0) {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.MINI_KIND);
-
+                        if (thumbnail == null) {
+                            Utils.showToast(mActivity, "Cannot get thumbnail");
+                            return;
+                        }
                         ibPlay.setVisibility(View.VISIBLE);
                         //crop thumbnail
                         Bitmap cropBitmap = BitmapUtility.cropBitmapCenter(thumbnail);
@@ -943,7 +1094,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
                     if (videoPath.length() > 0) {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.MINI_KIND);
-
+                        if (thumbnail == null) {
+                            Utils.showToast(mActivity, "Cannot get thumbnail");
+                            return;
+                        }
                         ibPlay.setVisibility(View.VISIBLE);
                         //crop thumbnail
                         Bitmap cropBitmap = BitmapUtility.cropBitmapCenter(thumbnail);
@@ -1066,9 +1220,11 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         // set the image file name
         intent.putExtra(MediaStore.EXTRA_OUTPUT,fileUri);
         // set the video image quality to high
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 2);
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
         // set max time limit
         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
+        ///set max size limit
+        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, DeviceUtility.getFreeRamSize(mActivity) * 1024 * 1024 / 5);
         // start the Video Capture Intent
         startActivityForResult(intent, take_video_from_camera);
     }

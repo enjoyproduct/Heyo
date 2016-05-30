@@ -70,7 +70,7 @@ public class MyBlackFriendsFregment extends Fragment {
     private PullToRefreshListView mPullRefreshHomeListView;
     private static FriendAdapter friendAdapter;
     private BlockedFriendAdapter blockedFriendAdapter;
-    private Activity mActivity;
+    private static Activity mActivity;
     static boolean isLast;
     static int offset;
     private static ArrayList<UserModel> arrActiveUsers;
@@ -81,11 +81,33 @@ public class MyBlackFriendsFregment extends Fragment {
 
     private QBUser user;
 
+//    private void createSession() {
+//        user = Global.getInstance().qbUser;
+//        if (user != null) {
+//            getDialogs();
+//        }
+//    }
     private void createSession() {
         user = Global.getInstance().qbUser;
-        if (user != null) {
-            getDialogs();
+        if (user == null) {
+            user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
         }
+        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+        final QBUser finalUser = user;
+        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                finalUser.setId(qbSession.getUserId());
+                Global.getInstance().qbUser = finalUser;
+                getDialogs();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.showToast(mActivity, e.getLocalizedMessage());
+            }
+        });
     }
     private void getDialogs() {
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
@@ -98,13 +120,11 @@ public class MyBlackFriendsFregment extends Fragment {
                 ArrayList<QBDialog> arr = qbDialogs;
                 for (int i = 0; i < arrActiveUsers.size(); i++) {
                     arrActiveUsers.get(i).setUnreadMsgCount(0);
-                    arrActiveUsers.get(i).setDialog_id("0");
                     arrActiveUsers.get(i).setQbLastMsgSentTime(0);
                     for (QBDialog dialog : arr) {
                         if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrActiveUsers.get(i).getQb_id()))) {
                             ///get unread message count and dialog id
                             arrActiveUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
-                            arrActiveUsers.get(i).setDialog_id(dialog.getDialogId());
                             arrActiveUsers.get(i).setQbDialog(dialog);
                             arrActiveUsers.get(i).setQbLastMsgSentTime(dialog.getLastMessageDateSent());
 
@@ -113,23 +133,15 @@ public class MyBlackFriendsFregment extends Fragment {
                     }
 
                 }
-                ArrayList<UserModel> temp = new ArrayList<UserModel>();
-                temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
-                arrActiveUsers.clear();
-                arrActiveUsers.addAll(temp);
-                friendAdapter.notifyDataSetChanged();
-                mPullRefreshHomeListView.onRefreshComplete();
 
                 //get dialog of blocked friends
                 for (int i = 0; i < arrBlockedUsers.size(); i++) {
                     arrBlockedUsers.get(i).setUnreadMsgCount(0);
-                    arrBlockedUsers.get(i).setDialog_id("0");
                     arrBlockedUsers.get(i).setQbLastMsgSentTime(0);
                     for (QBDialog dialog : arr) {
                         if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrBlockedUsers.get(i).getQb_id()))) {
                             ///get unread message count and dialog id
                             arrBlockedUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
-                            arrBlockedUsers.get(i).setDialog_id(dialog.getDialogId());
                             arrBlockedUsers.get(i).setQbDialog(dialog);
                             arrBlockedUsers.get(i).setQbLastMsgSentTime(dialog.getLastMessageDateSent());
                             break;
@@ -137,6 +149,19 @@ public class MyBlackFriendsFregment extends Fragment {
                     }
 
                 }
+                if (state == 0) {
+//                    ArrayList<UserModel> temp = new ArrayList<UserModel>();
+//                    temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
+//                    arrActiveUsers = new ArrayList<UserModel>();
+//                    arrActiveUsers.addAll(temp);
+                    friendAdapter = new FriendAdapter(arrActiveUsers);
+                    lvHome.setAdapter(friendAdapter);
+
+                } else {
+                    blockedFriendAdapter = new BlockedFriendAdapter(arrBlockedUsers);
+                    lvHome.setAdapter(blockedFriendAdapter);
+                }
+                mPullRefreshHomeListView.onRefreshComplete();
             }
 
             @Override
@@ -151,48 +176,101 @@ public class MyBlackFriendsFregment extends Fragment {
         if (arrBlockedUsers.get(position).getQbDialog() == null) {
             return;
         }
-        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrBlockedUsers.get(position).getQbDialog().getDialogId(),
-                new QBEntityCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid, Bundle bundle) {
-                        Utils.showToast(mActivity, "Cleared chat history successfully");
+        clear_chat_history(position, "block");
+//        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrBlockedUsers.get(position).getQbDialog().getDialogId(),
+//                new QBEntityCallback<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid, Bundle bundle) {
+//                        Utils.showToast(mActivity, "Cleared chat history successfully");
+////
+//                    }
 //
-                    }
-
-                    @Override
-                    public void onError(QBResponseException e) {
-                        Utils.showToast(mActivity, "Failed to clear chat history");
-                    }
-                });
+//                    @Override
+//                    public void onError(QBResponseException e) {
+//                        Utils.showToast(mActivity, "Failed to clear chat history");
+//                    }
+//                });
     }
     private void deleteChatOfActiveFriend(final int position) {
         if (arrActiveUsers.get(position).getQbDialog() == null) {
             return;
         }
-        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrActiveUsers.get(position).getQbDialog().getDialogId(),
-                new QBEntityCallback<Void>() {
+        clear_chat_history(position, "active");
+//        QBChatService.getInstance().getPrivateChatManager().deleteDialog(arrActiveUsers.get(position).getQbDialog().getDialogId(),
+//                new QBEntityCallback<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid, Bundle bundle) {
+//                        Utils.showToast(mActivity, "Cleared chat history successfully");
+////                        clearBadge(arrActiveUsers.get(position).getQbDialog().getUnreadMessageCount());
+//                        if (arrActiveUsers.size() > position) {
+//                            arrActiveUsers.get(position).setUnreadMsgCount(0);
+//                            arrActiveUsers.get(position).setQbDialog(null);
+//                            friendAdapter.notifyDataSetChanged();
+//                        }
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(QBResponseException e) {
+//                        Utils.showToast(mActivity, "Failed to clear chat history");
+//                    }
+//                });
+    }
+    private void clear_chat_history(final int position, final String type) {
+
+//        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
+        params.put(Constant.DEVICE_TOKEN, Utils.getFromPreference(mActivity, Constant.DEVICE_TOKEN));
+        params.put("my_email", Utils.getFromPreference(mActivity, Constant.EMAIL));
+        if (type.equals("active")) {
+            params.put("friend_email", arrActiveUsers.get(position).getEmail());
+            params.put("dialog_id", arrActiveUsers.get(position).getQbDialog().getDialogId());
+        } else {
+            params.put("friend_email", arrBlockedUsers.get(position).getEmail());
+            params.put("dialog_id", arrBlockedUsers.get(position).getQbDialog().getDialogId());
+        }
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.CLEAR_CHAT_HISTORY, params,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onSuccess(Void aVoid, Bundle bundle) {
-                        Utils.showToast(mActivity, "Cleared chat history successfully");
-//                        clearBadge(arrActiveUsers.get(position).getQbDialog().getUnreadMessageCount());
-                        if (arrActiveUsers.size() > position) {
-                            arrActiveUsers.get(position).setUnreadMsgCount(0);
-                            arrActiveUsers.get(position).setQbDialog(null);
-                            friendAdapter.notifyDataSetChanged();
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+
+                                if (type.equals("active")) {
+                                    if (arrActiveUsers.size() > position) {
+                                        arrActiveUsers.get(position).setUnreadMsgCount(0);
+                                        arrActiveUsers.get(position).setQbDialog(null);
+                                        friendAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                            } else  if (status.equals("400")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
+                            } else if (status.equals("401")) {
+                                Utils.showToast(mActivity, "Failed to delete friend");
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
                         }
-
                     }
-
+                },
+                new Response.ErrorListener() {
                     @Override
-                    public void onError(QBResponseException e) {
-                        Utils.showToast(mActivity, "Failed to clear chat history");
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
     }
-
-    public static void updateUnreadMsgCount(String userId) {
+    public static void updateUnreadMsgCount(String userId, String receiver_id) {
         for(int i = 0; i < arrActiveUsers.size(); i ++ ) {
-            if (arrActiveUsers.get(i).getQb_id().equals(userId)) {
+            if (arrActiveUsers.get(i).getQb_id().equals(userId)  && Utils.getFromPreference(mActivity, Constant.QB_ID).equals(receiver_id)) {
                 int unreadMsgCount = arrActiveUsers.get(i).getUnreadMsgCount();
                 unreadMsgCount ++;
                 arrActiveUsers.get(i).setUnreadMsgCount(unreadMsgCount);
@@ -406,23 +484,15 @@ public class MyBlackFriendsFregment extends Fragment {
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
-
+                                Utils.showToast(mActivity, "Deleted friend successfully");
                                 if (state == 0) {
                                     deleteChatOfActiveFriend(position);
-
                                     arrActiveUsers.remove(position);
-
                                     friendAdapter.notifyDataSetChanged();
-
-
                                 } else {
                                     deleteChatOfBlockedFriend(position);
-
                                     arrBlockedUsers.remove(position);
-
                                     blockedFriendAdapter.notifyDataSetChanged();
-
-
                                 }
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
@@ -583,6 +653,7 @@ public class MyBlackFriendsFregment extends Fragment {
             }
         }
     }
+
     public class FriendAdapter extends BaseSwipeAdapter {
 
         LayoutInflater mlayoutInflater;
@@ -634,7 +705,8 @@ public class MyBlackFriendsFregment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    if (!arrActiveUsers.get(position).getDialog_id().equals("0")) {
+                    if (arrActiveUsers.get(position).getQbDialog() != null) {
+                        Utils.showToast(mActivity, "Cleared chat history successfully");
                         deleteChatOfActiveFriend(position);
                     }
                     mItemManger.closeAllItems();
@@ -723,48 +795,27 @@ public class MyBlackFriendsFregment extends Fragment {
             } else {
                 myCircularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
             }
-            myCircularImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-//                    intent.putExtra("user_id", userModel.getUser_id());
-//                    mActivity.startActivity(intent);
-//                    HomeActivity.navigateToProfile(userModel.getUser_id());
-                }
-            });
 
             TextView tvFullname = (TextView)convertView.findViewById(R.id.tv_if_fullname);
             tvFullname.setTextColor(getResources().getColor(R.color.white));
             tvFullname.setText(userModel.getFullname());
-            tvFullname.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    Intent intent = new Intent(mActivity, ProfileActivity.class);
-//                    intent.putExtra("user_id", userModel.getUser_id());
-//                    mActivity.startActivity(intent);
-//                    HomeActivity.navigateToProfile(userModel.getUser_id());
-                }
-            });
-//            TextView tvLastMsg = (TextView)convertView.findViewById(R.id.tv_if_last_msg);
 
             ImageView ivChat = (ImageView)convertView.findViewById(R.id.iv_if_chat);
             ivChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = new Intent(mActivity, QBChatActivity.class);
                     Intent intent = new Intent(mActivity, ChatActivity.class);
                     intent.putExtra("userModel", arrActiveUsers.get(position));
                     intent.putExtra("me", user);
                     intent.putExtra("is_black_chat", true);
                     intent.putExtra("blacker_id", Integer.parseInt(userModel.getBlacker_id()));
                     intent.putExtra("page", "black_chat");
-                    mActivity.startActivity(intent);
+                    mActivity.startActivityForResult(intent, 106);
                 }
             });
             ImageView ivCloseNav = (ImageView)convertView.findViewById(R.id.iv_if_close_swipe);
 
             TextView tvUnreadMsgCount = (TextView)convertView.findViewById(R.id.tv_if_unreadmsgcount);
-
             tvUnreadMsgCount.setVisibility(View.VISIBLE);
             tvUnreadMsgCount.setText(String.valueOf(userModel.getUnreadMsgCount()));
 

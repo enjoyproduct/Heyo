@@ -886,7 +886,8 @@ public class DetailPostFragment extends Fragment {
                 ibShare.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        sharing();
+//                        sharing();
+                        DetailPostActivity.pushFragment(2);
                     }
                 });
             } else {

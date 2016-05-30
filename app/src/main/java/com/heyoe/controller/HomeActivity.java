@@ -136,14 +136,14 @@ public class HomeActivity extends AppCompatActivity implements
                 showActivityBadge();
             }
             if (data.type.equals("increase_message_count")) {
-                if (!isCheckinMsg(data.user_id)) {
+                if (!isCheckinMsg(data.user_id) && Utils.getFromPreference(mActivity, Constant.QB_ID).equals(data.receiver_id)) {
                     Global.getInstance().increaseMessageCount();
-                    showMsgBadge(data.user_id);
+                    showMsgBadge(data.user_id, data.receiver_id);
                 }
             }
             if (data.type.equals("increase_black_message_count")) {
-                if (currentFragmentNum == 11 && !data.user_id.equals("")) {
-                    MyBlackFriendsFregment.updateUnreadMsgCount(data.user_id);
+                if (currentFragmentNum == 11 && !data.user_id.equals("") && Utils.getFromPreference(mActivity, Constant.QB_ID).equals(data.receiver_id)) {
+                    MyBlackFriendsFregment.updateUnreadMsgCount(data.user_id, data.receiver_id);
                 }
             }
         }
@@ -261,7 +261,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
 
         showActivityBadge();
-        showMsgBadge("");
+        showMsgBadge("", "");
     }
     public static void showActivityBadge() {
         mActivity.runOnUiThread(new Runnable() {
@@ -280,7 +280,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     }
-    public static void showMsgBadge(final String user_id) {
+    public static void showMsgBadge(final String user_id, final String receiver_id) {
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -291,7 +291,7 @@ public class HomeActivity extends AppCompatActivity implements
                     tvMsgCount.setVisibility(View.VISIBLE);
                     tvMsgCount.setText("!");
                     if (currentFragmentNum == 1 && !user_id.equals("")) {
-                        MyFriendFragment.updateUnreadMsgCount(user_id);
+                        MyFriendFragment.updateUnreadMsgCount(user_id, receiver_id);
                     }
                 } else {
                     tvMsgCount.setVisibility(View.INVISIBLE);
@@ -468,7 +468,7 @@ public class HomeActivity extends AppCompatActivity implements
             case 2:
                 showHideSearchView(false);
                 Bundle bundle1 = new Bundle();
-                bundle1.putBoolean("isEdit", false);
+                bundle1.putInt("isEdit", 0);
                 NewPostFragment fragobj = new NewPostFragment();
                 fragobj.setArguments(bundle1);
                 fragmentManager.beginTransaction()
@@ -492,6 +492,20 @@ public class HomeActivity extends AppCompatActivity implements
 
         }
 
+    }
+    public static void navigateToRepost(PostModel postModel) {
+        showHideSearchView(false);
+        dribSearchView.setVisibility(View.VISIBLE);
+        setTitle("");
+        Bundle bundle1 = new Bundle();
+        bundle1.putInt("isEdit", 2);
+        bundle1.putSerializable("post", postModel);
+        NewPostFragment fragobj = new NewPostFragment();
+        fragobj.setArguments(bundle1);
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragobj)
+                .commit();
+        currentFragmentNum = 12;
     }
     public static void navigateToProfile(String userId) {
         Fragment fragment = new ProfileFragment();
@@ -1010,6 +1024,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     QBChatService chatService;
     private void qb_login() {
+        Utils.showProgress(this);
         QBUser user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
         chatService = QBChatService.getInstance();
         if (!chatService.isLoggedIn()) {
@@ -1024,11 +1039,13 @@ public class HomeActivity extends AppCompatActivity implements
                     ChatHelper.getInstance().login(finalUser, new QBEntityCallback<Void>() {
                         @Override
                         public void onSuccess(Void result, Bundle bundle) {
+                            Utils.hideProgress();
 //                            Utils.showToast(App.getInstance(), "QB qb_login success");
                         }
                         @Override
                         public void onError(QBResponseException e) {
-                            Utils.showToast(App.getInstance(), "QB qb_login failed");
+                            Utils.hideProgress();
+//                            Utils.showToast(App.getInstance(), "QB qb_login failed");
                         }
                     });
                 }

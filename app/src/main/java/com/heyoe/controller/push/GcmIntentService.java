@@ -56,6 +56,11 @@ public class GcmIntentService extends IntentService {
                         type.equals("taged")) {
                     increaseActivityCount();
                 }
+                if (data.containsKey("send_message")) {
+                    if (!receiver_id.equals(Utils.getFromPreference(this, Constant.QB_ID))) {
+                        return;
+                    }
+                }
                 sendNotification();
             }
         }
@@ -72,6 +77,7 @@ public class GcmIntentService extends IntentService {
         if (id.length() > 0) {
             PushModel pushModel = new PushModel();
             pushModel.user_id = id;
+            pushModel.receiver_id = receiver_id;
             if (type.equals("black")) {
                 pushModel.type = "increase_black_message_count";
             } else {
@@ -112,11 +118,12 @@ public class GcmIntentService extends IntentService {
         mNotificationManager.notify(0, mBuilder.build());
     }
 
-    String id, type, message;
+    String id, type, message, receiver_id;
     private String parseMessage(Bundle data){
         id = "";
         type = "";
         message = "";
+        receiver_id = "";
         if(data.containsKey("liked_post")){
             message = data.getString("liked_post");
             type = "activity";
@@ -186,6 +193,7 @@ public class GcmIntentService extends IntentService {
                 id = string[0];
                 message = "You received message from " + string[1];
                 type = string[2];
+                receiver_id = string[3];
             }
         } else if (data.containsKey("enter_checkin")) {
             message = data.getString("enter_checkin");

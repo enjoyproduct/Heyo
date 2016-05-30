@@ -87,6 +87,7 @@ import com.quickblox.core.QBSettings;
 import com.quickblox.core.exception.QBResponseException;
 
 import com.quickblox.core.helper.StringifyArrayList;
+import com.quickblox.core.request.QBRequestGetBuilder;
 import com.quickblox.messages.QBPushNotifications;
 import com.quickblox.messages.model.QBEnvironment;
 import com.quickblox.messages.model.QBEvent;
@@ -147,7 +148,7 @@ public class ChatActivity extends BaseActivity  {
 
     private TextView tvName, tvOnlineStatus;
 
-    RequestQueue requestQueue;
+//    RequestQueue requestQueue;
     private String opponentID;
 
     private Timer timer;
@@ -156,11 +157,9 @@ public class ChatActivity extends BaseActivity  {
     boolean isBlackFriend;
     int blacker_id ;
     String currentChatPage;
-
 //    private QBChatService chatService;
 //    private QBPrivateChatManager privateChatManager;
     private QBPrivateChat privateChat;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -170,19 +169,22 @@ public class ChatActivity extends BaseActivity  {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         initVariables();
-
         initViews();
+//        createSession();
         initTimer();
+
     }
 
     private void initVariables() {
-        requestQueue = Volley.newRequestQueue(this);
+//        requestQueue = Volley.newRequestQueue(this);
+
         blacker_id = getIntent().getIntExtra("blacker_id", 0);
         isBlackFriend = getIntent().getBooleanExtra("is_black_chat", false);
         opponentUserModel = (UserModel) getIntent().getSerializableExtra("userModel");
         qbDialog = opponentUserModel.getQbDialog();
         opponentID = opponentUserModel.getQb_id();
         currentChatPage = getIntent().getStringExtra("page");
+
         Global.getInstance().currentChattingPage = currentChatPage;
 
         skipPagination = 0;
@@ -192,12 +194,6 @@ public class ChatActivity extends BaseActivity  {
         Global.getInstance().currentChattingUser = opponentID;
 
         Utils.showProgress(this);
-//        if (qbDialog == null) {
-//            createDialog();
-//        } else {
-//            init();
-//        }
-
     }
 
     private QBChatMessageListener chatMessageListener = new QBChatMessageListener() {
@@ -212,44 +208,105 @@ public class ChatActivity extends BaseActivity  {
             processMessage(privateChat, message);
         }
     };
+    @Override
+    public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
+        if(chatMessage.isMarkable()){
+            try {
+                privateChat.readMessage(chatMessage);
+            } catch (XMPPException e) {
 
+            } catch (SmackException.NotConnectedException e) {
+
+            }
+        }
+    }
     @Override
     public void onSessionCreated(boolean success) {
         if (success) {
             initChat();
+        } else {
+            createSession();
         }
+    }
+    private void createSession() {
+        QBUser user = Global.getInstance().qbUser;
+        if (user == null) {
+            user = new QBUser(Utils.getFromPreference(this, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
+        }
+        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+        final QBUser finalUser = user;
+        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                finalUser.setId(qbSession.getUserId());
+                Global.getInstance().qbUser = finalUser;
+                initChat();
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.showToast(ChatActivity.this, e.getLocalizedMessage());
+            }
+        });
     }
     private void initChat() {
         if (QBChatService.getInstance().isLoggedIn()) {
             if (qbDialog != null) {
-                chat = new PrivateChatImpl(chatMessageListener, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
                 init();
             } else {
-                createDialog();
+                getDialog();
             }
         } else {
             qb_login();
         }
-
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        if (qbDialog != null) {
-            outState.putSerializable(EXTRA_DIALOG, qbDialog);
+//    @Override
+//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+//        if (qbDialog != null) {
+//            outState.putSerializable(EXTRA_DIALOG, qbDialog);
+//        }
+//        super.onSaveInstanceState(outState, outPersistentState);
+//    }
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        if (qbDialog == null) {
+//            qbDialog = (QBDialog) savedInstanceState.getSerializable(EXTRA_DIALOG);
+//        }
+//    }
+
+    private void getDialog() {
+        QBUser user = Global.getInstance().qbUser;
+        if (user == null) {
+            user = new QBUser(Utils.getFromPreference(this, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
         }
-        super.onSaveInstanceState(outState, outPersistentState);
+        QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
+        final QBUser finalUser = user;
+        QBChatService.getChatDialogs(null, requestGetBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
+            @Override
+            public void onSuccess(ArrayList<QBDialog> qbDialogs, Bundle bundle) {
+                Utils.hideProgress();
+                ArrayList<QBDialog> arr = qbDialogs;
+                for (QBDialog dialog : arr) {
+                    if (dialog.getOccupants().contains(finalUser.getId()) && dialog.getOccupants().contains(Integer.parseInt(opponentUserModel.getQb_id()))) {
+                        qbDialog = dialog;
+                        qbDialog.setUnreadMessageCount(0);
+                        init();
+                        break;
+                    }
+                }
+                if (qbDialog == null) {
+                    createDialog();
+                }
+            }
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.hideProgress();
+            }
+        });
     }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (qbDialog == null) {
-            qbDialog = (QBDialog) savedInstanceState.getSerializable(EXTRA_DIALOG);
-        }
-    }
-
-
 
     private void createDialog() {
 
@@ -275,13 +332,13 @@ public class ChatActivity extends BaseActivity  {
     }
 
     private void init() {
+        if (qbDialog.getType() == QBDialogType.PRIVATE) {
+            chat = new PrivateChatImpl(chatMessageListener, QbDialogUtils.getOpponentIdForPrivateDialog(qbDialog));
+        }
 
-//        QBChatService.getInstance().getPrivateChatManager().addPrivateChatManagerListener(privateChatManagerListener);
-        messageStatusesManager.addMessageStatusListener(messageStatusListener);
         initChatConnectionListener();
         initQBPrivateChat();
         loadChatHistory();
-
     }
 
     private void initChatConnectionListener() {
@@ -303,7 +360,6 @@ public class ChatActivity extends BaseActivity  {
                             @Override
                             public void run() {
                                 loadChatHistory();
-
                             }
                         });
                         break;
@@ -311,27 +367,46 @@ public class ChatActivity extends BaseActivity  {
                 }
             }
         };
-        QBChatService.getInstance().addConnectionListener(chatConnectionListener);
+//        QBChatService.getInstance().addConnectionListener(chatConnectionListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ChatHelper.getInstance().addConnectionListener(chatConnectionListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ChatHelper.getInstance().removeConnectionListener(chatConnectionListener);
+    }
+
+    private QBPrivateChat initQBPrivateChat() {
+        privateChat= ChatHelper.getInstance().getPrivateChat(Integer.parseInt(opponentID));
+        if (privateChat != null) {
+            privateChat.addIsTypingListener(privateChatIsTypingListener);
+        }
+        return privateChat;
     }
     private void qb_login() {
         QBUser user = new QBUser(Utils.getFromPreference(this, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
         ChatHelper.getInstance().login(user, new QBEntityCallback<Void>() {
             @Override
             public void onSuccess(Void result, Bundle bundle) {
-                Utils.showToast(App.getInstance(), "QB qb_login success");
+//                Utils.showToast(App.getInstance(), "QB qb_login success");
                 initChat();
             }
 
             @Override
             public void onError(QBResponseException e) {
                 Utils.hideProgress();
-                Utils.showToast(App.getInstance(), "QB qb_login failed");
+//                Utils.showToast(App.getInstance(), "QB qb_login failed");
             }
         });
 
 //        QBUser user = new QBUser(Utils.getFromPreference(this, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
-//        chatService = QBChatService.getInstance();
-//        if (!chatService.isLoggedIn()) {
+//        if (!QBChatService.getInstance().isLoggedIn()) {
 //            QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
 //            final QBUser finalUser = user;
 //            QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
@@ -344,6 +419,7 @@ public class ChatActivity extends BaseActivity  {
 //                        @Override
 //                        public void onSuccess(Void result, Bundle bundle) {
 ////                            Utils.showToast(App.getInstance(), "QB qb_login success");
+//                            initChat();
 //                        }
 //
 //                        @Override
@@ -355,14 +431,12 @@ public class ChatActivity extends BaseActivity  {
 //
 //                @Override
 //                public void onError(QBResponseException e) {
-//                    Utils.showToast(mActivity, e.getLocalizedMessage());
+//                    Utils.showToast(ChatActivity.this, e.getLocalizedMessage());
 //                }
 //            });
 //
 //        }
     }
-
-
 
     private void loadChatHistory() {
         ChatHelper.getInstance().loadChatHistory(qbDialog, skipPagination, new QBEntityCallback<ArrayList<QBChatMessage>>() {
@@ -429,14 +503,10 @@ public class ChatActivity extends BaseActivity  {
         });
         skipPagination += ChatHelper.CHAT_HISTORY_ITEMS_PER_PAGE;
     }
-
-
     @Override
     protected View getSnackbarAnchorView() {
         return findViewById(R.id.list_chat_messages);
     }
-
-
 
     private void initViews() {
 //        actionBar.setDisplayHomeAsUpEnabled(true);
@@ -475,7 +545,6 @@ public class ChatActivity extends BaseActivity  {
 
             @Override
             public void afterTextChanged(Editable s) {
-//                sendStopTypingNotification();
             }
         });
         LinearLayout llChat = (LinearLayout)findViewById(R.id.ll_chat);
@@ -483,7 +552,6 @@ public class ChatActivity extends BaseActivity  {
             llChat.setBackgroundColor(getResources().getColor(R.color.black));
             messageEditText.setTextColor(getResources().getColor(R.color.white));
         }
-//        progressBar = _findViewById(R.id.progress_chat);
         attachmentPreviewContainerLayout = _findViewById(R.id.layout_attachment_preview_container);
 
         attachmentPreviewAdapter = new AttachmentPreviewAdapter(this,
@@ -507,7 +575,6 @@ public class ChatActivity extends BaseActivity  {
         AttachmentPreviewAdapterView previewAdapterView = (AttachmentPreviewAdapterView)this.findViewById(R.id.adapter_view_attachment_preview);
         previewAdapterView.setAdapter(attachmentPreviewAdapter);
     }
-
 
     public void showMessage(QBChatMessage message) {
         if (chatAdapter != null) {
@@ -554,7 +621,11 @@ public class ChatActivity extends BaseActivity  {
         chatMessage.setDateSent(System.currentTimeMillis() / 1000);
 
         try {
-            privateChat.sendMessage(chatMessage);
+            if (chat == null) {
+                return;
+            }
+            chat.sendMessage(chatMessage);
+//            privateChat.sendMessage(chatMessage);
             if (blacker_id == 0 || blacker_id == Integer.parseInt(Utils.getFromPreference(this, Constant.USER_ID))) {
 //                sendPush(Utils.getFromPreference(this, Constant.QB_ID), Utils.getFromPreference(this, Constant.FULLNAME), "white");
                 sendPush_manual(Utils.getFromPreference(this, Constant.USER_ID), opponentUserModel.getUser_id(), "white");
@@ -574,6 +645,8 @@ public class ChatActivity extends BaseActivity  {
         } catch ( SmackException e) {
             Log.e(TAG, "Failed to send a message", e);
             Utils.showToast(this, getResources().getString(R.string.chat_send_message_error));
+        } catch (XMPPException e) {
+            e.printStackTrace();
         }
     }
 
@@ -581,34 +654,6 @@ public class ChatActivity extends BaseActivity  {
         messagesListView.setSelection(messagesListView.getCount() - 1);
     }
 
-    private void sendPush(String id, String name, String type) {
-        // recipients
-        StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
-//        userIds.add(Integer.valueOf(id));
-        userIds.add(Integer.valueOf(opponentID));
-
-        QBEvent event = new QBEvent();
-        event.setUserIds(userIds);
-        event.setEnvironment(QBEnvironment.DEVELOPMENT);
-        event.setNotificationType(QBNotificationType.PUSH);
-        event.setPushType(QBPushType.GCM);
-        HashMap<String, String> data = new HashMap<String, String>();
-        data.put("user_id", id);
-        data.put("message", "You received message from " + name);
-        data.put("type", type);
-        event.setMessage(data.toString());
-
-        QBPushNotifications.createEvent(event, new QBEntityCallback<QBEvent>() {
-            @Override
-            public void onSuccess(QBEvent qbEvent, Bundle args) {
-                // sent
-            }
-            @Override
-            public void onError(QBResponseException errors) {
-
-            }
-        });
-    }
     private void sendPush_manual(String my_id, String friend_id, String type) {
 
         Map<String, String> params = new HashMap<String, String>();
@@ -649,85 +694,11 @@ public class ChatActivity extends BaseActivity  {
 
     }
 
-    @Override
-    public void processMessage(QBPrivateChat privateChat, final QBChatMessage chatMessage) {
-        if(chatMessage.isMarkable()){
-            try {
-                privateChat.readMessage(chatMessage);
-            } catch (XMPPException e) {
-
-            } catch (SmackException.NotConnectedException e) {
-
-            }
-        }
-    }
-    private QBMessageStatusesManager messageStatusesManager = QBChatService.getInstance().getMessageStatusesManager();
-    private QBMessageStatusListener messageStatusListener  = new QBMessageStatusListener() {
-        @Override
-        public void processMessageDelivered(String messageId, String dialogId, Integer userId) {
-
-        }
-
-        @Override
-        public void processMessageRead(String messageId, String dialogId, Integer userId) {
-
-        }
-    };
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    QBMessageListener<QBPrivateChat> privateChatQBMessageListener = new QBMessageListener<QBPrivateChat>() {
-        @Override
-        public void processMessage(QBPrivateChat qbPrivateChat, final QBChatMessage qbChatMessage) {
-//            showMessage(qbChatMessage);
-//            Utils.showToast(ChatActivity.this, "Received message");
-
-        }
-
-        @Override
-        public void processError(QBPrivateChat qbPrivateChat, QBChatException e, QBChatMessage qbChatMessage) {
-            Utils.showToast(ChatActivity.this, "Failed in receiving message");
-        }
-    };
-    QBPrivateChatManagerListener privateChatManagerListener = new QBPrivateChatManagerListener() {
-        @Override
-        public void chatCreated(QBPrivateChat qbPrivateChat, boolean b) {
-            qbPrivateChat.addMessageListener(privateChatQBMessageListener);
-        }
-    };
-
-    private QBPrivateChat initQBPrivateChat() {
-//        QBChatService.getInstance().getPrivateChatManager().addPrivateChatManagerListener(privateChatManagerListener);
-
-        privateChat= ChatHelper.getInstance().getPrivateChat(Integer.parseInt(opponentID));
-        if (privateChat == null) {
-            privateChat = ChatHelper.getInstance().createChat(Integer.parseInt(opponentID), privateChatQBMessageListener);
-        }
-        privateChat.addIsTypingListener(privateChatIsTypingListener);
-        return privateChat;
-    }
     QBIsTypingListener<QBPrivateChat> privateChatIsTypingListener = new QBIsTypingListener<QBPrivateChat>() {
         @Override
         public void processUserIsTyping(QBPrivateChat privateChat, Integer userId) {
@@ -737,9 +708,7 @@ public class ChatActivity extends BaseActivity  {
                     tvOnlineStatus.setText(getResources().getString(R.string.typing));
                 }
             });
-
         }
-
         @Override
         public void processUserStopTyping(QBPrivateChat privateChat, Integer userId) {
             runOnUiThread(new Runnable() {
@@ -777,9 +746,9 @@ public class ChatActivity extends BaseActivity  {
     }
     private void updateStatus(boolean state) {
         if (state) {
-            tvOnlineStatus.setText(getResources().getString(R.string.online));
+            tvOnlineStatus.setText("");
         } else {
-            tvOnlineStatus.setText(getResources().getString(R.string.offline));
+            tvOnlineStatus.setText("");
         }
     }
     private void initTimer() {
@@ -794,7 +763,7 @@ public class ChatActivity extends BaseActivity  {
                     sendStopTypingNotification();
                 }
                 if (timeCounter % 4 == 0) {
-                    getOnlineStatus();
+//                    getOnlineStatus();
                 }
                 timeCounter += 2;
             }
@@ -831,7 +800,7 @@ public class ChatActivity extends BaseActivity  {
                                         updateStatus(opponentUserModel.isOnline());
                                     }
                                 }
-                                requestQueue.getCache().clear();
+//                                requestQueue.getCache().clear();
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(ChatActivity.this, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -849,41 +818,83 @@ public class ChatActivity extends BaseActivity  {
                     }
                 });
 
-        requestQueue.add(signinRequest);
+//        requestQueue.add(signinRequest);
     }
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
         setDataAndFinish();
     }
-
     private void setDataAndFinish() {
+        //release chat
+        try {
+            if (chat != null) {
+                chat.release();
+            }
+        } catch (XMPPException e) {
+            Log.e(TAG, "Failed to release chat", e);
+        }
+
         Global.getInstance().isChatting = false;
         Global.getInstance().currentChattingUser = "";
         Global.getInstance().currentChattingPage = "";
 
-//        if (currentChatPage.equals("checkin_chat")) {
-//        }
         Intent intent = getIntent();
         intent.putExtra("dialog", qbDialog);
         setResult(RESULT_OK, intent);
-
         finish();
     }
     @Override
     protected void onDestroy() {
-
         QBChatService.getInstance().removeConnectionListener(chatConnectionListener);
         if (timer != null) {
             timer.cancel();
             timer.purge();
         }
-
         super.onDestroy();
-
-
     }
+    private void sendPush(String id, String name, String type) {
+        // recipients
+        StringifyArrayList<Integer> userIds = new StringifyArrayList<Integer>();
+//        userIds.add(Integer.valueOf(id));
+        userIds.add(Integer.valueOf(opponentID));
+
+        QBEvent event = new QBEvent();
+        event.setUserIds(userIds);
+        event.setEnvironment(QBEnvironment.DEVELOPMENT);
+        event.setNotificationType(QBNotificationType.PUSH);
+        event.setPushType(QBPushType.GCM);
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put("user_id", id);
+        data.put("message", "You received message from " + name);
+        data.put("type", type);
+        event.setMessage(data.toString());
+
+        QBPushNotifications.createEvent(event, new QBEntityCallback<QBEvent>() {
+            @Override
+            public void onSuccess(QBEvent qbEvent, Bundle args) {
+                // sent
+            }
+
+            @Override
+            public void onError(QBResponseException errors) {
+
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -59,6 +59,7 @@ import com.heyoe.model.Constant;
 import com.heyoe.model.PostModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.BitmapUtility;
+import com.heyoe.utilities.DeviceUtility;
 import com.heyoe.utilities.FileUtility;
 import com.heyoe.utilities.StringUtility;
 import com.heyoe.utilities.TimeUtility;
@@ -851,7 +852,8 @@ public class ProfileFragment extends Fragment {
                 ibShare.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        sharing(position - 1);
+//                        sharing(position - 1);
+                        HomeActivity.navigateToRepost(postModel);
                     }
                 });
 
@@ -1445,6 +1447,40 @@ public class ProfileFragment extends Fragment {
         AlertDialog alert = builder.create();
         alert.show();
     }
+    private boolean checkFileSize(String filePath) {
+        boolean isBigger = false;
+        File file =new File(filePath);
+        if(file.exists()){
+
+            double bytes = file.length();
+            double kilobytes = (bytes / 1024);
+            double megabytes = (kilobytes / 1024);
+            double gigabytes = (megabytes / 1024);
+            double terabytes = (gigabytes / 1024);
+            double petabytes = (terabytes / 1024);
+            double exabytes = (petabytes / 1024);
+            double zettabytes = (exabytes / 1024);
+            double yottabytes = (zettabytes / 1024);
+
+            System.out.println("bytes : " + bytes);
+            System.out.println("kilobytes : " + kilobytes);
+            System.out.println("megabytes : " + megabytes);
+            System.out.println("gigabytes : " + gigabytes);
+            System.out.println("terabytes : " + terabytes);
+            System.out.println("petabytes : " + petabytes);
+            System.out.println("exabytes : " + exabytes);
+            System.out.println("zettabytes : " + zettabytes);
+            System.out.println("yottabytes : " + yottabytes);
+
+            if (megabytes * 5 > DeviceUtility.getFreeRamSize(mActivity)) {
+                isBigger = true;
+            }
+        }else{
+            System.out.println("File does not exists!");
+        }
+
+        return isBigger;
+    }
     public void askToUploadHeaderMedia(final int type) {
         String msg = "";
         switch (type) {
@@ -1462,7 +1498,12 @@ public class ProfileFragment extends Fragment {
         builder.setPositiveButton("Set",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        uploadHeaderMedia(type);
+                        if (checkFileSize(videoPath)) {
+                            Utils.showToast(mActivity, "Video size is too big");
+                        } else {
+                            uploadHeaderMedia(type);
+                        }
+
                         dialog.cancel();
                     }
                 });
@@ -1558,13 +1599,11 @@ public class ProfileFragment extends Fragment {
         intent.putExtra(MediaStore.EXTRA_OUTPUT,fileUri);
 
         // set the video image quality to high
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
         // set max time limit
         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 15);
-//        or
-//        intent.putExtra("android.intent.extra.durationLimit", 30000);
-
+        ///set max size limit
+        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, DeviceUtility.getFreeRamSize(mActivity) * 1024 * 1024 / 5);
         // start the Video Capture Intent
         startActivityForResult(intent, take_video_from_camera);
     }

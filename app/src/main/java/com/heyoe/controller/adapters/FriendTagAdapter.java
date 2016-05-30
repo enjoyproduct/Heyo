@@ -53,10 +53,8 @@ public class FriendTagAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            view = layoutInflater.inflate(R.layout.item_search, null);
-        }
+        View view = layoutInflater.inflate(R.layout.item_search, null);
+
         final UserModel userModel = arrayList.get(position);
         if (userModel != null) {
             TextView name = (TextView) view.findViewById(R.id.item_search_fullname);
