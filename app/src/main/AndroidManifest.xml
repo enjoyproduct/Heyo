@@ -130,7 +130,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".controller.QBChatActivity"
+            android:name=".controller.layer_chat.LayerChatActivity"
             android:label="@string/title_activity_chat"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -144,11 +144,13 @@
             android:label="@string/title_activity_black__friend_"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".controller.photo_crop.PhotoCropActivity"
             android:label="@string/title_activity_photo_crop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>

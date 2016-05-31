@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -53,7 +54,8 @@ import com.heyoe.controller.fragments.MyFriendFragment;
 import com.heyoe.controller.fragments.NewPostFragment;
 import com.heyoe.controller.fragments.ProfileFragment;
 import com.heyoe.controller.fragments.RequestFragment;
-import com.heyoe.controller.pushnotifications.GcmServiceManager;
+import com.heyoe.controller.layer_chat.MyAuthenticationListener;
+import com.heyoe.controller.layer_chat.MyConnectionListener;
 import com.heyoe.controller.qb_chat.chat.ChatHelper;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
@@ -63,6 +65,10 @@ import com.heyoe.model.PushModel;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.UIUtility;
 import com.heyoe.utilities.Utils;
+import com.layer.sdk.LayerClient;
+import com.layer.sdk.exceptions.LayerException;
+import com.layer.sdk.listeners.LayerAuthenticationListener;
+import com.layer.sdk.listeners.LayerConnectionListener;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
@@ -77,11 +83,13 @@ import org.json.JSONObject;
 import org.liuyichen.dribsearch.DribSearchView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity implements
-         View.OnClickListener{
+         View.OnClickListener {
 
 //    private ImageButton ibMenu;
 //    private SearchView searchView;
@@ -103,27 +111,151 @@ public class HomeActivity extends AppCompatActivity implements
     private static Activity mActivity;
 
     private static ArrayList<UserModel> arrAllUsers;
-
     private static int currentFragmentNum;
+
+
+    public static LayerClient layerClient;
+    //Layer connection and authentication callback listeners
+    private MyConnectionListener connectionListener;
+    private MyAuthenticationListener authenticationListener;
+
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-//        GcmServiceManager gcmServiceManager = GcmServiceManager.getInstance();
-//        gcmServiceManager.startGcmService(this);
-
         //INIT QB SDK
         QBSettings.getInstance().init(this, Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
         QBSettings.getInstance().setAccountKey(Constant.ACCOUNT_KEY);
 
+
         initVariables();
         initUI();
-
-//        getAllUsers();
-
         qb_login();
     }
+
+    private void initVariables() {
+        fragmentManager = getSupportFragmentManager();
+        mActivity = this;
+        arrAllUsers = new ArrayList<>();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mHandleMessageReceiver, new IntentFilter("pushData"));
+
+
+        if(connectionListener == null)
+            connectionListener = new MyConnectionListener(this);
+
+        if(authenticationListener == null)
+            authenticationListener = new MyAuthenticationListener(this);
+    }
+
+
+    //onResume is called on App Start and when the app is brought to the foreground
+    protected void onResume(){
+        super.onResume();
+        setOffline("on");
+        resetMenu();
+
+        //Connect to Layer and Authenticate a user
+//        loadLayerClient();
+
+        //Every time the app is brought to the foreground, register the typing indicator
+//        if(layerClient != null && conversationView != null)
+//            layerClient.registerTypingIndicator(conversationView);
+    }
+
+    //onPause is called when the app is sent to the background
+    protected void onPause(){
+        super.onPause();
+
+        //When the app is moved to the background, unregister the typing indicator
+//        if(layerClient != null && conversationView != null)
+//            layerClient.unregisterTypingIndicator(conversationView);
+    }
+
+    //Checks to see if the SDK is connected to Layer and whether a user is authenticated
+    //The respective callbacks are executed in MyConnectionListener and MyAuthenticationListener
+    private void loadLayerClient(){
+
+        if(layerClient == null){
+
+            //Used for debugging purposes ONLY. DO NOT include this option in Production Builds.
+            //LayerClient.setLoggingEnabled(this.getApplicationContext(),true);
+
+            // Initializes a LayerClient object with the Google Project Number
+            LayerClient.Options options = new LayerClient.Options();
+
+            //Sets the GCM sender id allowing for push notifications
+            options.googleCloudMessagingSenderId(Constant.GCM_PROJECT_NUMBER);
+
+            //By default, only unread messages are synced after a user is authenticated, but you
+            // can change that behavior to all messages or just the last message in a conversation
+            options.historicSyncPolicy(LayerClient.Options.HistoricSyncPolicy.ALL_MESSAGES);
+
+
+            layerClient = LayerClient.newInstance(this, Constant.LAYER_APP_ID, options);
+
+            //Register the connection and authentication listeners
+            layerClient.registerConnectionListener(connectionListener);
+            layerClient.registerAuthenticationListener(authenticationListener);
+        }
+
+        //Check the current state of the SDK. The client must be CONNECTED and the user must
+        // be AUTHENTICATED in order to send and receive messages. Note: it is possible to be
+        // authenticated, but not connected, and vice versa, so it is a best practice to check
+        // both states when your app launches or comes to the foreground.
+        if (!layerClient.isConnected()) {
+
+            //If Layer is not connected, make sure we connect in order to send/receive messages.
+            // MyConnectionListener.java handles the callbacks associated with Connection, and
+            // will start the Authentication process once the connection is established
+            layerClient.connect();
+
+        } else if (!layerClient.isAuthenticated()) {
+
+            //If the client is already connected, try to authenticate a user on this device.
+            // MyAuthenticationListener.java handles the callbacks associated with Authentication
+            // and will start the Conversation View once the user is authenticated
+            layerClient.authenticate();
+
+        } else {
+
+            // If the client is to Layer and the user is authenticated, start the Conversation
+            // View. This will be called when the app moves from the background to the foreground,
+            // for example.
+            onUserAuthenticated();
+        }
+    }
+
+    //Once the user has successfully authenticated, begin the conversationView
+    public void onUserAuthenticated(){
+
+//        if(conversationView == null) {
+//
+//            conversationView = new ConversationViewController(this, layerClient);
+//
+//            if (layerClient != null) {
+//                layerClient.registerTypingIndicator(conversationView);
+//            }
+//        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     public BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver(){
 
         public void onReceive(Context context, Intent intent) {
@@ -158,12 +290,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
         return flag;
     }
-    private void initVariables() {
-        fragmentManager = getSupportFragmentManager();
-        mActivity = this;
-        arrAllUsers = new ArrayList<>();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mHandleMessageReceiver, new IntentFilter("pushData"));
-    }
+
 
     private void initUI() {
 
@@ -422,12 +549,7 @@ public class HomeActivity extends AppCompatActivity implements
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setOffline("on");
-       resetMenu();
-    }
+
     public static void resetMenu() {
         mainMenuFragment = new MainMenuFragment();
         fragmentManager.beginTransaction()
@@ -894,24 +1016,11 @@ public class HomeActivity extends AppCompatActivity implements
         }
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mHandleMessageReceiver);
+        logoutFromQB();
 
-        //logout qb
-        if (chatService != null) {
-            chatService.logout(new QBEntityCallback<Void>() {
-                @Override
-                public void onSuccess(Void aVoid, Bundle bundle) {
-                    chatService.destroy();
-                }
-
-                @Override
-                public void onError(QBResponseException e) {
-                    Utils.showToast(mActivity, e.getLocalizedMessage());
-                }
-            });
-
-        }
         super.onDestroy();
     }
+
     public static void showSignOutAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(mActivity.getResources().getString(R.string.app_name));
@@ -967,6 +1076,7 @@ public class HomeActivity extends AppCompatActivity implements
         mActivity.startActivity(new Intent(mActivity, SignActivity.class));
         ((HomeActivity)mActivity).finish();
     }
+
     public static void setOffline(String status) {
 
         Map<String, String> params = new HashMap<String, String>();
@@ -1049,6 +1159,23 @@ public class HomeActivity extends AppCompatActivity implements
                         }
                     });
                 }
+                @Override
+                public void onError(QBResponseException e) {
+                    Utils.showToast(mActivity, e.getLocalizedMessage());
+                }
+            });
+
+        }
+    }
+    private void logoutFromQB() {
+        //logout qb
+        if (chatService != null) {
+            chatService.logout(new QBEntityCallback<Void>() {
+                @Override
+                public void onSuccess(Void aVoid, Bundle bundle) {
+                    chatService.destroy();
+                }
+
                 @Override
                 public void onError(QBResponseException e) {
                     Utils.showToast(mActivity, e.getLocalizedMessage());

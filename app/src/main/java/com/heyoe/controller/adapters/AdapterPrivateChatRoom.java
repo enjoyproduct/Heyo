@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.heyoe.R;
-import com.heyoe.controller.QBChatActivity;
+import com.heyoe.controller.layer_chat.LayerChatActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
 import com.heyoe.utilities.Utils;
@@ -36,7 +36,7 @@ public class AdapterPrivateChatRoom extends BaseAdapter {
     private Boolean mineFlag;
     private String opponentAvatar;
 
-    public AdapterPrivateChatRoom(QBChatActivity context, ArrayList<QBChatMessage> arr, String avatarURL)
+    public AdapterPrivateChatRoom(LayerChatActivity context, ArrayList<QBChatMessage> arr, String avatarURL)
     {
         layoutInflater = LayoutInflater.from(context);
         this.context = context;

@@ -1,5 +1,6 @@
 package com.heyoe.model;
 
+import com.layer.sdk.messaging.Conversation;
 import com.quickblox.chat.model.QBDialog;
 
 import java.io.Serializable;
@@ -28,6 +29,24 @@ public class UserModel implements Serializable {
     String blacker_id;
     QBDialog qbDialog;
     long qbLastMsgSentTime;
+    Conversation conversation;
+    String layer_id;
+
+    public String getLayer_id() {
+        return layer_id;
+    }
+
+    public void setLayer_id(String layer_id) {
+        this.layer_id = layer_id;
+    }
+
+    public Conversation getConversation() {
+        return conversation;
+    }
+
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
+    }
 
     public long getQbLastMsgSentTime() {
         return qbLastMsgSentTime;

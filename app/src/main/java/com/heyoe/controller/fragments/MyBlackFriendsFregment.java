@@ -30,7 +30,6 @@ import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe.R;
-import com.heyoe.controller.QBChatActivity;
 import com.heyoe.controller.qb_chat.ChatActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
@@ -43,7 +42,6 @@ import com.heyoe.widget.MyCircularImageView;
 import com.quickblox.auth.QBAuth;
 import com.quickblox.auth.model.QBSession;
 import com.quickblox.chat.QBChatService;
-import com.quickblox.chat.QBPrivateChatManager;
 import com.quickblox.chat.model.QBDialog;
 import com.quickblox.core.QBEntityCallback;
 import com.quickblox.core.QBSettings;
@@ -56,9 +54,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.

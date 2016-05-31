@@ -13,6 +13,7 @@
     <string name="title_activity_user_list">UserListActivity</string>
     <string name="title_activity_detail_post">DetailPostActivity</string>
     <string name="title_activity_media_play">MediaPlayActivity</string>
+    <string name="title_activity_layer_chat">LayerChatActivity</string>
 
     <!--/////////////////////////////   facebook -->
     <string name="facebook_app_id">1115896661787487</string>

@@ -36,11 +36,20 @@ import com.heyoe.controller.HomeActivity;
 import com.heyoe.controller.ProfileActivity;
 import com.heyoe.model.API;
 import com.heyoe.model.Constant;
+import com.heyoe.model.Global;
 import com.heyoe.model.UserModel;
 import com.heyoe.utilities.Utils;
 import com.heyoe.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe.widget.MyCircularImageView;
+import com.quickblox.auth.QBAuth;
+import com.quickblox.auth.model.QBSession;
+import com.quickblox.chat.QBChatService;
+import com.quickblox.chat.model.QBDialog;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.QBSettings;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.users.model.QBUser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -246,6 +255,7 @@ public class RequestFragment extends Fragment {
                                     String avatar = userObject.getString("avatar");
                                     String header_photo_url = userObject.getString("header_photo");
                                     String header_video_url = userObject.getString("header_video");
+                                    String qb_id = userObject.getString("qb_id");
 
                                     UserModel userModel = new UserModel();
 
@@ -262,6 +272,7 @@ public class RequestFragment extends Fragment {
                                     userModel.setAvatar(avatar);
                                     userModel.setHeader_photo(header_photo_url);
                                     userModel.setHeader_video(header_video_url);
+                                    userModel.setQb_id(qb_id);
 
                                     arrUsers.add(userModel);
                                 }
@@ -309,6 +320,7 @@ public class RequestFragment extends Fragment {
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
+                                createSession(arrUsers.get(position).getQb_id());
                                 arrUsers.remove(position);
                                 friendAdapter.notifyDataSetChanged();
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.accept_success));
@@ -331,6 +343,46 @@ public class RequestFragment extends Fragment {
                 });
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
+    }
+    private void createSession(final String opponentID) {
+        QBUser user = Global.getInstance().qbUser;
+        if (user == null) {
+            user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
+        }
+        QBSettings.getInstance().fastConfigInit(Constant.APP_ID, Constant.AUTH_KEY, Constant.AUTH_SECRET);
+        final QBUser finalUser = user;
+        QBAuth.createSession(user, new QBEntityCallback<QBSession>() {
+            @Override
+            public void onSuccess(QBSession qbSession, Bundle bundle) {
+
+                finalUser.setId(qbSession.getUserId());
+                Global.getInstance().qbUser = finalUser;
+                createDialog(opponentID);
+            }
+
+            @Override
+            public void onError(QBResponseException e) {
+                Utils.showToast(mActivity, e.getLocalizedMessage());
+            }
+        });
+    }
+    private void createDialog(final String opponentID) {
+
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                QBChatService.getInstance().getPrivateChatManager().createDialog(Integer.parseInt(opponentID), new QBEntityCallback<QBDialog>() {
+                    @Override
+                    public void onSuccess(QBDialog dialog, Bundle bundle) {
+                    }
+                    @Override
+                    public void onError(QBResponseException e) {
+                        Utils.hideProgress();
+                        Utils.showToast(mActivity, e.getLocalizedMessage());
+                    }
+                });
+            }
+        });
     }
     private void rejectFriend(final int position) {
         String user_id = arrUsers.get(position).getUser_id();

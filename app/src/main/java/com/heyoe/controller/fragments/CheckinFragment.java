@@ -477,7 +477,7 @@ public class CheckinFragment extends Fragment {
     private static void getDialogs(){
 //        user = Global.getInstance().qbUser;
 //        if (user == null) {
-//            return;
+//            user = new QBUser(Utils.getFromPreference(mActivity, Constant.EMAIL), Constant.DEFAULT_PASSWORD);
 //        }
         QBRequestGetBuilder requestGetBuilder = new QBRequestGetBuilder();
         QBChatService.getChatDialogs(null, requestGetBuilder, new QBEntityCallback<ArrayList<QBDialog>>() {
@@ -490,7 +490,7 @@ public class CheckinFragment extends Fragment {
                 for (int i = 0; i < arrUsers.size(); i++) {
                     arrUsers.get(i).setUnreadMsgCount(0);
                     for (QBDialog dialog : arr) {
-                        if (dialog.getOccupants().contains(user.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrUsers.get(i).getQb_id()))) {
+                        if (dialog.getOccupants().contains(Global.getInstance().qbUser.getId()) && dialog.getOccupants().contains(Integer.parseInt(arrUsers.get(i).getQb_id()))) {
                             ///get unread message count and dialog id
                             arrUsers.get(i).setUnreadMsgCount(dialog.getUnreadMessageCount());
                             arrUsers.get(i).setQbDialog(dialog);
@@ -632,7 +632,7 @@ public class CheckinFragment extends Fragment {
 
 
                     } else if (arrFriends.get(position).getCheckinRequestState() == 3) {
-//                        Intent intent = new Intent(mActivity, QBChatActivity.class);
+//                        Intent intent = new Intent(mActivity, LayerChatActivity.class);
                         Intent intent = new Intent(mActivity, ChatActivity.class);
                         intent.putExtra("userModel", arrFriends.get(position));
                         intent.putExtra("page", "checkin_chat");

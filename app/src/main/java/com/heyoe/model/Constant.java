@@ -61,11 +61,11 @@ public class Constant {
     public static String ACCOUNT_KEY = "5Vv8WGbhPpqHqtyoXs7i";
     public static String DEFAULT_PASSWORD = "135792468";
 
-
+    public static String GCM_PROJECT_NUMBER = "535417836265";
     //layer
     public static String LAYER_APP_ID = "layer:///apps/staging/acbaaae4-26af-11e6-ab98-ada34e1b14cb";
     public static String LAYER_PROVIDER_ID = "layer:///providers/ce2aec12-2456-11e6-ab98-ada34e1b14cb";
-    public static String LAYER_AUTH_KEY = "";
+    public static String LAYER_AUTH_KEY = "layer:///keys/8279a36a-2755-11e6-8d62-0700541d3e60";
 
 
     public static String MSG_COUNT = "msg_count";
