@@ -29,10 +29,10 @@ allprojects {
             url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
         }
         // for layer
-        maven { url "https://raw.githubusercontent.com/layerhq/releases-android/master/releases/" }
+//        maven { url "https://raw.githubusercontent.com/layerhq/releases-android/master/releases/" }
     }
 }
 
 task clean(type: Delete) {
-    delete rootProject.buildDir
+//    delete rootProject.buildDir
 }

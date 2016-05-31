@@ -97,7 +97,7 @@ dependencies {
     compile project(':cropper')
     compile project(':taglibrary')
     compile project(':dribSearch')
-    compile project(':layer-atlas')
+//    compile project(':layer-atlas')
     compile 'com.github.bumptech.glide:glide:3.6.1'
     compile "se.emilsjolander:stickylistheaders:2.7.0"
 
