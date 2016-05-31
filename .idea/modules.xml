@@ -4,12 +4,19 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Heyoe.iml" filepath="$PROJECT_DIR$/Heyoe.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/cropper/cropper.iml" filepath="$PROJECT_DIR$/cropper/cropper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cropper/cropper.iml" filepath="$PROJECT_DIR$/cropper/cropper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dribSearch/dribSearch.iml" filepath="$PROJECT_DIR$/dribSearch/dribSearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/dribSearch/dribSearch.iml" filepath="$PROJECT_DIR$/dribSearch/dribSearch.iml" />
       <module fileurl="file://$PROJECT_DIR$/layer-atlas/layer-atlas.iml" filepath="$PROJECT_DIR$/layer-atlas/layer-atlas.iml" />
       <module fileurl="file://$PROJECT_DIR$/pullToRefreshLibrary/pullToRefreshLibrary.iml" filepath="$PROJECT_DIR$/pullToRefreshLibrary/pullToRefreshLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pullToRefreshLibrary/pullToRefreshLibrary.iml" filepath="$PROJECT_DIR$/pullToRefreshLibrary/pullToRefreshLibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/swipe_layout_library/swipe_layout_library.iml" filepath="$PROJECT_DIR$/swipe_layout_library/swipe_layout_library.iml" />
       <module fileurl="file://$PROJECT_DIR$/swipe_layout_library/swipe_layout_library.iml" filepath="$PROJECT_DIR$/swipe_layout_library/swipe_layout_library.iml" />
       <module fileurl="file://$PROJECT_DIR$/taglibrary/taglibrary.iml" filepath="$PROJECT_DIR$/taglibrary/taglibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/taglibrary/taglibrary.iml" filepath="$PROJECT_DIR$/taglibrary/taglibrary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/volleylibrary/volleylibrary.iml" filepath="$PROJECT_DIR$/volleylibrary/volleylibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/volleylibrary/volleylibrary.iml" filepath="$PROJECT_DIR$/volleylibrary/volleylibrary.iml" />
     </modules>
   </component>
