@@ -1,1 +1,1 @@
-include ':app', ':volleylibrary', ':pullToRefreshLibrary', ':swipe_layout_library', ':dribSearch', ':taglibrary', ':cropper'
+include ':app', ':volleylibrary', ':pullToRefreshLibrary', ':swipe_layout_library', ':dribSearch', ':taglibrary', ':cropper', ':layer-atlas'

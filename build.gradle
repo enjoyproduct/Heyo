@@ -20,7 +20,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        //        for swipe widget
+        // for swipe widget
         maven {
             url "https://jitpack.io"
         }
@@ -28,6 +28,8 @@ allprojects {
         maven {
             url "https://github.com/QuickBlox/quickblox-android-sdk-releases/raw/master/"
         }
+        // for layer
+        maven { url "https://raw.githubusercontent.com/layerhq/releases-android/master/releases/" }
     }
 }
 
