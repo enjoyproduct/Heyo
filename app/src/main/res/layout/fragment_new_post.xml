@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.heyoe.controller.fragments.NewPostFragment">
+    tools:context="com.heyoe_chat.controller.fragments.NewPostFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
                 android:gravity="center_vertical"
                 android:padding="@dimen/dimen_12dp"
                 >
-                <com.heyoe.widget.MyCircularImageView
+                <com.heyoe_chat.widget.MyCircularImageView
                     android:id="@+id/civ_compose_avatar"
                     android:layout_width="@dimen/avatar_size"
                     android:layout_height="@dimen/avatar_size"

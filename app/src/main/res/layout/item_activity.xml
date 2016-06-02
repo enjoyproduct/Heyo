@@ -10,7 +10,7 @@
         android:layout_height="80dp"
         >
         <!--avatar-->
-        <com.heyoe.widget.MyCircularImageView
+        <com.heyoe_chat.widget.MyCircularImageView
             android:id="@+id/civ_ia_friend_avatar3"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"

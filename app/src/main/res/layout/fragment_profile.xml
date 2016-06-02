@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.heyoe.controller.fragments.ProfileFragment"
+    tools:context="com.heyoe_chat.controller.fragments.ProfileFragment"
     android:background="@color/white">
 
 

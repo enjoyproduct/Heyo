@@ -30,7 +30,7 @@ android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
     defaultConfig {
-        applicationId "com.heyoe"
+        applicationId "com.heyoe_chat"
         minSdkVersion 17
         targetSdkVersion 23
         versionCode 19
@@ -45,7 +45,7 @@ android {
         }
     }
     sourceSets {
-//        main.res.srcDirs += 'src/main/res-layer-chat'
+        main.res.srcDirs += 'src/main/res-layer-chat'
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
@@ -69,43 +69,32 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.android.support:multidex:1.0.0'
-
     compile 'com.google.android.gms:play-services:8.4.0'
-
     compile 'com.commonsware.cwac:richedit:0.5.+'
-
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
     compile files('libs/YouTubeAndroidPlayerApi.jar')
-
     compile('com.balysv.materialmenu:material-menu-toolbar:1.5.1') {
         exclude group: 'com.nineoldandroids'
     }
     compile('com.quickblox:quickblox-android-sdk-chat:2.5.1@aar') {
         transitive = true
     }
-    compile 'com.quickblox:quickblox-android-sdk-core:2.5.1@aar'
-    compile 'com.quickblox:quickblox-android-sdk-content:2.5.1@aar'
-    compile 'com.quickblox:quickblox-android-sdk-messages:2.5.1@aar'
-    compile 'com.quickblox:quickblox-android-sdk-customobjects:2.5.1@aar'
-    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
 
+    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile files('libs/httpmime-4.2.6.jar')
     compile files('libs/httpcore-4.2.5.jar')
-
     compile project(':volleylibrary')
     compile project(':swipe_layout_library')
     compile project(':pullToRefreshLibrary')
     compile project(':cropper')
     compile project(':taglibrary')
     compile project(':dribSearch')
-//    compile project(':layer-atlas')
     compile 'com.github.bumptech.glide:glide:3.6.1'
-    compile "se.emilsjolander:stickylistheaders:2.7.0"
-
+    compile 'se.emilsjolander:stickylistheaders:2.7.0'
     compile 'com.layer.sdk:layer-sdk:0.20.4'
     compile 'org.slf4j:slf4j-nop:1.5.8'
-
+    compile project(':layer-atlas')
 }
 

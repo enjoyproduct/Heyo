@@ -9,7 +9,7 @@
         android:gravity="center_vertical"
         android:background="@color/white"
         >
-        <com.heyoe.widget.MyCircularImageView
+        <com.heyoe_chat.widget.MyCircularImageView
             android:id="@+id/item_search_civ_photo"
             android:layout_width="50dp"
             android:layout_height="50dp"

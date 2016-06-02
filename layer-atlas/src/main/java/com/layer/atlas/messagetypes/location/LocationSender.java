@@ -164,12 +164,12 @@ public class LocationSender extends AttachmentSender {
             LayerClient client = sender.getLayerClient();
             ParticipantProvider participantProvider = sender.getParticipantProvider();
             try {
-                String myName = participantProvider.getParticipant(client.getAuthenticatedUserId()).getName();
+//                String myName = participantProvider.getParticipant(client.getAuthenticatedUserId()).getName();
                 JSONObject o = new JSONObject()
                         .put(LocationCellFactory.KEY_LATITUDE, location.getLatitude())
                         .put(LocationCellFactory.KEY_LONGITUDE, location.getLongitude())
-                        .put(LocationCellFactory.KEY_LABEL, myName);
-                String notification = context.getString(R.string.atlas_notification_location, myName);
+                        .put(LocationCellFactory.KEY_LABEL, "");
+                String notification = context.getString(R.string.atlas_notification_location, "");
                 MessagePart part = client.newMessagePart(LocationCellFactory.MIME_TYPE, o.toString().getBytes());
                 PushNotificationPayload payload = new PushNotificationPayload.Builder()
                         .text(notification)

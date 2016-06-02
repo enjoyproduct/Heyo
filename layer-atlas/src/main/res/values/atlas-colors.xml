@@ -15,8 +15,8 @@
 -->
 <resources>
 
-    <color name="atlas_color_primary_blue">#FF21AAE1</color>
-    <color name="atlas_color_dark_blue">#FF198BB8</color>
+    <color name="atlas_color_primary_blue">#03a6a8</color>
+    <color name="atlas_color_dark_blue">#038b8c</color>
     <color name="atlas_color_primary_gray">#FFEBEBEB</color>
 
     <color name="atlas_status_bar_background">@color/atlas_color_dark_blue</color>
@@ -39,6 +39,7 @@
 
     <color name="atlas_item_leavebehind">#3D000000</color>
     <color name="atlas_item_swiping">#E0FFFFFF</color>
+    <color name="atlas_white">#E0FFFFFF</color>
 
     <color name="atlas_item_selected">#FFD8D8D8</color>
     <color name="atlas_item_divider">#FFE0E0E0</color>

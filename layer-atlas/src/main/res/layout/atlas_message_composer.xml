@@ -13,11 +13,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.    
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@drawable/atlas_message_composer_background"
-              android:orientation="horizontal">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/atlas_message_composer_background"
+    android:orientation="horizontal"
+    android:gravity="bottom">
 
     <ImageView
         android:id="@+id/attachment"
@@ -28,6 +30,7 @@
         android:layout_marginRight="@dimen/atlas_icon_button_side_padding"
         android:scaleType="center"
         android:src="@drawable/ic_add_white_24dp"
+
         />
 
     <EditText
@@ -37,7 +40,6 @@
         android:layout_gravity="bottom"
         android:layout_weight="1"
         android:hint="@string/atlas_message_composer_hint"
-        android:maxLines="3"
         android:minHeight="@dimen/atlas_input_height"
         android:textSize="@dimen/atlas_text_size_input"
         android:background="@drawable/atlas_edit_text_background"

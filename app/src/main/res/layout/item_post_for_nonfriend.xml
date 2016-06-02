@@ -15,13 +15,13 @@
             android:layout_height="wrap_content"
             >
 
-            <com.heyoe.widget.MyCircularImageView
+            <com.heyoe_chat.widget.MyCircularImageView
                 android:id="@+id/civ_ipff_friend_avatar1"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
                 android:src="@drawable/default_user"
                 />
-            <com.heyoe.widget.MyCircularImageView
+            <com.heyoe_chat.widget.MyCircularImageView
                 android:id="@+id/civ_ipff_friend_avatar2"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
@@ -30,7 +30,7 @@
                 android:visibility="gone"
 
                 />
-            <com.heyoe.widget.MyCircularImageView
+            <com.heyoe_chat.widget.MyCircularImageView
                 android:id="@+id/civ_ipff_friend_avatar3"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
@@ -68,7 +68,7 @@
             android:layout_centerInParent="true"
             android:background="@drawable/ic_play_dark"
             android:visibility="visible"/>
-        <com.heyoe.widget.MyCircularImageView
+        <com.heyoe_chat.widget.MyCircularImageView
             android:id="@+id/civ_ipff_av"
             android:layout_width="@dimen/avatar_bg_size"
             android:layout_height="@dimen/avatar_bg_size"
@@ -76,7 +76,7 @@
             android:layout_alignBottom="@+id/iv_ipff_media"
             android:layout_marginBottom="-32dp"
             android:layout_marginLeft="@dimen/dimen_16dp"/>
-        <com.heyoe.widget.MyCircularImageView
+        <com.heyoe_chat.widget.MyCircularImageView
             android:id="@+id/civ_ipff_avatar"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
@@ -97,7 +97,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 >
-                <com.heyoe.widget.MyCircularImageView
+                <com.heyoe_chat.widget.MyCircularImageView
                     android:layout_width="@dimen/avatar_size"
                     android:layout_height="@dimen/avatar_size"
                     />

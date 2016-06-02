@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.heyoe.controller.TakeMediaActivity">
+    tools:context="com.heyoe_chat.controller.TakeMediaActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

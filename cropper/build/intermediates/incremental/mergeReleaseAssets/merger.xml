@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="E:\Android_work(2016)\Heyoe\cropper\src\main\assets"/><source path="E:\Android_work(2016)\Heyoe\cropper\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="E:\Android_work(2016)\Heyoe\cropper\src\release\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="E:\Android_work(2016)\Heyoe_Chat\cropper\src\main\assets"/><source path="E:\Android_work(2016)\Heyoe_Chat\cropper\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="E:\Android_work(2016)\Heyoe_Chat\cropper\src\release\assets"/></dataSet></merger>

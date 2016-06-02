@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="E:\Android_work(2016)\Heyoe\taglibrary\src\main\jniLibs"/></dataSet><dataSet config="release"><source path="E:\Android_work(2016)\Heyoe\taglibrary\src\release\jniLibs"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="E:\Android_work(2016)\Heyoe_Chat\taglibrary\src\main\jniLibs"/></dataSet><dataSet config="release"><source path="E:\Android_work(2016)\Heyoe_Chat\taglibrary\src\release\jniLibs"/></dataSet></merger>

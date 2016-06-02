@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.heyoe.controller.fragments.PrivacyPolicyFragment">
+    tools:context="com.heyoe_chat.controller.fragments.PrivacyPolicyFragment">
 
     <!-- TODO: Update blank fragment text_layout -->
     <TextView

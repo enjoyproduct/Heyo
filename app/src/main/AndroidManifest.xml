@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.heyoe">
+    package="com.heyoe_chat">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -129,16 +129,7 @@
             android:label="@string/title_activity_detail_post"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".controller.layer_chat.LayerChatActivity"
-            android:label="@string/title_activity_chat"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".controller.qb_chat.ChatActivity"
-            android:label="@string/title_activity_chat"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".controller.Black_Friend_Activity"
             android:label="@string/title_activity_black__friend_"
@@ -150,7 +141,11 @@
             android:label="@string/title_activity_photo_crop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-
+        <activity
+            android:name=".controller.layer_chat.MessagesListActivity"
+            android:label="@string/title_messages_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

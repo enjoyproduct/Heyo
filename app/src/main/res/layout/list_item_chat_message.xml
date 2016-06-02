@@ -7,7 +7,7 @@
     tools:gravity="right"
     android:orientation="horizontal"
     tools:ignore="RtlHardcoded">
-    <com.heyoe.widget.MyCircularImageView
+    <com.heyoe_chat.widget.MyCircularImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:id="@+id/civUser"
@@ -35,7 +35,7 @@
                 tools:text="Test message"
                 android:maxWidth="220dp"/>
 
-            <com.heyoe.widget.MaskedImageView
+            <com.heyoe_chat.widget.MaskedImageView
                 android:id="@+id/image_message_attachment"
                 android:layout_width="@dimen/chat_message_attachment_size"
                 android:layout_height="@dimen/chat_message_attachment_size"

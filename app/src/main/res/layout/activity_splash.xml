@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.heyoe.controller.SplashActivity">
+    tools:context="com.heyoe_chat.controller.SplashActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

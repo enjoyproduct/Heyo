@@ -21,5 +21,6 @@
         android:left="@dimen/atlas_message_item_cell_padding_far"
         android:right="@dimen/atlas_message_item_cell_padding_near"
         android:top="@dimen/atlas_message_item_cell_padding_top"/>
+
     <solid android:color="@color/atlas_cell_me_background"/>
 </shape>

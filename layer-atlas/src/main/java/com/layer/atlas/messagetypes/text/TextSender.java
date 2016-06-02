@@ -1,5 +1,8 @@
 package com.layer.atlas.messagetypes.text;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.layer.atlas.R;
 import com.layer.atlas.messagetypes.MessageSender;
 import com.layer.atlas.util.Log;
@@ -27,15 +30,28 @@ public class TextSender extends MessageSender {
         if (Log.isLoggable(Log.VERBOSE)) Log.v("Sending text message");
 
         // Create notification string
-        String myName = getParticipantProvider().getParticipant(getLayerClient().getAuthenticatedUserId()).getName();
-        String notificationString = getContext().getString(R.string.atlas_notification_text, myName, (text.length() < mMaxNotificationLength) ? text : (text.substring(0, mMaxNotificationLength) + "…"));
-
+        String user_id = getLayerClient().getAuthenticatedUserId();
+//        String myName = getParticipantProvider().getParticipant(user_id).getName();
+//        String notificationString = getContext().getString(R.string.atlas_notification_text, myName, (text.length() < mMaxNotificationLength) ? text : (text.substring(0, mMaxNotificationLength) + "…"));
         // Send message
         MessagePart part = getLayerClient().newMessagePart(text);
-        PushNotificationPayload payload = new PushNotificationPayload.Builder()
-                .text(notificationString)
+        PushNotificationPayload payload= new PushNotificationPayload.Builder()
+                .text(user_id)
+                .title(isBlackChat())
                 .build();
         Message message = getLayerClient().newMessage(new MessageOptions().defaultPushNotificationPayload(payload), part);
         return send(message);
+    }
+    private String isBlackChat() {
+        SharedPreferences objSharedPreferences = null;
+        try {
+            objSharedPreferences = getContext().getSharedPreferences(
+                    "Heyoe", Context.MODE_PRIVATE);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String strblack = objSharedPreferences.getString("is_black", "");
+        return strblack;
     }
 }

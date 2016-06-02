@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.heyoe.controller.fragments.SignupFragment"
+    tools:context="com.heyoe_chat.controller.fragments.SignupFragment"
     android:background="@drawable/bg_green">
 
     <LinearLayout
@@ -38,7 +38,7 @@
                     android:src="@drawable/white_circle_border"
                     android:layout_centerInParent="true"
                     />
-                <com.heyoe.widget.MyCircularImageView
+                <com.heyoe_chat.widget.MyCircularImageView
                     android:id="@+id/civ_menu_avatar"
                     android:layout_width="70dp"
                     android:layout_height="70dp"

@@ -71,11 +71,11 @@ public class CameraSender extends AttachmentSender {
         }
         if (Log.isLoggable(Log.VERBOSE)) Log.v("Received camera response");
         try {
-            String myName = getParticipantProvider().getParticipant(getLayerClient().getAuthenticatedUserId()).getName();
+//            String myName = getParticipantProvider().getParticipant(getLayerClient().getAuthenticatedUserId()).getName();
             Message message = ThreePartImageUtils.newThreePartImageMessage(activity, getLayerClient(), new File(mPhotoFilePath.get()));
 
             PushNotificationPayload payload = new PushNotificationPayload.Builder()
-                    .text(getContext().getString(R.string.atlas_notification_image, myName))
+                    .text(getContext().getString(R.string.atlas_notification_image, ""))
                     .build();
             message.getOptions().defaultPushNotificationPayload(payload);
             send(message);

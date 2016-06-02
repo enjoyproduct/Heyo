@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="com.heyoe.controller.ExceptionViewActivity">
+    tools:context="com.heyoe_chat.controller.ExceptionViewActivity">
 
 
     <ScrollView

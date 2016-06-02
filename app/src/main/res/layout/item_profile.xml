@@ -44,7 +44,7 @@
                 android:paddingRight="@dimen/dimen_16dp"
                 android:paddingLeft="@dimen/dimen_16dp"
                 >
-                <com.heyoe.widget.MyCircularImageView
+                <com.heyoe_chat.widget.MyCircularImageView
                     android:layout_width="@dimen/avatar_size_profile"
                     android:layout_height="10dp"
                     />
@@ -218,14 +218,14 @@
             android:layout_alignBottom="@+id/rl_profile_header_media"
             android:layout_marginBottom="-40dp"
             android:layout_marginLeft="@dimen/dimen_28dp">
-            <com.heyoe.widget.MyCircularImageView
+            <com.heyoe_chat.widget.MyCircularImageView
                 android:id="@+id/civ_profile_av"
                 android:layout_width="@dimen/avatar_bg_size_profile"
                 android:layout_height="@dimen/avatar_bg_size_profile"
                 android:src="@drawable/bg_circle_white"
                 android:layout_centerInParent="true"
                 />
-            <com.heyoe.widget.MyCircularImageView
+            <com.heyoe_chat.widget.MyCircularImageView
                 android:id="@+id/civ_profile_avatar"
                 android:layout_width="@dimen/avatar_size_profile"
                 android:layout_height="@dimen/avatar_size_profile"

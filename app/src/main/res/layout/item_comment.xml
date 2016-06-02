@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/dimen_12dp">
         <!--avatar-->
-        <com.heyoe.widget.MyCircularImageView
+        <com.heyoe_chat.widget.MyCircularImageView
             android:id="@+id/civ_ic_avatar"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"

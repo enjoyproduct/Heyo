@@ -19,7 +19,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             >
-            <com.heyoe.widget.MyCircularImageView
+            <com.heyoe_chat.widget.MyCircularImageView
                 android:id="@+id/civ_ipff_avatar"
                 android:layout_width="@dimen/avatar_size"
                 android:layout_height="@dimen/avatar_size"
