@@ -20,6 +20,7 @@ public class UserModel implements Serializable {
     String media_count;
     String friend_count;
     String avatar;
+
     String header_photo;
     String header_video;
     String gender;

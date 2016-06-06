@@ -42,6 +42,7 @@ import com.heyoe_chat.controller.SignActivity;
 import com.heyoe_chat.model.API;
 import com.heyoe_chat.model.Constant;
 import com.heyoe_chat.utilities.Utils;
+import com.layer.atlas.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -240,9 +241,11 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
             @Override
             public void onCancel() {
 //                AccessToken.setCurrentAccessToken(null);
+                Utils.showToast(mActivity, "FB login cancel");
             }
             @Override
             public void onError(FacebookException e) {
+                Utils.showToast(mActivity, e.toString());
 //                AccessToken.setCurrentAccessToken(null);
             }
         });
@@ -261,6 +264,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
         params.put(Constant.DEVICE_ID, Utils.getFromPreference(mActivity, Constant.DEVICE_ID));
         params.put("email", email);
         params.put("fullname", fullname);
+        params.put("social_avatar", Utils.getFromPreference(mActivity, Constant.FB_PHOTO));
 
         CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.SINGIN_SOCIAL, params,
                 new Response.Listener<JSONObject>() {

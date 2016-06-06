@@ -7,9 +7,21 @@ import java.util.ArrayList;
  * Created by dell17 on 4/10/2016.
  */
 public class PostModel implements Serializable{
-    String post_id, posted_date, poster_id, poster_avatar, poster_celebrity, media_type,
-        media_url, like_count, dislike_count, comment_count, shared_count, viewed_count,
-        like, favorite, commented;
+    String post_id;
+    String posted_date;
+    String poster_id;
+    String poster_avatar;
+    String poster_celebrity;
+    String media_type;
+    String media_url;
+    String like_count;
+    String dislike_count;
+    String comment_count;
+    String shared_count;
+    String viewed_count;
+    String like;
+    String favorite;
+    String commented;
     String friendStatus;
     String poster_fullname;
     String  hashtag;

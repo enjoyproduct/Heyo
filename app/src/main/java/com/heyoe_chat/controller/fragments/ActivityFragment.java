@@ -185,6 +185,7 @@ public class ActivityFragment extends Fragment {
                                         postModel.setFavorite(postObject.getString("favorite"));
                                         postModel.setImageWidth(Integer.parseInt(postObject.getString("width")));
                                         postModel.setImageHeight(Integer.parseInt(postObject.getString("height")));
+                                        postModel.setClickedTime((long) 0);
 
                                         JSONArray jsonArrComments = postObject.getJSONArray("comments");
                                         ArrayList<CommentModel> arrComments = new ArrayList<>();

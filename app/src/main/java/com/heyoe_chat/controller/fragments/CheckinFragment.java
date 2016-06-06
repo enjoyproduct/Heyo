@@ -153,17 +153,6 @@ public class CheckinFragment extends Fragment {
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 mActivity.finish();
             }
-        } else if (requestCode == 201){
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    Uri conversation_id = data.getParcelableExtra("conversation_id");
-                    String user_id = data.getStringExtra("user_id");
-                    if (conversation_id != null) {
-                       updateUserState(user_id, conversation_id);
-                    }
-                }
-
-            }
         }
     }
     public static void updateUserState(String user_id, Uri conversation_id) {

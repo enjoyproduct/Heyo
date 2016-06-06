@@ -109,6 +109,8 @@ public class MyBlackFriendsFregment extends Fragment {
 
 
         }
+        friendAdapter = new FriendAdapter(arrActiveUsers);
+        lvHome.setAdapter(friendAdapter);
         for (int i = 0; i < arrBlockedUsers.size(); i++) {
             arrBlockedUsers.get(i).setUnreadMsgCount(0);
             arrBlockedUsers.get(i).setLastMsgSentTime(0);
@@ -129,8 +131,7 @@ public class MyBlackFriendsFregment extends Fragment {
 //                    temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
 //                    arrActiveUsers = new ArrayList<UserModel>();
 //                    arrActiveUsers.addAll(temp);
-            friendAdapter = new FriendAdapter(arrActiveUsers);
-            lvHome.setAdapter(friendAdapter);
+
 
         } else {
             blockedFriendAdapter = new BlockedFriendAdapter(arrBlockedUsers);
@@ -250,8 +251,7 @@ public class MyBlackFriendsFregment extends Fragment {
             }
         });
 
-        friendAdapter = new FriendAdapter(arrActiveUsers);
-        lvHome.setAdapter(friendAdapter);
+
     }
     private void getBlackFriends() {
         Utils.showProgress(mActivity);

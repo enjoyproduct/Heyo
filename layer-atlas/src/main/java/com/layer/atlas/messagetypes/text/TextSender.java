@@ -42,7 +42,7 @@ public class TextSender extends MessageSender {
         Message message = getLayerClient().newMessage(new MessageOptions().defaultPushNotificationPayload(payload), part);
         return send(message);
     }
-    private String isBlackChat() {
+    public String isBlackChat() {
         SharedPreferences objSharedPreferences = null;
         try {
             objSharedPreferences = getContext().getSharedPreferences(

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -128,6 +129,23 @@ public class UserListActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 201){
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    Uri conversation_id = data.getParcelableExtra("conversation_id");
+                    String user_id = data.getStringExtra("user_id");
+                    if (conversation_id != null) {
+                        CheckinFragment.updateUserState(user_id, conversation_id);
+                    }
+                }
+
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     protected void onDestroy() {

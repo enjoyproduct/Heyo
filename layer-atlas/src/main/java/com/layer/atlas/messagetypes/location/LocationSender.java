@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -165,6 +166,7 @@ public class LocationSender extends AttachmentSender {
             ParticipantProvider participantProvider = sender.getParticipantProvider();
             try {
 //                String myName = participantProvider.getParticipant(client.getAuthenticatedUserId()).getName();
+                String user_id = client.getAuthenticatedUserId();
                 JSONObject o = new JSONObject()
                         .put(LocationCellFactory.KEY_LATITUDE, location.getLatitude())
                         .put(LocationCellFactory.KEY_LONGITUDE, location.getLongitude())
@@ -172,7 +174,8 @@ public class LocationSender extends AttachmentSender {
                 String notification = context.getString(R.string.atlas_notification_location, "");
                 MessagePart part = client.newMessagePart(LocationCellFactory.MIME_TYPE, o.toString().getBytes());
                 PushNotificationPayload payload = new PushNotificationPayload.Builder()
-                        .text(notification)
+                        .text(user_id)
+                        .title(isBlackChat(context))
                         .build();
                 Message message = client.newMessage(new MessageOptions().defaultPushNotificationPayload(payload), part);
                 sender.send(message);
@@ -183,7 +186,17 @@ public class LocationSender extends AttachmentSender {
             }
         }
     }
-
+    public static String isBlackChat(Context context) {
+        SharedPreferences objSharedPreferences = null;
+        try {
+            objSharedPreferences = context.getSharedPreferences(
+                    "Heyoe", Context.MODE_PRIVATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String strblack = objSharedPreferences.getString("is_black", "");
+        return strblack;
+    }
     private static class GoogleApiCallbacks implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
         @Override
         public void onConnected(Bundle bundle) {

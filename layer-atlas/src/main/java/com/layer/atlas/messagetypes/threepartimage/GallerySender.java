@@ -3,7 +3,9 @@ package com.layer.atlas.messagetypes.threepartimage;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
@@ -80,10 +82,12 @@ public class GallerySender extends AttachmentSender {
         if (Log.isLoggable(Log.VERBOSE)) Log.v("Received gallery response");
         try {
 //            String myName = getParticipantProvider().getParticipant(getLayerClient().getAuthenticatedUserId()).getName();
+            String user_id = getLayerClient().getAuthenticatedUserId();
             Message message = ThreePartImageUtils.newThreePartImageMessage(activity, getLayerClient(), data.getData());
 
             PushNotificationPayload payload = new PushNotificationPayload.Builder()
-                    .text(getContext().getString(R.string.atlas_notification_image, ""))
+                    .text(user_id)
+                    .title(isBlackChat())
                     .build();
             message.getOptions().defaultPushNotificationPayload(payload);
             send(message);
@@ -91,5 +95,17 @@ public class GallerySender extends AttachmentSender {
             if (Log.isLoggable(Log.ERROR)) Log.e(e.getMessage(), e);
         }
         return true;
+    }
+    public String isBlackChat() {
+        SharedPreferences objSharedPreferences = null;
+        try {
+            objSharedPreferences = getContext().getSharedPreferences(
+                    "Heyoe", Context.MODE_PRIVATE);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String strblack = objSharedPreferences.getString("is_black", "");
+        return strblack;
     }
 }

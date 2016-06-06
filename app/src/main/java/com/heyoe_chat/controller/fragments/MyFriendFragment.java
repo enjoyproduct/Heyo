@@ -105,9 +105,10 @@ public class MyFriendFragment extends Fragment  {
                     break;
                 }
             }
-
-
         }
+        friendAdapter = new FriendAdapter(arrActiveUsers);
+        lvHome.setAdapter(friendAdapter);
+
         for (int i = 0; i < arrBlockedUsers.size(); i++) {
             arrBlockedUsers.get(i).setUnreadMsgCount(0);
             arrBlockedUsers.get(i).setLastMsgSentTime(0);
@@ -128,8 +129,7 @@ public class MyFriendFragment extends Fragment  {
 //                    temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
 //                    arrActiveUsers = new ArrayList<UserModel>();
 //                    arrActiveUsers.addAll(temp);
-            friendAdapter = new FriendAdapter(arrActiveUsers);
-            lvHome.setAdapter(friendAdapter);
+
 
         } else {
             blockedFriendAdapter = new BlockedFriendAdapter(arrBlockedUsers);
@@ -248,8 +248,7 @@ public class MyFriendFragment extends Fragment  {
             }
         });
 
-        friendAdapter = new FriendAdapter(arrActiveUsers);
-        lvHome.setAdapter(friendAdapter);
+
 
     }
     private void clearBadge() {

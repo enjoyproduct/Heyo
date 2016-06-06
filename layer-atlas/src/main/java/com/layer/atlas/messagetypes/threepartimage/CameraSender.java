@@ -1,7 +1,9 @@
 package com.layer.atlas.messagetypes.threepartimage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -72,10 +74,12 @@ public class CameraSender extends AttachmentSender {
         if (Log.isLoggable(Log.VERBOSE)) Log.v("Received camera response");
         try {
 //            String myName = getParticipantProvider().getParticipant(getLayerClient().getAuthenticatedUserId()).getName();
+            String user_id = getLayerClient().getAuthenticatedUserId();
             Message message = ThreePartImageUtils.newThreePartImageMessage(activity, getLayerClient(), new File(mPhotoFilePath.get()));
 
             PushNotificationPayload payload = new PushNotificationPayload.Builder()
-                    .text(getContext().getString(R.string.atlas_notification_image, ""))
+                    .text(user_id)
+                    .title(isBlackChat())
                     .build();
             message.getOptions().defaultPushNotificationPayload(payload);
             send(message);
@@ -84,7 +88,18 @@ public class CameraSender extends AttachmentSender {
         }
         return true;
     }
+    public String isBlackChat() {
+        SharedPreferences objSharedPreferences = null;
+        try {
+            objSharedPreferences = getContext().getSharedPreferences(
+                    "Heyoe", Context.MODE_PRIVATE);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String strblack = objSharedPreferences.getString("is_black", "");
+        return strblack;
+    }
     /**
      * Saves photo file path during e.g. screen rotation
      */

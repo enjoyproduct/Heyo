@@ -646,6 +646,7 @@ public class DetailPostFragment extends Fragment {
 
                     }
                 });
+
                 if (!postModel.getPoster_avatar().equals("")) {
                     UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + postModel.getPoster_avatar(), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
                         @Override

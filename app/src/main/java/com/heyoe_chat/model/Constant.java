@@ -26,6 +26,7 @@ public class Constant {
     public static String BIRTHDAY = "birthday";
     public static String GENDER = "gender";
     public static String AVATAR = "avatar";
+    public static String SOCIAL_AVATAR = "social_avatar";
     public static String ADD_AVATAR = "add_avatar";
     public static String CITY = "city";
     public static String COUNTRY = "country";
