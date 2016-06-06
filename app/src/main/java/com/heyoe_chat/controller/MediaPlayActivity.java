@@ -318,7 +318,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
                     // Otherwise, set the URL to null.
                     Uri.parse("http://host/path"),
                     // TODO: Make sure this auto-generated app deep link URI is correct.
-                    Uri.parse("android-app://com.heyoe/http/host/path")///com.heyoe-> must same as package name in AndroidManifest.xml
+                    Uri.parse("android-app://com.heyoe_chat/http/host/path")///com.heyoe_chat-> must same as package name in AndroidManifest.xml
             );
             AppIndex.AppIndexApi.start(client, viewAction);
         }
@@ -339,7 +339,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
                     // Otherwise, set the URL to null.
                     Uri.parse("http://host/path"),
                     // TODO: Make sure this auto-generated app deep link URI is correct.
-                    Uri.parse("android-app://com.heyoe/http/host/path")   ///com.heyoe-> must same as package name in AndroidManifest.xml
+                    Uri.parse("android-app://com.heyoe_chat/http/host/path")   ///com.heyoe_chat-> must same as package name in AndroidManifest.xml
             );
             AppIndex.AppIndexApi.end(client, viewAction);
             client.disconnect();

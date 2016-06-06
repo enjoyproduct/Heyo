@@ -36,6 +36,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.heyoe_chat.R;
 import com.heyoe_chat.controller.HomeActivity;
 import com.heyoe_chat.controller.SignActivity;
@@ -110,6 +112,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
     }
     private void initVaraibles() {
         mActivity = getActivity();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();

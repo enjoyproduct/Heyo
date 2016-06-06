@@ -6,9 +6,11 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
     <LinearLayout
+        android:id="@+id/ll_message_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/white">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -25,7 +27,8 @@
         <com.layer.atlas.AtlasAddressBar
             android:id="@+id/conversation_launcher"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <com.layer.atlas.AtlasHistoricMessagesFetchLayout
             android:id="@+id/historic_sync_layout"
@@ -45,7 +48,7 @@
             android:layout_width="match_parent"
             android:minHeight="48dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
 

@@ -78,6 +78,16 @@ public class AtlasMessageComposer extends FrameLayout {
     private int mCursorColor;
     private Drawable mAttachmentSendersBackground;
 
+    public void setBlack() {
+        mMessageEditText.setTextColor(getResources().getColor(R.color.atlas_text_white));
+        mMessageEditText.setHintTextColor(getResources().getColor(R.color.atlas_text_gray));
+        mSendButton.setTextColor(getResources().getColor(R.color.atlas_text_white));
+        mAttachButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_white_24dp));
+    }
+    public void hideAttachmentMenu() {
+        mAttachmentMenu.dismiss();
+
+    }
     public AtlasMessageComposer(Context context) {
         super(context);
         initAttachmentMenu(context, null, 0);
@@ -341,7 +351,7 @@ public class AtlasMessageComposer extends FrameLayout {
         mAttachmentMenu.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mAttachmentMenu.setOutsideTouchable(true);
         mAttachmentMenu.setBackgroundDrawable(mAttachmentSendersBackground);
-        mAttachmentMenu.setFocusable(true);
+        mAttachmentMenu.setFocusable(false);
     }
 
     @Override

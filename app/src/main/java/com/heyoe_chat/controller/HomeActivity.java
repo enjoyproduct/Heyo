@@ -124,8 +124,6 @@ public class HomeActivity extends AppCompatActivity implements
         mActivity = this;
         arrAllUsers = new ArrayList<>();
         LocalBroadcastManager.getInstance(this).registerReceiver(mHandleMessageReceiver, new IntentFilter("pushData"));
-
-
     }
 
     protected void onResume(){
@@ -195,19 +193,36 @@ public class HomeActivity extends AppCompatActivity implements
             PushModel data = (PushModel)intent.getExtras().getSerializable(Constant.PUSH_DATA);
             if (data.type.equals("increase_activity_count") ||
                     data.type.equals("receive_invite") ||
+                    data.type.equals("reject_invite") ||
                     data.type.equals("accept_friend")) {
-                Global.getInstance().increaseActivityCount();
-                showActivityBadge();
+                if (data.receiver_id.equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
+                    Global.getInstance().increaseActivityCount();
+                    showActivityBadge();
+                }
+
             }
             if (data.type.equals("increase_message_count")) {
                 if (!isCheckinMsg(data.user_id)) {
+                    if (Global.getInstance().currentChattingUserId != null) {
+                        if (Global.getInstance().currentChattingUserId.equals(data.user_id)) {
+                            return;
+                        }
+                    }
                     Global.getInstance().increaseMessageCount();
                     showMsgBadge(data.user_id, data.conversation_id);
+
                 }
             }
             if (data.type.equals("increase_black_message_count")) {
                 if (currentFragmentNum == 11 && !data.user_id.equals("")) {
+                    if (Global.getInstance().currentChattingUserId != null) {
+                        if (Global.getInstance().currentChattingUserId.equals(data.user_id)) {
+                            return;
+                        }
+                    }
+
                     MyBlackFriendsFregment.updateUnreadMsgCount(data.user_id, data.conversation_id);
+
                 }
             }
         }
@@ -222,7 +237,6 @@ public class HomeActivity extends AppCompatActivity implements
         }
         return flag;
     }
-
 
     private void initUI() {
 
@@ -760,7 +774,8 @@ public class HomeActivity extends AppCompatActivity implements
             case 106: //from chat activity
                 if (resultCode == RESULT_OK) {
                     if (data != null) {
-                       Uri conversation_id = data.getParcelableExtra("conversation_id");
+                        Global.getInstance().currentChattingUserId = null;
+                        Uri conversation_id = data.getParcelableExtra("conversation_id");
                         String user_id = data.getStringExtra("user_id");
                         if (conversation_id != null) {
                             if (currentFragmentNum == 1) {

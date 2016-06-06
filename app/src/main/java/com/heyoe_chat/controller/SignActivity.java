@@ -32,10 +32,10 @@ public class SignActivity extends AppCompatActivity {
             GetNotificationRegID getNotificationRegID = new GetNotificationRegID(this);
             getNotificationRegID.registerInBackground();
         }
-        if (Utils.getFromPreference(this, Constant.DEVICE_ID).length() == 0) {
-            String deviceID = ((TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-            Utils.saveToPreference(this, Constant.DEVICE_ID, deviceID);
-        }
+//        if (Utils.getFromPreference(this, Constant.DEVICE_ID).length() == 0) {
+//            String deviceID = ((TelephonyManager)getBaseContext().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+//            Utils.saveToPreference(this, Constant.DEVICE_ID, deviceID);
+//        }
 
 
 

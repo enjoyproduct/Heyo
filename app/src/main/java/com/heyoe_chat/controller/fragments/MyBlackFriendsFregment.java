@@ -32,6 +32,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.heyoe_chat.R;
 import com.heyoe_chat.controller.App;
+import com.heyoe_chat.controller.HomeActivity;
 import com.heyoe_chat.controller.layer_chat.MessagesListActivity;
 import com.heyoe_chat.controller.push.GcmBroadcastReceiver;
 import com.heyoe_chat.model.API;
@@ -164,7 +165,14 @@ public class MyBlackFriendsFregment extends Fragment {
             }
         }
     }
-
+    private void updateUnreadMsgCount(int position) {
+        Global.getInstance().decreaseMessageCount(arrActiveUsers.get(position).getUnreadMsgCount());
+        HomeActivity.showMsgBadge("", "");
+        ///
+        arrActiveUsers.get(position).setUnreadMsgCount(0);
+        ///
+        friendAdapter.notifyDataSetChanged();
+    }
 
 
     public MyBlackFriendsFregment() {
@@ -698,6 +706,7 @@ public class MyBlackFriendsFregment extends Fragment {
             ivChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    updateUnreadMsgCount(position);
                     //set black status
                     if (Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()) == 0
                             || Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()) == Integer.parseInt(Utils.getFromPreference(mActivity, Constant.USER_ID))) {

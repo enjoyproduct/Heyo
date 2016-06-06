@@ -21,21 +21,21 @@
     <!--release key-->
     <!--<string name="key_hash">2jmj7l5rSw0yVb/vlWAYkK/YBwk=</string>-->
 
-    <!--google project id === thivorien@gmail.com-->
-    <!--<string name="project_id">535417836265</string>-->
-    <!--<string name="google_android_key">AIzaSyAnKdnRaagQEAC3lBq5DdsKIFkgE-R1Fus</string>-->
-    <!--<string name="server_key">AIzaSyDSAX_JhBN9By9EdR-rqWVgn1WTsSRF8sA</string>-->
-    <!--<string name="client_id">535417836265-rcv1sqkn540iec13ibun3980emfg1jdb.apps.googleusercontent.com</string>-->
+    google project id === thivorien@gmail.com
+    <string name="project_id">535417836265</string>
+    <string name="google_android_key">AIzaSyAnKdnRaagQEAC3lBq5DdsKIFkgE-R1Fus</string>
+    <string name="server_key">AIzaSyDSAX_JhBN9By9EdR-rqWVgn1WTsSRF8sA</string>
+    <string name="client_id">535417836265-rcv1sqkn540iec13ibun3980emfg1jdb.apps.googleusercontent.com</string>
 
-    <!--<string name="google_place_api_key">AIzaSyCaS0dDhpug9qcv4fgus37u8hZU8eZ-mEc</string>-->
+    <string name="google_place_api_key">AIzaSyCaS0dDhpug9qcv4fgus37u8hZU8eZ-mEc</string>
 
     <!--google project id === ggolggoli815@gmail.com-->
-    <string name="project_id">520015641445</string>
-    <string name="google_android_key">AIzaSyAYmVLCqYDUCJy3lIwbnB6EikAzheBNnng</string>
-    <string name="server_key">AIzaSyBNNapRzrr06zN9c5Dyo-LDM5qDOTePzqA</string>
-    <string name="client_id">520015641445-5dsjvp85063ct3b1pftr0j91nuhpr2hp.apps.googleusercontent.com</string>
+    <!--<string name="project_id">520015641445</string>-->
+    <!--<string name="google_android_key">AIzaSyAYmVLCqYDUCJy3lIwbnB6EikAzheBNnng</string>-->
+    <!--<string name="server_key">AIzaSyBNNapRzrr06zN9c5Dyo-LDM5qDOTePzqA</string>-->
+    <!--<string name="client_id">520015641445-5dsjvp85063ct3b1pftr0j91nuhpr2hp.apps.googleusercontent.com</string>-->
 
-    <string name="google_place_api_key">AIzaSyAYmVLCqYDUCJy3lIwbnB6EikAzheBNnng</string>
+    <!--<string name="google_place_api_key">AIzaSyAYmVLCqYDUCJy3lIwbnB6EikAzheBNnng</string>-->
 
     <!--///////////////////////////////-->
     <string name="email">email</string>

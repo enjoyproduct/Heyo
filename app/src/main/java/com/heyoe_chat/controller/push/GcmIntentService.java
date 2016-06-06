@@ -69,6 +69,7 @@ public class GcmIntentService extends IntentService {
 
         PushModel pushModel = new PushModel();
         pushModel.type = "increase_activity_count";
+        pushModel.receiver_id = receiver_id;
         localBroadCast(pushModel);
 
     }
@@ -117,24 +118,53 @@ public class GcmIntentService extends IntentService {
         mNotificationManager.notify(0, mBuilder.build());
     }
 
-    String id, type, message, conversation_id;
+    String id, type, message, conversation_id, receiver_id;
     private String parseMessage(Bundle data){
         id = "";
         type = "";
         message = "";
         conversation_id = "";
+        receiver_id = "";
         if(data.containsKey("liked_post")){
             message = data.getString("liked_post");
+            String[] str = message.split("_like_post_");
+            message = str[0];
+            receiver_id = str[1];
             type = "activity";
         }else if (data.containsKey("disliked_post")){
             message = data.getString("disliked_post");
+            String[] str = message.split("_dislike_post_");
+            message = str[0];
+            receiver_id = str[1];
             type = "activity";
         }else if (data.containsKey("commented_post")){
             message = data.getString("commented_post");
+            String[] str = message.split("_comment_post_");
+            message = str[0];
+            receiver_id = str[1];
+            type = "activity";
+        } else if (data.containsKey("taged")) {
+            message = data.getString("taged");
+            String[] str = message.split("_taged_");
+            message = str[0];
+            receiver_id = str[1];
             type = "activity";
         }else if (data.containsKey("shared_post")){
             message = data.getString("shared_post");
+            String[] str = message.split("_share_post_");
+            message = str[0];
+            receiver_id = str[1];
             type = "activity";
+        }else if (data.containsKey("rejected_invite")){
+            message = data.getString("rejected_invite");
+
+            PushModel pushModel = new PushModel();
+            String[] string = message.split("_reject_invite_");
+            message = string[1];
+            pushModel.user_id = string[0];
+            pushModel.type = "reject_invite";
+            localBroadCast(pushModel);
+            type = "reject_invite";
         }else if (data.containsKey("received_invite")){
             message = data.getString("received_invite");
 
@@ -156,9 +186,7 @@ public class GcmIntentService extends IntentService {
             localBroadCast(pushModel);
             type = "accept_friend";
 
-        }else if (data.containsKey("rejected_invite")){
-            message = data.getString("rejected_invite");
-            type = "activity";
+
         } else if (data.containsKey("receive_checkin_chat_request")){
 
             message = data.getString("receive_checkin_chat_request");
@@ -220,9 +248,7 @@ public class GcmIntentService extends IntentService {
                 localBroadCast(pushModel);
                 type = "exit_checkin";
             }
-        } else if (data.containsKey("taged")) {
-            message = data.getString("taged");
-            type = "activity";
+
         } else if (data.containsKey("alert")) {
             id = data.getString("alert");
             message = "Heyoe - You received new message";

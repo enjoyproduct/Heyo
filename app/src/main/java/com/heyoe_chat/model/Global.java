@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class Global {
     public boolean isChatting;
-    public String currentChattingUser;
+    public String currentChattingUserId;
     public String currentChattingPage;
     public ArrayList<UserModel> arrCheckinChatUsers;
 
@@ -18,7 +18,7 @@ public class Global {
 
     private Global () {
         isChatting = false;
-        currentChattingUser = "";
+        currentChattingUserId = "";
         currentChattingPage = "";
         arrCheckinChatUsers = new ArrayList<>();
 

@@ -292,12 +292,12 @@ public class BitmapUtility {
         ///Then use the image's actual rotation as a reference point to rotate the image using a Matrix
         if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
 
-        if (yourSelectedImage.getWidth() > 400 || yourSelectedImage.getHeight() > 400) {
+        if (yourSelectedImage.getWidth() > 1000 || yourSelectedImage.getHeight() > 1000) {
             int width = yourSelectedImage.getWidth();
             int height = yourSelectedImage.getHeight();
 
-            float scaleWidth = ((float) 400) / width;
-            float scaleHeight = ((float) 400) / width;
+            float scaleWidth = ((float) 1000) / width;
+            float scaleHeight = ((float) 1000) / width;
             matrix.postScale(scaleWidth, scaleHeight);
         }
         ////create a new rotated image

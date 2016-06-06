@@ -6,19 +6,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.heyoe_chat.R;
@@ -27,7 +28,6 @@ import com.heyoe_chat.controller.push.GcmBroadcastReceiver;
 import com.heyoe_chat.model.API;
 import com.heyoe_chat.model.Constant;
 import com.heyoe_chat.model.Global;
-import com.heyoe_chat.model.UserModel;
 import com.heyoe_chat.utilities.UIUtility;
 import com.heyoe_chat.utilities.Utils;
 import com.heyoe_chat.utilities.image_downloader.UrlImageViewCallback;
@@ -67,6 +67,7 @@ public class MessagesListActivity extends BaseActivity {
     private AtlasMessagesRecyclerView mMessagesList;
     private AtlasTypingIndicator mTypingIndicator;
     private AtlasMessageComposer mMessageComposer;
+    private LinearLayout llBackground;
 
     boolean isBlackFriend;
     int blacker_id ;
@@ -174,7 +175,7 @@ public class MessagesListActivity extends BaseActivity {
 
         mHistoricFetchLayout = ((AtlasHistoricMessagesFetchLayout) findViewById(R.id.historic_sync_layout))
                 .init(getLayerClient())
-                .setHistoricMessagesPerFetch(20);
+                .setHistoricMessagesPerFetch(25);
 
         mMessagesList = ((AtlasMessagesRecyclerView) findViewById(R.id.messages_list))
                 .init(getLayerClient(), getParticipantProvider(), getPicasso())
@@ -268,9 +269,9 @@ public class MessagesListActivity extends BaseActivity {
             Global.getInstance().currentChattingPage = currentChatPage;
             if (mConversation != null) {
                 if (mConversation.getParticipants().get(0).equals(Utils.getFromPreference(this, Constant.USER_ID))) {
-                    Global.getInstance().currentChattingUser = mConversation.getParticipants().get(1);
+                    Global.getInstance().currentChattingUserId = mConversation.getParticipants().get(1);
                 } else {
-                    Global.getInstance().currentChattingUser = mConversation.getParticipants().get(0);
+                    Global.getInstance().currentChattingUserId = mConversation.getParticipants().get(0);
                 }
             }
         }
@@ -307,12 +308,58 @@ public class MessagesListActivity extends BaseActivity {
                 }
             });
         }
+//        circularImageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ImageView imageView = new ImageView(MessagesListActivity.this);
+//                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
+//                imageView.setLayoutParams(layoutParams);
+//                if (avatar.length() != 0) {
+//                    String opponentAvatarURL = API.BASE_AVATAR + avatar;
+//                    UrlRectangleImageViewHelper.setUrlDrawable(imageView, opponentAvatarURL, R.drawable.default_user, new UrlImageViewCallback() {
+//                        @Override
+//                        public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+//                            if (!loadedFromCache) {
+//                                ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+//                                scale.setDuration(10);
+//                                scale.setInterpolator(new OvershootInterpolator());
+//                                imageView.startAnimation(scale);
+//                            }
+//                        }
+//                    });
+//                }
+//                AlertDialog.Builder builder = new AlertDialog.Builder(MessagesListActivity.this);
+//                builder.setView(imageView);
+//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//                builder.create()
+//                        .show();
+//            }
+//        });
+        llBackground = (LinearLayout)findViewById(R.id.ll_message_list);
+        if (isBlackFriend) {
+            llBackground.setBackgroundColor(getResources().getColor(R.color.black));
+            mMessageComposer.setBackgroundColor(getResources().getColor(R.color.black));
+            mMessageComposer.setBlack();
+            mHistoricFetchLayout.setBackgroundColor(getResources().getColor(R.color.black));
+//            mMessagesList.setBackgroundColor(getResources().getColor(R.color.black));
+        }
     }
+
+    @Override
+    public void onBackPressed() {
+        mMessageComposer.hideAttachmentMenu();
+    }
+
     private void setDataAndFinish() {
         //release chat
 
         Global.getInstance().isChatting = false;
-        Global.getInstance().currentChattingUser = "";
+        Global.getInstance().currentChattingUserId = "";
         Global.getInstance().currentChattingPage = "";
 
         Intent intent = getIntent();

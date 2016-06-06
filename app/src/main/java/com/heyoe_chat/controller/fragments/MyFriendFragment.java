@@ -43,7 +43,6 @@ import com.heyoe_chat.utilities.Utils;
 import com.heyoe_chat.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe_chat.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe_chat.widget.MyCircularImageView;
-import com.layer.atlas.util.Util;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.exceptions.LayerConversationException;
 import com.layer.sdk.messaging.Conversation;
@@ -86,7 +85,7 @@ public class MyFriendFragment extends Fragment  {
                 .build();
 
         arrConversations = App.getLayerClient().executeQuery(query, Query.ResultType.OBJECTS);
-        Utils.hideProgress();
+
         addConversation();
     }
     private void addConversation() {
@@ -272,7 +271,8 @@ public class MyFriendFragment extends Fragment  {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        arrActiveUsers = new ArrayList<>();
+                        arrBlockedUsers = new ArrayList<>();
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
@@ -328,7 +328,7 @@ public class MyFriendFragment extends Fragment  {
                                     }
                                 }
                                 getAllConversations();
-
+                                Utils.hideProgress();
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -533,7 +533,7 @@ public class MyFriendFragment extends Fragment  {
         for (int i = 0; i < arrActiveUsers.size(); i ++) {
             if (arrActiveUsers.get(i).getUser_id().equals(user_id)) {
                 if(arrActiveUsers.get(i).getConversation() != null) {
-                    Global.getInstance().decreaseMessageCount(arrActiveUsers.get(i).getConversation().getTotalUnreadMessageCount());
+                    Global.getInstance().decreaseMessageCount(arrActiveUsers.get(i).getUnreadMsgCount());
                     HomeActivity.showMsgBadge("", "");
                 }
                 ///
@@ -546,7 +546,14 @@ public class MyFriendFragment extends Fragment  {
         }
         friendAdapter.notifyDataSetChanged();
     }
-
+    private void updateUnreadMsgCount(int position) {
+        Global.getInstance().decreaseMessageCount(arrActiveUsers.get(position).getUnreadMsgCount());
+        HomeActivity.showMsgBadge("", "");
+        ///
+        arrActiveUsers.get(position).setUnreadMsgCount(0);
+        ///
+        friendAdapter.notifyDataSetChanged();
+    }
 
 
     public class FriendAdapter extends BaseSwipeAdapter {
@@ -713,6 +720,7 @@ public class MyFriendFragment extends Fragment  {
                 @Override
                 public void onClick(View v) {
                     chattingFriendNum = position;
+                    updateUnreadMsgCount(position);
                     if (Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()) == 0
                             || Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()) == Integer.parseInt(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
                         Utils.saveToPreference(mActivity, "is_black", "white");
