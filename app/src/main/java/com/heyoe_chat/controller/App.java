@@ -142,10 +142,8 @@ public class App extends Application {
         if (sLayerClient == null) {
             // Custom options for constructing a LayerClient
             LayerClient.Options options = new LayerClient.Options()
-
                     /* Fetch the minimum amount per conversation when first authenticated */
                     .historicSyncPolicy(LayerClient.Options.HistoricSyncPolicy.ALL_MESSAGES)
-                    
                     /* Automatically download text and ThreePartImage info/preview */
                     .autoDownloadMimeTypes(Arrays.asList(
                             TextCellFactory.MIME_TYPE,

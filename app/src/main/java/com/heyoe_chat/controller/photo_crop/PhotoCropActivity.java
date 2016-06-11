@@ -255,14 +255,14 @@ public class PhotoCropActivity extends AppCompatActivity implements CropImageVie
         mCropImageView.setOnGetCroppedImageCompleteListener(this);
         setInitialCropRect();
 
-        mCropImageView.setAspectRatio(UIUtility.getScreenWidth(this), (int) (UIUtility.getScreenWidth(this) * 0.7));
+        mCropImageView.setAspectRatio(UIUtility.getScreenWidth(this), (int) (UIUtility.getScreenWidth(this) * 0.6));
         mCropImageView.setFixedAspectRatio(true);
     }
     /**
      * Set the initial rectangle to use.
      */
     public void setInitialCropRect() {
-        mCropImageView.setCropRect(new Rect(0, 0, UIUtility.getScreenWidth(this), (int)(UIUtility.getScreenWidth(this) * 0.7)));
+        mCropImageView.setCropRect(new Rect(0, 0, UIUtility.getScreenWidth(this), (int)(UIUtility.getScreenWidth(this) * 0.6)));
     }
     @Override
     public void onGetCroppedImageComplete(CropImageView view, Bitmap bitmap, Exception error) {

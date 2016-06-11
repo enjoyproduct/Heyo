@@ -63,7 +63,7 @@ public class SearchUserAutoCompleteAdapter extends ArrayAdapter<UserModel> {
             });
             MyCircularImageView circularImageView  = (MyCircularImageView)v.findViewById(R.id.item_search_civ_photo);
             if (!userModel.getAvatar().equals("")) {
-                UrlImageViewHelper.setUrlDrawable(circularImageView, API.BASE_AVATAR + userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlImageViewHelper.setUrlDrawable(circularImageView, userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {

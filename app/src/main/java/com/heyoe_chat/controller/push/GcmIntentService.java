@@ -161,7 +161,7 @@ public class GcmIntentService extends IntentService {
             PushModel pushModel = new PushModel();
             String[] string = message.split("_reject_invite_");
             message = string[1];
-            pushModel.user_id = string[0];
+            pushModel.receiver_id = string[0];
             pushModel.type = "reject_invite";
             localBroadCast(pushModel);
             type = "reject_invite";
@@ -171,7 +171,7 @@ public class GcmIntentService extends IntentService {
             PushModel pushModel = new PushModel();
             String[] string = message.split("_invite_friend_");
             message = string[1];
-            pushModel.user_id = string[0];
+            pushModel.receiver_id = string[0];
             pushModel.type = "receive_invite";
             localBroadCast(pushModel);
             type = "receive_invite";
@@ -181,7 +181,7 @@ public class GcmIntentService extends IntentService {
             PushModel pushModel = new PushModel();
             String[] string = message.split("_accept_invite_");
             message = string[1];
-            pushModel.user_id = string[0];
+            pushModel.receiver_id = string[0];
             pushModel.type = "accept_friend";
             localBroadCast(pushModel);
             type = "accept_friend";

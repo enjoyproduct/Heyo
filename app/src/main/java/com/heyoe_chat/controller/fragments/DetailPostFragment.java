@@ -648,7 +648,7 @@ public class DetailPostFragment extends Fragment {
                 });
 
                 if (!postModel.getPoster_avatar().equals("")) {
-                    UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + postModel.getPoster_avatar(), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
+                    UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, postModel.getPoster_avatar(), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
                         @Override
                         public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                             if (!loadedFromCache) {
@@ -852,7 +852,7 @@ public class DetailPostFragment extends Fragment {
                 comment.setText(str2);
                 date.setText(TimeUtility.countTime(mActivity, Long.parseLong(commentModel.getTime())));
                 if (!commentModel.getAvatar().equals("")) {
-                    UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + commentModel.getAvatar(), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
+                    UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  commentModel.getAvatar(), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
                         @Override
                         public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                             if (!loadedFromCache) {

@@ -59,7 +59,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.comment.setText(commentModel.get(position).getComment());
         holder.date.setText(TimeUtility.countTime(mContext, Long.parseLong(commentModel.get(position).getTime())));
         if (!commentModel.get(position).getAvatar().equals("")) {
-            UrlRectangleImageViewHelper.setUrlDrawable(holder.myCircularImageView, API.BASE_AVATAR + commentModel.get(position).getAvatar(), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
+            UrlRectangleImageViewHelper.setUrlDrawable(holder.myCircularImageView, commentModel.get(position).getAvatar(), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
                 @Override
                 public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                     if (!loadedFromCache) {

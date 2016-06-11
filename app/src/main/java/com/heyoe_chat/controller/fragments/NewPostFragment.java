@@ -144,6 +144,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                              Bundle savedInstanceState) {
         // Inflate the text_layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_new_post, container, false);
+        HomeActivity.checkPermission();
         initVariable();
         initUI(view);
         getFriends();
@@ -184,7 +185,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_compose_avatar);
         String avatar       = Utils.getFromPreference(mActivity, Constant.AVATAR);
         if (!avatar.equals("")) {
-            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + avatar, R.drawable.default_user, new UrlImageViewCallback() {
+            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  avatar, R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
                 public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                     if (!loadedFromCache) {
@@ -578,7 +579,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             System.out.println("zettabytes : " + zettabytes);
             System.out.println("yottabytes : " + yottabytes);
 
-            if (megabytes * 5 > DeviceUtility.getFreeRamSize(mActivity)) {
+            if (megabytes * 7 > DeviceUtility.getFreeRamSize(mActivity)) {
                 isBigger = true;
             }
         }else{
@@ -1224,7 +1225,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         // set max time limit
         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
         ///set max size limit
-        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, DeviceUtility.getFreeRamSize(mActivity) * 1024 * 1024 / 5);
+        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, DeviceUtility.getFreeRamSize(mActivity) * 1024 * 1024 / 7);
         // start the Video Capture Intent
         startActivityForResult(intent, take_video_from_camera);
     }

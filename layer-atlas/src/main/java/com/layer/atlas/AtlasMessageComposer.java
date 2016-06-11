@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -83,6 +82,7 @@ public class AtlasMessageComposer extends FrameLayout {
         mMessageEditText.setHintTextColor(getResources().getColor(R.color.atlas_text_gray));
         mSendButton.setTextColor(getResources().getColor(R.color.atlas_text_white));
         mAttachButton.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_white_24dp));
+        mAttachmentMenu.setBackgroundDrawable(getResources().getDrawable(R.drawable.attach_menu_bg_gray));
     }
     public void hideAttachmentMenu() {
         mAttachmentMenu.dismiss();
@@ -350,7 +350,8 @@ public class AtlasMessageComposer extends FrameLayout {
         mAttachmentMenu.setContentView(LayoutInflater.from(context).inflate(R.layout.atlas_message_composer_attachment_menu, null));
         mAttachmentMenu.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mAttachmentMenu.setOutsideTouchable(true);
-        mAttachmentMenu.setBackgroundDrawable(mAttachmentSendersBackground);
+//        mAttachmentMenu.setBackgroundDrawable(mAttachmentSendersBackground);
+        mAttachmentMenu.setBackgroundDrawable(getResources().getDrawable(R.drawable.attach_menu_bg_white));
         mAttachmentMenu.setFocusable(false);
     }
 

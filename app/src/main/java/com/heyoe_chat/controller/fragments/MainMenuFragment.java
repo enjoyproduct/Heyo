@@ -84,7 +84,7 @@ public class MainMenuFragment extends Fragment {
             }
         });
         if (!Utils.getFromPreference(mActivity, Constant.AVATAR).equals("")) {
-            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + Utils.getFromPreference(mActivity, Constant.AVATAR), R.drawable.default_circular_user_photo, new UrlImageViewCallback() {
+            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  Utils.getFromPreference(mActivity, Constant.AVATAR), R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
                 public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                     if (!loadedFromCache) {

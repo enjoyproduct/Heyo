@@ -1,16 +1,20 @@
 package com.heyoe_chat.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -40,6 +44,9 @@ import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.facebook.FacebookSdk;
 import com.facebook.share.model.AppInviteContent;
 import com.facebook.share.widget.AppInviteDialog;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.heyoe_chat.R;
@@ -77,9 +84,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity implements
-         View.OnClickListener {
+        View.OnClickListener {
 
-//    private ImageButton ibMenu;
+    //    private ImageButton ibMenu;
 //    private SearchView searchView;
     Toolbar toolbar;
     private static AutoCompleteTextView autoCompleteTextView;
@@ -103,10 +110,11 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     public static LayerClient layerClient;
-
-
-
-
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     @Override
@@ -115,8 +123,67 @@ public class HomeActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_home);
 
         initVariables();
+        checkPermission();
         initUI();
         login_layer(Utils.getFromPreference(this, Constant.USER_ID));
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    private final static int PERMISSION_REQUEST_CODE_FOR_READ_EXTERNAL_STORAGE = 301;
+
+    public static void checkPermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+
+        } else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(mActivity,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_CODE_FOR_READ_EXTERNAL_STORAGE);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE_FOR_READ_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Utils.showOKDialog(this, "You should allow this permission to use full functions of this app.");
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     private void initVariables() {
@@ -126,7 +193,7 @@ public class HomeActivity extends AppCompatActivity implements
         LocalBroadcastManager.getInstance(this).registerReceiver(mHandleMessageReceiver, new IntentFilter("pushData"));
     }
 
-    protected void onResume(){
+    protected void onResume() {
 
         setOffline("on");
         resetMenu();
@@ -155,6 +222,7 @@ public class HomeActivity extends AppCompatActivity implements
                     }
                 });
     }
+
     private void logout_layer() {
         App.deauthenticate(new Util.DeauthenticationCallback() {
             @Override
@@ -176,21 +244,11 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    public BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver(){
+    public BroadcastReceiver mHandleMessageReceiver = new BroadcastReceiver() {
 
         public void onReceive(Context context, Intent intent) {
 
-            PushModel data = (PushModel)intent.getExtras().getSerializable(Constant.PUSH_DATA);
+            PushModel data = (PushModel) intent.getExtras().getSerializable(Constant.PUSH_DATA);
             if (data.type.equals("increase_activity_count") ||
                     data.type.equals("receive_invite") ||
                     data.type.equals("reject_invite") ||
@@ -227,6 +285,7 @@ public class HomeActivity extends AppCompatActivity implements
             }
         }
     };
+
     private boolean isCheckinMsg(String user_id) {
         boolean flag = false;
         for (UserModel userModel : Global.getInstance().arrCheckinChatUsers) {
@@ -243,15 +302,13 @@ public class HomeActivity extends AppCompatActivity implements
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        tvTitle = (TextView)findViewById(R.id.tv_home_title);
+        tvTitle = (TextView) findViewById(R.id.tv_home_title);
         this.setTitle("");
 
-        tvMsgCount = (TextView)findViewById(R.id.txt_msg_count);
-        tvActivityCount = (TextView)findViewById(R.id.txt_activity_count);
+        tvMsgCount = (TextView) findViewById(R.id.txt_msg_count);
+        tvActivityCount = (TextView) findViewById(R.id.txt_activity_count);
 
         //init autocomplete search view/////////////////////////////////////////////////
-
-
 
 
         //init search widget///////////////////////////////////////////////////////////
@@ -302,22 +359,22 @@ public class HomeActivity extends AppCompatActivity implements
         materialMenu.setNeverDrawTouch(true);
         //////////////////////////////////////////////////////////////////
 
-        autoCompleteTextView = (AutoCompleteTextView)toolbar.findViewById(R.id.sv_menu);
+        autoCompleteTextView = (AutoCompleteTextView) toolbar.findViewById(R.id.sv_menu);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.home_drawerlayout);
 
 
-        ivMain = (ImageView)findViewById(R.id.iv_home_main);
-        ivFriends = (ImageView)findViewById(R.id.iv_home_friend);
-        ivNewPost = (ImageView)findViewById(R.id.iv_home_new_post);
-        ivCheckin = (ImageView)findViewById(R.id.iv_home_checkin);
-        ivActivity = (ImageView)findViewById(R.id.iv_home_activity);
+        ivMain = (ImageView) findViewById(R.id.iv_home_main);
+        ivFriends = (ImageView) findViewById(R.id.iv_home_friend);
+        ivNewPost = (ImageView) findViewById(R.id.iv_home_new_post);
+        ivCheckin = (ImageView) findViewById(R.id.iv_home_checkin);
+        ivActivity = (ImageView) findViewById(R.id.iv_home_activity);
 
-        rlMain = (RelativeLayout)findViewById(R.id.rl_home_main);
-        rlFriends = (RelativeLayout)findViewById(R.id.rl_home_friend);
-        rlNewPost = (RelativeLayout)findViewById(R.id.rl_home_post);
-        rlCheckin = (RelativeLayout)findViewById(R.id.rl_home_checkin);
-        rlActivity = (RelativeLayout)findViewById(R.id.rl_home_activity);
+        rlMain = (RelativeLayout) findViewById(R.id.rl_home_main);
+        rlFriends = (RelativeLayout) findViewById(R.id.rl_home_friend);
+        rlNewPost = (RelativeLayout) findViewById(R.id.rl_home_post);
+        rlCheckin = (RelativeLayout) findViewById(R.id.rl_home_checkin);
+        rlActivity = (RelativeLayout) findViewById(R.id.rl_home_activity);
 
         rlMain.setOnClickListener(this);
         rlFriends.setOnClickListener(this);
@@ -328,7 +385,7 @@ public class HomeActivity extends AppCompatActivity implements
 //        setupNavigationDrawer(toolbar);
         int pagenumber = getIntent().getIntExtra("page_num", 0);
         if (pagenumber > 4) {
-            menuNavigateTo( pagenumber - 5);
+            menuNavigateTo(pagenumber - 5);
         } else {
             navigateTo(pagenumber);
         }
@@ -336,6 +393,7 @@ public class HomeActivity extends AppCompatActivity implements
         showActivityBadge();
         showMsgBadge("", "");
     }
+
     public static void showActivityBadge() {
         mActivity.runOnUiThread(new Runnable() {
             @Override
@@ -353,6 +411,7 @@ public class HomeActivity extends AppCompatActivity implements
 
 
     }
+
     public static void showMsgBadge(final String user_id, final String conversation_id) {
         mActivity.runOnUiThread(new Runnable() {
             @Override
@@ -397,7 +456,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void initAutoCompleteTextView() {
-        autoCompleteTextView = (AutoCompleteTextView)toolbar.findViewById(R.id.sv_menu);
+        autoCompleteTextView = (AutoCompleteTextView) toolbar.findViewById(R.id.sv_menu);
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(mActivity ,android.R.text_layout.simple_list_item_1, makeSampleData());
         searchUserAutoCompleteAdapter = new SearchUserAutoCompleteAdapter(mActivity, R.layout.item_search, arrAllUsers);
         autoCompleteTextView.setAdapter(searchUserAutoCompleteAdapter);
@@ -406,6 +465,7 @@ public class HomeActivity extends AppCompatActivity implements
         autoCompleteTextView.setOnEditorActionListener(editorActionListener);
         autoCompleteTextView.addTextChangedListener(textWatcher);
     }
+
     private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -448,13 +508,14 @@ public class HomeActivity extends AppCompatActivity implements
                 String black_pass = autoCompleteTextView.getText().toString().trim();
                 if (Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD).equals("")
                         && black_pass.length() > 1
-                        && black_pass.substring(0,1).equals("*")) {
+                        && black_pass.substring(0, 1).equals("*")) {
                     setBlackPassword(black_pass);
                 }
             }
             return false;
         }
     };
+
     private void setBlackPassword(final String black_pass) {
         Utils.showProgress(mActivity);
         Map<String, String> params = new HashMap<String, String>();
@@ -475,12 +536,12 @@ public class HomeActivity extends AppCompatActivity implements
 //                                Intent intent = new Intent(mActivity, Black_Friend_Activity.class);
 //                                startActivity(intent);
                                 navigateToBlackChat();
-                            } else  if (status.equals("400")) {
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("401")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.user_not_exist));
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -505,6 +566,7 @@ public class HomeActivity extends AppCompatActivity implements
 //            ProfileFragment.setCelebrity();
         }
     }
+
     private static void setTitle(String title) {
         tvTitle.setText(title);
     }
@@ -561,6 +623,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
 
     }
+
     public static void navigateToRepost(PostModel postModel) {
         showHideSearchView(false);
         dribSearchView.setVisibility(View.VISIBLE);
@@ -575,6 +638,7 @@ public class HomeActivity extends AppCompatActivity implements
                 .commit();
         currentFragmentNum = 12;
     }
+
     public static void navigateToProfile(String userId) {
         Fragment fragment = new ProfileFragment();
         Bundle bundle = new Bundle();
@@ -589,6 +653,7 @@ public class HomeActivity extends AppCompatActivity implements
         showHideSearchView(false);
         HomeActivity.mDrawerLayout.closeDrawers();
     }
+
     public static void navigateToBlackChat() {
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, new MyBlackFriendsFregment())
@@ -598,6 +663,7 @@ public class HomeActivity extends AppCompatActivity implements
         showHideSearchView(false);
         HomeActivity.mDrawerLayout.closeDrawers();
     }
+
     public static void menuNavigateTo(int num) {
         dribSearchView.setVisibility(View.INVISIBLE);
 
@@ -650,6 +716,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
         mDrawerLayout.closeDrawers();
     }
+
     public static void navigateForHashTag(boolean isFavorite, String hashtag) {
         dribSearchView.setVisibility(View.INVISIBLE);
 
@@ -704,7 +771,7 @@ public class HomeActivity extends AppCompatActivity implements
             final CharSequence name = place.getName();
             final CharSequence address = place.getAddress();
             String attributions = PlacePicker.getAttributions(data);
-            Utils.showOKDialog(this, (String)name + (String)address + attributions);
+            Utils.showOKDialog(this, (String) name + (String) address + attributions);
             if (attributions == null) {
                 attributions = "";
             }
@@ -714,7 +781,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
         switch (requestCode) {
             case 101:////from detail post in main
-                if (data != null ) {
+                if (data != null) {
                     if (resultCode == 41) {
                         String hashtag = data.getStringExtra("hashtag");
                         if (hashtag != null && hashtag.length() > 0) {
@@ -804,7 +871,6 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
 
-
     //get all users
     private void getAllUsers() {
 
@@ -823,7 +889,7 @@ public class HomeActivity extends AppCompatActivity implements
                             if (status.equals("200")) {
                                 JSONArray jsonArray = response.getJSONArray("data");
                                 int userCount = jsonArray.length();
-                                for (int i = 0; i < userCount; i ++)  {
+                                for (int i = 0; i < userCount; i++) {
 
                                     JSONObject userObject = jsonArray.getJSONObject(i);
 
@@ -862,12 +928,12 @@ public class HomeActivity extends AppCompatActivity implements
                                     arrAllUsers.add(userModel);
                                 }
                                 initAutoCompleteTextView();
-                            } else  if (status.equals("400")) {
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -882,6 +948,7 @@ public class HomeActivity extends AppCompatActivity implements
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
+
     public static void sendFriendRequest(final int position) {
         Utils.showProgress(mActivity);
 
@@ -902,12 +969,12 @@ public class HomeActivity extends AppCompatActivity implements
                                 arrAllUsers.get(position).setFriendStatus("invited");
                                 searchUserAutoCompleteAdapter.notifyDataSetChanged();
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.invite_sucess));
-                            } else  if (status.equals("400")) {
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -924,13 +991,10 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
 
-
-
-
     //    if set up this method, cannot close searchview
-    public void setupNavigationDrawer(Toolbar toolbar){
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this,mDrawerLayout,toolbar,
-                R.string.open_drawer,R.string.close_drawer){
+    public void setupNavigationDrawer(Toolbar toolbar) {
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,
+                R.string.open_drawer, R.string.close_drawer) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 mDrawerLayout.openDrawer(Gravity.LEFT);
@@ -946,8 +1010,6 @@ public class HomeActivity extends AppCompatActivity implements
         mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
     }
-
-
 
 
     @Override
@@ -982,6 +1044,7 @@ public class HomeActivity extends AppCompatActivity implements
         AlertDialog alert = builder.create();
         alert.show();
     }
+
     private static void sign_out() {
 
         setOffline("off");
@@ -1013,7 +1076,7 @@ public class HomeActivity extends AppCompatActivity implements
         Utils.saveIntToPreference(mActivity, Constant.ACTIVITY_COUNT, 0);
 
         mActivity.startActivity(new Intent(mActivity, SignActivity.class));
-        ((HomeActivity)mActivity).finish();
+        ((HomeActivity) mActivity).finish();
     }
 
     public static void setOffline(String status) {
@@ -1032,11 +1095,11 @@ public class HomeActivity extends AppCompatActivity implements
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
-                            } else  if (status.equals("400")) {
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -1069,8 +1132,43 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Home Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.heyoe_chat/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
 
-
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Home Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://com.heyoe_chat/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
 }

@@ -70,6 +70,7 @@ public abstract class MessageSender {
             mConversation.send(message);
             if (Log.isLoggable(Log.VERBOSE)) Log.v("Message sent by " + getClass().getSimpleName());
             return true;
+
         }
         if (Log.isLoggable(Log.VERBOSE)) {
             Log.v("Message sending aborted by " + getClass().getSimpleName());

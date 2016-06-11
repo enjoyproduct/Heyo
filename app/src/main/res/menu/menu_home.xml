@@ -14,11 +14,11 @@
         <!--android:orderInCategory="100"-->
         <!--app:showAsAction="ifRoom"/>-->
     <item android:id="@+id/ic_edit"
-        android:title="Edit"
+        android:title="@string/Edit"
         android:orderInCategory="100"
         />
     <item android:id="@+id/ic_delete"
-    android:title="Delete"
+    android:title="@string/Delete"
     android:orderInCategory="100"
     />
 </menu>

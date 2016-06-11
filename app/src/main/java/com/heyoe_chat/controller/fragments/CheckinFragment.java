@@ -470,7 +470,7 @@ public class CheckinFragment extends Fragment {
 
             MyCircularImageView myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
             if (!arrFriends.get(position).getAvatar().equals("")) {
-                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {
@@ -708,7 +708,7 @@ public class CheckinFragment extends Fragment {
         tvMsg.setText(arrUsers.get(position).getFullname() + " accepted your request");
         MyCircularImageView circularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
         if (!arrUsers.get(position).equals("")) {
-            UrlRectangleImageViewHelper.setUrlDrawable(circularImageView, API.BASE_AVATAR +arrUsers.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+            UrlRectangleImageViewHelper.setUrlDrawable(circularImageView, arrUsers.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
                 public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                     if (!loadedFromCache) {
@@ -743,10 +743,10 @@ public class CheckinFragment extends Fragment {
         RelativeLayout relativeLayout = (RelativeLayout)view.findViewById(R.id.rl_imf_social);
         relativeLayout.setVisibility(View.GONE);
         TextView tvMsg = (TextView)view.findViewById(R.id.tv_imf_friend_name);
-        tvMsg.setText("Do you want accept " + arrUsers.get(position).getFullname() + "'s request?");
+        tvMsg.setText(mActivity.getResources().getString(R.string.do_you_want_accept) + " " + arrUsers.get(position).getFullname() + "'" +mActivity.getResources().getString(R.string.s_request));
         MyCircularImageView circularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
         if (!arrUsers.get(position).equals("")) {
-            UrlRectangleImageViewHelper.setUrlDrawable(circularImageView, API.BASE_AVATAR +arrUsers.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+            UrlRectangleImageViewHelper.setUrlDrawable(circularImageView, arrUsers.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
                 public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                     if (!loadedFromCache) {

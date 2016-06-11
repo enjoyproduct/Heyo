@@ -274,7 +274,7 @@ public class ActivityFragment extends Fragment {
                 relativeLayout.setBackgroundColor(getResources().getColor(R.color.white));
             }
             if (!activityModel.getUser_avatar().equals("")) {
-                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + activityModel.getUser_avatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, activityModel.getUser_avatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {

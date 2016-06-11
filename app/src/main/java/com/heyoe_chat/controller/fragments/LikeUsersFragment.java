@@ -238,7 +238,7 @@ public class LikeUsersFragment extends Fragment {
             }
             MyCircularImageView myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
             if (!arrFriends.get(position).getAvatar().equals("")) {
-                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {

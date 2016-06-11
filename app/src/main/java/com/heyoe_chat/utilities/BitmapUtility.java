@@ -242,7 +242,7 @@ public class BitmapUtility {
             e.printStackTrace();
         }
         //get bitmap with local path
-        Bitmap yourSelectedImage = decodeSampledBitmapFromResource(photopath, 800, 800);
+        Bitmap yourSelectedImage = decodeSampledBitmapFromResource(photopath, 1000, 1000);
         //downsize bitmap
         Matrix matrix = new Matrix();
         //get current rotation
@@ -252,12 +252,12 @@ public class BitmapUtility {
         ///Then use the image's actual rotation as a reference point to rotate the image using a Matrix
         if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
 
-        if (yourSelectedImage.getWidth() > 1200 || yourSelectedImage.getHeight() > 1200) {
+        if (yourSelectedImage.getWidth() > 1000 || yourSelectedImage.getHeight() > 1000) {
             int width = yourSelectedImage.getWidth();
             int height = yourSelectedImage.getHeight();
 
-            float scaleWidth = ((float) 1200) / width;
-            float scaleHeight = ((float) 1200) / width;
+            float scaleWidth = ((float) 1000) / width;
+            float scaleHeight = ((float) 1000) / width;
             matrix.postScale(scaleWidth, scaleHeight);
         }
         ////create a new rotated image
@@ -281,7 +281,7 @@ public class BitmapUtility {
             e.printStackTrace();
         }
                //get bitmap with local path
-        Bitmap yourSelectedImage = decodeSampledBitmapFromResource(photopath, 400, 400);
+        Bitmap yourSelectedImage = decodeSampledBitmapFromResource(photopath, 750, 750);
         //downsize bitmap
         Bitmap downsizedBitmap = null;
         Matrix matrix = new Matrix();
@@ -292,12 +292,12 @@ public class BitmapUtility {
         ///Then use the image's actual rotation as a reference point to rotate the image using a Matrix
         if (rotation != 0f) {matrix.preRotate(rotationInDegrees);}
 
-        if (yourSelectedImage.getWidth() > 1000 || yourSelectedImage.getHeight() > 1000) {
+        if (yourSelectedImage.getWidth() > 750 || yourSelectedImage.getHeight() > 750) {
             int width = yourSelectedImage.getWidth();
             int height = yourSelectedImage.getHeight();
 
-            float scaleWidth = ((float) 1000) / width;
-            float scaleHeight = ((float) 1000) / width;
+            float scaleWidth = ((float) 750) / width;
+            float scaleHeight = ((float) 750) / width;
             matrix.postScale(scaleWidth, scaleHeight);
         }
         ////create a new rotated image

@@ -3,6 +3,7 @@ package com.heyoe_chat.controller.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -189,6 +190,12 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
             GoogleSignInAccount account = result.getSignInAccount();
             Utils.saveToPreference(mActivity, Constant.FB_NAME, account.getDisplayName());
             Utils.saveToPreference(mActivity, Constant.FB_EMAIL, account.getEmail());
+            Uri avatarUri = account.getPhotoUrl();
+            if (avatarUri != null) {
+                Utils.saveToPreference(mActivity, Constant.FB_EMAIL, avatarUri.toString());
+            }
+
+
             socialSignin();
         }else{
             Toast.makeText(mActivity, "Google Signin failed.", Toast.LENGTH_SHORT).show();

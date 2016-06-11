@@ -510,7 +510,7 @@ public class RequestFragment extends Fragment {
                 }
             });
             if (!userModel.getAvatar().equals("")) {
-                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {
@@ -618,7 +618,7 @@ public class RequestFragment extends Fragment {
                 }
             });
             if (!userModel.getAvatar().equals("")) {
-                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {

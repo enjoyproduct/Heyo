@@ -73,7 +73,7 @@ public class MyFriendFragment extends Fragment  {
     private ArrayList<UserModel> arrBlockedUsers;
     private Button btnFriend, btnBlocked;
     private int state;
-    private int chattingFriendNum;
+    private static int chattingFriendNum;
 
     List<Conversation> arrConversations;
     private void getAllConversations() {
@@ -151,6 +151,7 @@ public class MyFriendFragment extends Fragment  {
 
 
     public static void updateUnreadMsgCount(String userId, String conversation_id) {
+
         for(int i = 0; i < arrActiveUsers.size(); i ++ ) {
             if (arrActiveUsers.get(i).getUser_id().equals(userId) ) {
                 int unreadMsgCount = arrActiveUsers.get(i).getUnreadMsgCount();
@@ -684,7 +685,7 @@ public class MyFriendFragment extends Fragment  {
             final UserModel userModel = arrFriends.get(position);
             MyCircularImageView myCircularImageView = (MyCircularImageView)convertView.findViewById(R.id.civ_if_avatar);
             if (!userModel.getAvatar().equals("")) {
-                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {
@@ -720,7 +721,7 @@ public class MyFriendFragment extends Fragment  {
                 @Override
                 public void onClick(View v) {
                     chattingFriendNum = position;
-                    updateUnreadMsgCount(position);
+//                    updateUnreadMsgCount(position);
                     if (Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()) == 0
                             || Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()) == Integer.parseInt(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
                         Utils.saveToPreference(mActivity, "is_black", "white");
@@ -858,7 +859,7 @@ public class MyFriendFragment extends Fragment  {
             UserModel userModel = arrFriends.get(position);
             MyCircularImageView myCircularImageView = (MyCircularImageView)convertView.findViewById(R.id.civ_if_avatar);
             if (!userModel.getAvatar().equals("")) {
-                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {

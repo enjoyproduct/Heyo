@@ -15,7 +15,7 @@ public class API {
 //    public static String BASE_APP = "http://www.heyoe.com/heyoe/assets/images/app.png";
 
     public static String BASE_URL = "http://www.heyoe.com/heyoe_chat/index.php/api/";
-    public static String BASE_AVATAR = "http://www.heyoe.com/heyoe_chat/assets/images/avatars/";
+//    public static String BASE_AVATAR = "http://www.heyoe.com/heyoe_chat/assets/images/avatars/";
     public static String BASE_HEADER_PHOTO = "http://www.heyoe.com/heyoe_chat/assets/images/header_photo/";
     public static String BASE_POST_PHOTO = "http://www.heyoe.com/heyoe_chat/assets/images/post_photo/";
     public static String BASE_THUMBNAIL = "http://www.heyoe.com/heyoe_chat/assets/images/thumb/";
@@ -24,7 +24,7 @@ public class API {
     public static String BASE_APP = "http://www.heyoe.com/heyoe_chat/assets/images/app.png";
 
 //    public static String BASE_URL = "http://192.168.2.17/heyoe_chat/index.php/api/";
-//    public static String BASE_AVATAR = "http://192.168.2.17/heyoe_chat/assets/images/avatars/";
+////    public static String BASE_AVATAR = "http://192.168.2.17/heyoe_chat/assets/images/avatars/";
 //    public static String BASE_HEADER_PHOTO = "http://192.168.2.17/heyoe_chat/assets/images/header_photo/";
 //    public static String BASE_POST_PHOTO = "http://192.168.2.17/heyoe_chat/assets/images/post_photo/";
 //    public static String BASE_THUMBNAIL = "http://192.168.2.17/heyoe_chat/assets/images/thumb/";

@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.heyoe_chat.R;
 import com.heyoe_chat.controller.App;
+import com.heyoe_chat.controller.MediaPlayActivity;
 import com.heyoe_chat.controller.push.GcmBroadcastReceiver;
 import com.heyoe_chat.model.API;
 import com.heyoe_chat.model.Constant;
@@ -295,7 +296,7 @@ public class MessagesListActivity extends BaseActivity {
         tvName.setText(fullname);
         MyCircularImageView circularImageView = (MyCircularImageView)toolbar.findViewById(R.id.civUser);
         if (avatar.length() != 0) {
-            String opponentAvatarURL = API.BASE_AVATAR + avatar;
+            String opponentAvatarURL =  avatar;
             UrlRectangleImageViewHelper.setUrlDrawable(circularImageView, opponentAvatarURL, R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
                 public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
@@ -308,38 +309,15 @@ public class MessagesListActivity extends BaseActivity {
                 }
             });
         }
-//        circularImageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ImageView imageView = new ImageView(MessagesListActivity.this);
-//                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT);
-//                imageView.setLayoutParams(layoutParams);
-//                if (avatar.length() != 0) {
-//                    String opponentAvatarURL = API.BASE_AVATAR + avatar;
-//                    UrlRectangleImageViewHelper.setUrlDrawable(imageView, opponentAvatarURL, R.drawable.default_user, new UrlImageViewCallback() {
-//                        @Override
-//                        public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
-//                            if (!loadedFromCache) {
-//                                ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
-//                                scale.setDuration(10);
-//                                scale.setInterpolator(new OvershootInterpolator());
-//                                imageView.startAnimation(scale);
-//                            }
-//                        }
-//                    });
-//                }
-//                AlertDialog.Builder builder = new AlertDialog.Builder(MessagesListActivity.this);
-//                builder.setView(imageView);
-//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.cancel();
-//                    }
-//                });
-//                builder.create()
-//                        .show();
-//            }
-//        });
+        circularImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MessagesListActivity.this, MediaPlayActivity.class);
+                intent.putExtra("type", "photo");
+                intent.putExtra("url", avatar);
+                startActivity(intent);
+            }
+        });
         llBackground = (LinearLayout)findViewById(R.id.ll_message_list);
         if (isBlackFriend) {
             llBackground.setBackgroundColor(getResources().getColor(R.color.black));
@@ -440,7 +418,10 @@ public class MessagesListActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mMessageComposer.onActivityResult(this, requestCode, resultCode, data);
+        if (!mConversation.isDeleted()) {
+            mMessageComposer.onActivityResult(this, requestCode, resultCode, data);
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 

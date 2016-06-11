@@ -250,7 +250,7 @@ public class PostAdapter extends BaseAdapter {
                 if (i < 3) {
                     civFriends[i].setVisibility(View.VISIBLE);
                     if (!postModel.getArrLiked_friends().get(i).getAvatar().equals("")) {
-                        UrlRectangleImageViewHelper.setUrlDrawable(civFriends[i], API.BASE_AVATAR + postModel.getArrLiked_friends().get(i).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                        UrlRectangleImageViewHelper.setUrlDrawable(civFriends[i], postModel.getArrLiked_friends().get(i).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                             @Override
                             public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                                 if (!loadedFromCache) {
@@ -264,7 +264,6 @@ public class PostAdapter extends BaseAdapter {
                     } else {
                         civFriends[i].setImageDrawable(activity.getResources().getDrawable(R.drawable.default_user));
                     }
-
                 }
                 String fullname = postModel.getArrLiked_friends().get(i).getFullname();
                 String firstName = fullname.substring(0, fullname.indexOf(" "));
@@ -293,12 +292,7 @@ public class PostAdapter extends BaseAdapter {
                             continue;
                         }
                     }
-
-
                 }
-
-
-
             }
             String strLikedMedia = "";
             if (postModel.getMedia_type().equals("post_photo")) {
@@ -349,7 +343,7 @@ public class PostAdapter extends BaseAdapter {
             }
         });
         if (!postModel.getPoster_avatar().equals("")) {
-            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + postModel.getPoster_avatar(), R.drawable.default_user, new UrlImageViewCallback() {
+            UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, postModel.getPoster_avatar(), R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
                 public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                     if (!loadedFromCache) {

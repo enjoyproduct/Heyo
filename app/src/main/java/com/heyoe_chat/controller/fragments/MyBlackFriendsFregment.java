@@ -76,7 +76,7 @@ public class MyBlackFriendsFregment extends Fragment {
     private ArrayList<UserModel> arrBlockedUsers;
     private Button btnFriend, btnBlocked;
     private int state;
-    private int chattingFriendNum;
+    private static int chattingFriendNum;
 
     List<Conversation> arrConversations;
     private void getAllConversations() {
@@ -165,14 +165,7 @@ public class MyBlackFriendsFregment extends Fragment {
             }
         }
     }
-    private void updateUnreadMsgCount(int position) {
-        Global.getInstance().decreaseMessageCount(arrActiveUsers.get(position).getUnreadMsgCount());
-        HomeActivity.showMsgBadge("", "");
-        ///
-        arrActiveUsers.get(position).setUnreadMsgCount(0);
-        ///
-        friendAdapter.notifyDataSetChanged();
-    }
+
 
 
     public MyBlackFriendsFregment() {
@@ -278,6 +271,8 @@ public class MyBlackFriendsFregment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
 //                        Utils.hideProgress();
+                        arrActiveUsers = new ArrayList<>();
+                        arrBlockedUsers = new ArrayList<>();
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
@@ -683,7 +678,7 @@ public class MyBlackFriendsFregment extends Fragment {
             final UserModel userModel = arrFriends.get(position);
             MyCircularImageView myCircularImageView = (MyCircularImageView)convertView.findViewById(R.id.civ_if_avatar);
             if (!userModel.getAvatar().equals("")) {
-                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {
@@ -697,6 +692,12 @@ public class MyBlackFriendsFregment extends Fragment {
             } else {
                 myCircularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
             }
+            myCircularImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HomeActivity.navigateToProfile(userModel.getUser_id());
+                }
+            });
 
             TextView tvFullname = (TextView)convertView.findViewById(R.id.tv_if_fullname);
             tvFullname.setTextColor(getResources().getColor(R.color.white));
@@ -706,7 +707,8 @@ public class MyBlackFriendsFregment extends Fragment {
             ivChat.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateUnreadMsgCount(position);
+                    chattingFriendNum = position;
+//                    updateUnreadMsgCount(position);
                     //set black status
                     if (Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()) == 0
                             || Integer.parseInt(arrActiveUsers.get(position).getBlacker_id()) == Integer.parseInt(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
@@ -848,7 +850,7 @@ public class MyBlackFriendsFregment extends Fragment {
             UserModel userModel = arrFriends.get(position);
             MyCircularImageView myCircularImageView = (MyCircularImageView)convertView.findViewById(R.id.civ_if_avatar);
             if (!userModel.getAvatar().equals("")) {
-                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                         if (!loadedFromCache) {

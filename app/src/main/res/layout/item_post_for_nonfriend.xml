@@ -53,27 +53,33 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/iv_ipff_media"
+        <RelativeLayout
+            android:id="@+id/rl_ipff_media"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/default_tour"
-            android:scaleType="fitXY"
-            android:adjustViewBounds="true"
-            />
-        <ImageButton
-            android:id="@+id/ib_ipff_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@drawable/ic_play_dark"
-            android:visibility="visible"/>
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/iv_ipff_media"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/default_tour"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                />
+            <ImageButton
+                android:id="@+id/ib_ipff_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/video_play60"
+                android:visibility="visible"/>
+        </RelativeLayout>
+
         <com.heyoe_chat.widget.MyCircularImageView
             android:id="@+id/civ_ipff_av"
             android:layout_width="@dimen/avatar_bg_size"
             android:layout_height="@dimen/avatar_bg_size"
             android:src="@drawable/bg_circle_white"
-            android:layout_alignBottom="@+id/iv_ipff_media"
+            android:layout_alignBottom="@+id/rl_ipff_media"
             android:layout_marginBottom="-32dp"
             android:layout_marginLeft="@dimen/dimen_16dp"/>
         <com.heyoe_chat.widget.MyCircularImageView
@@ -81,7 +87,7 @@
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
             android:src="@drawable/default_user"
-            android:layout_alignBottom="@+id/iv_ipff_media"
+            android:layout_alignBottom="@+id/rl_ipff_media"
             android:layout_marginBottom="-28dp"
             android:layout_marginLeft="21dp"/>
         <LinearLayout
@@ -90,7 +96,7 @@
             android:orientation="vertical"
             android:paddingRight="@dimen/dimen_16dp"
             android:paddingLeft="@dimen/dimen_16dp"
-            android:layout_below="@+id/iv_ipff_media">
+            android:layout_below="@+id/rl_ipff_media">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

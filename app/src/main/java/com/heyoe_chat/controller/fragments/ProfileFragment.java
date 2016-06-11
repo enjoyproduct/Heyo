@@ -621,7 +621,7 @@ public class ProfileFragment extends Fragment {
                 });
                 avatar = (MyCircularImageView)view.findViewById(R.id.civ_profile_avatar);
                 if (!userModel.getAvatar().equals("")) {
-                    UrlRectangleImageViewHelper.setUrlDrawable(avatar, API.BASE_AVATAR + userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                    UrlRectangleImageViewHelper.setUrlDrawable(avatar,  userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                         @Override
                         public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                             if (!loadedFromCache) {
@@ -855,7 +855,7 @@ public class ProfileFragment extends Fragment {
                 MyCircularImageView myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_ipff_avatar);
 
                 if (!postModel.getPoster_avatar().equals("")) {
-                    UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, API.BASE_AVATAR + postModel.getPoster_avatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                    UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView,  postModel.getPoster_avatar(), R.drawable.default_user, new UrlImageViewCallback() {
                         @Override
                         public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                             if (!loadedFromCache) {
@@ -1000,11 +1000,8 @@ public class ProfileFragment extends Fragment {
 //                                }
                             }
                         });
-
                         RelativeLayout.LayoutParams tagParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
                         //tagParams.setMargins(0, 0, 0, 0);
-
                         //add margin of each line
                         tagParams.bottomMargin = lineMargin;
                         // calculate　of tag layout width
@@ -1029,11 +1026,7 @@ public class ProfileFragment extends Fragment {
                                     index_bottom = listIndex;
                                 }
                             }
-
-
                         }
-
-
                         total += tagWidth;
                         rlTagContainer.addView(view1, tagParams);
                         view_pre = view1;
@@ -1421,7 +1414,7 @@ public class ProfileFragment extends Fragment {
                             avatar.setImageDrawable(getResources().getDrawable(R.drawable.default_user));
                         } else {
                             if (!userModel.getHeader_photo().equals("")) {
-                                UrlRectangleImageViewHelper.setUrlDrawable(avatar, API.BASE_AVATAR + userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
+                                UrlRectangleImageViewHelper.setUrlDrawable(avatar,  userModel.getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                                     @Override
                                     public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
                                         if (!loadedFromCache) {
