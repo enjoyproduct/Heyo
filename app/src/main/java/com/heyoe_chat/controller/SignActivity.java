@@ -49,7 +49,7 @@ public class SignActivity extends AppCompatActivity {
         type = getIntent().getStringExtra("type");
         if (type != null) {
             if (type.equals("activity")) {
-                Global.getInstance().increaseActivityCount();
+//                Global.getInstance().increaseActivityCount();
             } else if (type.equals("message")) {
                 Global.getInstance().increaseMessageCount();
             }

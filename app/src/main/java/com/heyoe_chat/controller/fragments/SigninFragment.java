@@ -333,7 +333,6 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                             } else if (status.equals("402")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }else if (status.equals("403")) {
-                                Utils.showOKDialog(mActivity, getResources().getString(R.string.unauthorized_qb));
                             }
                         }catch (Exception e) {
                             e.printStackTrace();

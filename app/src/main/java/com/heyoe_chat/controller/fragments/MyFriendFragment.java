@@ -95,10 +95,12 @@ public class MyFriendFragment extends Fragment  {
             arrActiveUsers.get(i).setLastMsgSentTime(0);
             for (int j = 0; j < arrConversations.size(); j ++) {
                 Conversation conversation = arrConversations.get(j);
+                int unreadMsgCount = 0;
                 if (conversation.getParticipants().contains(arrActiveUsers.get(i).getUser_id())) {
 
                     ///get unread message count and dialog id
-                    arrActiveUsers.get(i).setUnreadMsgCount(conversation.getTotalUnreadMessageCount());
+                    unreadMsgCount = conversation.getTotalUnreadMessageCount();
+                    arrActiveUsers.get(i).setUnreadMsgCount(unreadMsgCount);
                     arrActiveUsers.get(i).setConversation(conversation);
                     arrActiveUsers.get(i).setLastMsgSentTime(conversation.getLastMessage().getSentAt().getTime());
                     break;

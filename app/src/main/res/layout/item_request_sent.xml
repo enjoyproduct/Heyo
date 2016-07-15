@@ -13,7 +13,6 @@
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
             android:src="@drawable/default_user"
-
             />
         <!--description-->
         <LinearLayout

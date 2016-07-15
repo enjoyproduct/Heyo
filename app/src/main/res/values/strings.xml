@@ -16,10 +16,7 @@
     <string name="title_activity_layer_chat">LayerChatActivity</string>
     <string name="title_activity_black__friend_">Black_Friend_Activity</string>
     <string name="title_activity_photo_crop">PhotoCropActivity</string>
-
-
-
-
+    <string name="title_activity_take_media">TakeMediaActivity</string>
 
 
     <!--/////////////////////////////   facebook -->
@@ -28,7 +25,7 @@
     <!--release key-->
     <!--<string name="key_hash">2jmj7l5rSw0yVb/vlWAYkK/YBwk=</string>-->
 
-    google project id === thivorien@gmail.com
+    <!--google project id === thivorien@gmail.com-->
     <string name="project_id">535417836265</string>
     <string name="google_android_key">AIzaSyAnKdnRaagQEAC3lBq5DdsKIFkgE-R1Fus</string>
     <string name="server_key">AIzaSyDSAX_JhBN9By9EdR-rqWVgn1WTsSRF8sA</string>
@@ -43,17 +40,6 @@
     <!--<string name="client_id">520015641445-5dsjvp85063ct3b1pftr0j91nuhpr2hp.apps.googleusercontent.com</string>-->
 
     <!--<string name="google_place_api_key">AIzaSyAYmVLCqYDUCJy3lIwbnB6EikAzheBNnng</string>-->
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -143,32 +129,6 @@
     <string name="open_drawer">Open</string>
     <string name="close_drawer">Close</string>
     <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
 
     <!--Alert text-->
     <string name="Please_input_name">Please input your name</string>
@@ -194,24 +154,6 @@
     <string name="s_request">s request</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
 
     <!--response string-->
     <string name="email_registerd">Email already registered</string>
@@ -220,7 +162,6 @@
     <string name="post_failed">Posting failed</string>
     <string name="post_success">Posted successfully</string>
     <string name="access_denied">Access denied</string>
-    <string name="title_activity_take_media">TakeMediaActivity</string>
     <string name="invite_sucess">Invited successfully</string>
     <string name="cancel_invite">Are you sure to cancel invitation?</string>
     <string name="reject_friend">Are you sure to reject this invitation?</string>
@@ -228,10 +169,8 @@
     <string name="reject_success">You rejected invitation</string>
     <string name="accept_success">Congratulate having a friend</string>
     <string name="Youtube_play_error">Cannoot play this video</string>
-    <string name="qb_signup_failed">QB signup failed</string>
     <string name="success">success</string>
     <string name="user_not_exist">user not exists</string>
-    <string name="unauthorized_qb">Unauthorized on QB</string>
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
@@ -243,30 +182,8 @@
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
     <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-    <!--<string name=""></string>-->
-
-    <!--<string name="chat_sticker">Sticker</string>-->
-    <!--<string name="chat_send">Send</string>-->
-    <!--<string name="chat_edit_text_hint">Message</string>-->
-    <!--<string name="chat_me">Me</string>-->
-    <!--<string name="chat_friend">Friend</string>-->
-    <!--<string name="chat_join_error">Error join group chat</string>-->
-    <!--<string name="chat_send_message_error">Failed to send a message</string>-->
-    <!--<string name="chat_load_history_error">Load chat history errors</string>-->
-    <!--<string name="chat_load_users_error">Load chat users errors</string>-->
-    <!--<string name="chat_attachment_error">Can\'t load chosen file</string>-->
-    <!--<string name="chat_attachment">Attachment</string>-->
-    <!--<string name="chat_empty_you_are_alone_here">You\'re all alone out here.</string>-->
-    <!--<string name="chat_empty_start_new_chat">Start new chat.</string>-->
-    <!--<string name="chat_unsupported_type">Unsupported dialog type</string>-->
-    <!--<string name="chat_wait_for_attachments_to_upload">Wait for all attachments to upload</string>-->
-    <!--<string name="notification_title">Quickblox Chat Notification</string>-->
-    <!--<string name="connection_error">Chat connection has been dropped</string>-->
-    <!--<string name="reconnect_alert">Reconnecting in %s seconds</string>-->
-    <!--<string name="chat_info_add_people_error">Add people errors</string>-->
-    <!--<string name="dialogs_deletion_error">Dialog deletion errors</string>-->
-    <!--<string name="error_recreate_session">Login Chat error</string>-->
+    <string name="Male">Male</string>
+    <string name="Female">Female</string>
 
     <string name="please_wait">Please wait…</string>
 

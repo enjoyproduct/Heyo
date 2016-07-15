@@ -131,32 +131,33 @@ public class HomeActivity extends AppCompatActivity implements
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    private final static int PERMISSION_REQUEST_CODE_FOR_READ_EXTERNAL_STORAGE = 301;
-
+    private final static int PERMISSION_REQUEST_CODE_FOR_PERMISSION = 201;
     public static void checkPermission() {
-        int permissionCheck = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+        int writeExternalStoragePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int readExternalStoragePermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int cameraAccessPermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAMERA);
+        int recordVideoPermission = ContextCompat.checkSelfPermission(mActivity, Manifest.permission.CAPTURE_VIDEO_OUTPUT);
+        ArrayList<String> arrPermissionRequests = new ArrayList<>();
+        if (readExternalStoragePermission != PackageManager.PERMISSION_GRANTED) {
+            arrPermissionRequests.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (writeExternalStoragePermission != PackageManager.PERMISSION_GRANTED) {
+            arrPermissionRequests.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (cameraAccessPermission != PackageManager.PERMISSION_GRANTED) {
+            arrPermissionRequests.add(Manifest.permission.CAMERA);
+        }
+        if (recordVideoPermission != PackageManager.PERMISSION_GRANTED) {
+//            arrPermissionRequests.add(Manifest.permission.CAPTURE_VIDEO_OUTPUT);
 
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(mActivity,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        PERMISSION_REQUEST_CODE_FOR_READ_EXTERNAL_STORAGE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
+        }
+        if (!arrPermissionRequests.isEmpty()) {
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+//            }else if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.CAMERA)) {
+//            }else if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity, Manifest.permission.CAPTURE_VIDEO_OUTPUT)) {
+//            } else {
+//            }
+            ActivityCompat.requestPermissions(mActivity, arrPermissionRequests.toArray(new String[arrPermissionRequests.size()]), PERMISSION_REQUEST_CODE_FOR_PERMISSION);
         }
     }
 
@@ -164,23 +165,25 @@ public class HomeActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case PERMISSION_REQUEST_CODE_FOR_READ_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            case PERMISSION_REQUEST_CODE_FOR_PERMISSION: {
 
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+                if (grantResults.length > 0) {
+                   for (int i = 0; i < grantResults.length; i ++) {
+                       if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                           // permission was granted, yay! Do the
+                           // contacts-related task you need to do.
 
-                } else {
+                       } else {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Utils.showOKDialog(this, "You should allow this permission to use full functions of this app.");
+                           // permission denied, boo! Disable the
+                           // functionality that depends on this permission.
+                           Utils.showOKDialog(this, "You should allow this permission to use full functions of this app.");
+                       }
+                   }
                 }
-                return;
-            }
+                // If request is cancelled, the result arrays are empty.
 
+            }
             // other 'case' lines to check for other
             // permissions this app might request
         }
@@ -203,6 +206,9 @@ public class HomeActivity extends AppCompatActivity implements
 
     private void login_layer(final String user_id) {
         Utils.showProgress(this);
+        if (!App.getLayerClient().isAuthenticated()) {
+
+        }
         App.authenticate(new DemoAuthenticationProvider.Credentials(App.getLayerAppId(), user_id),
                 new AuthenticationProvider.Callback() {
                     @Override
@@ -221,6 +227,7 @@ public class HomeActivity extends AppCompatActivity implements
                         }
                     }
                 });
+
     }
 
     private void logout_layer() {
@@ -254,7 +261,7 @@ public class HomeActivity extends AppCompatActivity implements
                     data.type.equals("reject_invite") ||
                     data.type.equals("accept_friend")) {
                 if (data.receiver_id.equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
-                    Global.getInstance().increaseActivityCount();
+//                    Global.getInstance().increaseActivityCount();
                     showActivityBadge();
                 }
 
@@ -266,7 +273,7 @@ public class HomeActivity extends AppCompatActivity implements
                             return;
                         }
                     }
-                    Global.getInstance().increaseMessageCount();
+//                    Global.getInstance().increaseMessageCount();
                     showMsgBadge(data.user_id, data.conversation_id);
 
                 }
@@ -1019,7 +1026,7 @@ public class HomeActivity extends AppCompatActivity implements
             setOffline("off");
         }
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mHandleMessageReceiver);
-        logout_layer();
+//        logout_layer();
         super.onDestroy();
     }
 

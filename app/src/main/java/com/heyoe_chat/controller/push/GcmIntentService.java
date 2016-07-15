@@ -15,6 +15,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.heyoe_chat.R;
 import com.heyoe_chat.controller.SignActivity;
 import com.heyoe_chat.model.Constant;
+import com.heyoe_chat.model.Global;
 import com.heyoe_chat.model.PushModel;
 import com.heyoe_chat.utilities.Utils;
 
@@ -49,7 +50,9 @@ public class GcmIntentService extends IntentService {
             } else if (type.equals("exit_checkin")) {
 
             } else {
+                sendNotification();
                 if (type.equals("white")) {
+                    Global.getInstance().increaseMessageCount();
                     increaseMsgCount();
                 } else if (type.equals("activity") ||
                         type.equals("taged")) {
@@ -60,7 +63,7 @@ public class GcmIntentService extends IntentService {
                         return;
                     }
                 }
-                sendNotification();
+
             }
         }
     }
@@ -70,6 +73,7 @@ public class GcmIntentService extends IntentService {
         PushModel pushModel = new PushModel();
         pushModel.type = "increase_activity_count";
         pushModel.receiver_id = receiver_id;
+        Global.getInstance().increaseActivityCount();
         localBroadCast(pushModel);
 
     }
@@ -83,6 +87,7 @@ public class GcmIntentService extends IntentService {
             } else {
                 pushModel.type = "increase_message_count";
             }
+
             localBroadCast(pushModel);
         }
     }
@@ -93,7 +98,6 @@ public class GcmIntentService extends IntentService {
                 type.equals("receive_invite") ||
                 type.equals("accept_friend") ||
                 type.equals("taged")) {
-//            intent.putExtra("page_num", 6);
             intent.putExtra("type", "activity");
         } else if (type.equals("white")) {
             intent.putExtra("type", "message");

@@ -1460,7 +1460,8 @@ public class ProfileFragment extends Fragment {
             System.out.println("zettabytes : " + zettabytes);
             System.out.println("yottabytes : " + yottabytes);
 
-            if (megabytes * 5 > DeviceUtility.getFreeRamSize(mActivity)) {
+//            if (megabytes * 10 > DeviceUtility.getFreeRamSize(mActivity)) {
+            if (megabytes > 25 || megabytes * 10 > DeviceUtility.getFreeRamSize(mActivity)) {
                 isBigger = true;
             }
         }else{
@@ -1591,7 +1592,7 @@ public class ProfileFragment extends Fragment {
         // set max time limit
         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 15);
         ///set max size limit
-        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, DeviceUtility.getFreeRamSize(mActivity) * 1024 * 1024 / 5);
+        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, DeviceUtility.getFreeRamSize(mActivity) * 1024 * 1024 / 10);
         // start the Video Capture Intent
         startActivityForResult(intent, take_video_from_camera);
     }

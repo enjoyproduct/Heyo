@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,14 +63,7 @@ public class CustomMultipartRequest extends Request<JSONObject> {
         multipartEntity.addPart(filePart);
         return this;
     }
-    public CustomMultipartRequest addImagePartFromBitmap(String key, Bitmap bitmap, String photoName) {
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bao);
-        byte [] ba = bao.toByteArray();
-//        multipartEntity.addPart("file", new ByteArrayBody(ba, photoName + ".png"), "image/jpg");
 
-        return this;
-    }
     @Override
     public String getBodyContentType() {
         return multipartEntity.getContentType().getValue();
@@ -78,8 +72,9 @@ public class CustomMultipartRequest extends Request<JSONObject> {
     @Override
     public byte[] getBody() throws AuthFailureError {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        DataOutputStream outputStream = new DataOutputStream(bos);
         try {
-            multipartEntity.writeTo(bos);
+            multipartEntity.writeTo(outputStream);
         } catch (IOException e) {
             VolleyLog.e("IOException writing to ByteArrayOutputStream");
         }

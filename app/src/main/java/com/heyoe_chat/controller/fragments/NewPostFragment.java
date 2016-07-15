@@ -532,7 +532,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         }
         if (videoPath.length() > 0) {
             if (thumbPath.length() == 0) {
-                Utils.showToast(mActivity, "Cannot get thumbnail");
+//                Utils.showToast(mActivity, "Cannot get thumbnail");
                 return false;
             }
             if (checkFileSize(videoPath)) {
@@ -579,7 +579,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             System.out.println("zettabytes : " + zettabytes);
             System.out.println("yottabytes : " + yottabytes);
 
-            if (megabytes * 7 > DeviceUtility.getFreeRamSize(mActivity)) {
+//            if (megabytes * 5 > DeviceUtility.getFreeRamSize(mActivity)) {
+            if (megabytes > 30 || megabytes * 10 > DeviceUtility.getFreeRamSize(mActivity)) {
                 isBigger = true;
             }
         }else{
@@ -602,7 +603,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                                 Utils.showToast(mActivity, getResources().getString(R.string.post_success));
 
                                 if (mediaType.equals("post_video")) {
-                                    FileUtility.deleteFile(videoPath);
+//                                    FileUtility.deleteFile(videoPath);
                                     FileUtility.deleteFile(thumbPath);
 
                                 } else if (mediaType.equals("post_photo")) {
@@ -613,7 +614,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             }else  if (status.equals("401")) {
-                                Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
                             }
 
                         }catch (Exception e) {
@@ -625,24 +626,24 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Utils.hideProgress();
-                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                            Toast.makeText(mActivity, "TimeoutError", Toast.LENGTH_LONG).show();
-                        } else if (error instanceof AuthFailureError) {
-                            //TODO
-                            Toast.makeText(mActivity, "AuthFailureError", Toast.LENGTH_LONG).show();
-                        } else if (error instanceof ServerError) {
-                            //TODO
-                            Toast.makeText(mActivity, "ServerError", Toast.LENGTH_LONG).show();
-                        } else if (error instanceof NetworkError) {
-                            //TODO
-                            Toast.makeText(mActivity, "NetworkError", Toast.LENGTH_LONG).show();
-                        } else if (error instanceof ParseError) {
-                            //TODO
-                            Toast.makeText(mActivity, "ParseError", Toast.LENGTH_LONG).show();
-                        } else {
-                            //TODO
-                            Toast.makeText(mActivity, "UnknownError", Toast.LENGTH_LONG).show();
-                        }
+//                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+//                            Toast.makeText(mActivity, "TimeoutError", Toast.LENGTH_LONG).show();
+//                        } else if (error instanceof AuthFailureError) {
+//                            //TODO
+//                            Toast.makeText(mActivity, "AuthFailureError", Toast.LENGTH_LONG).show();
+//                        } else if (error instanceof ServerError) {
+//                            //TODO
+//                            Toast.makeText(mActivity, "ServerError", Toast.LENGTH_LONG).show();
+//                        } else if (error instanceof NetworkError) {
+//                            //TODO
+//                            Toast.makeText(mActivity, "NetworkError", Toast.LENGTH_LONG).show();
+//                        } else if (error instanceof ParseError) {
+//                            //TODO
+//                            Toast.makeText(mActivity, "ParseError", Toast.LENGTH_LONG).show();
+//                        } else {
+//                            //TODO
+//                            Toast.makeText(mActivity, "UnknownError", Toast.LENGTH_LONG).show();
+//                        }
                     }
                 });
         customMultipartRequest
@@ -748,7 +749,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             }else  if (status.equals("401")) {
-                                Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
                             }
 
                         }catch (Exception e) {
@@ -760,24 +761,24 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Utils.hideProgress();
-                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-                            Toast.makeText(mActivity, "TimeoutError", Toast.LENGTH_LONG).show();
-                        } else if (error instanceof AuthFailureError) {
-                            //TODO
-                            Toast.makeText(mActivity, "AuthFailureError", Toast.LENGTH_LONG).show();
-                        } else if (error instanceof ServerError) {
-                            //TODO
-                            Toast.makeText(mActivity, "ServerError", Toast.LENGTH_LONG).show();
-                        } else if (error instanceof NetworkError) {
-                            //TODO
-                            Toast.makeText(mActivity, "NetworkError", Toast.LENGTH_LONG).show();
-                        } else if (error instanceof ParseError) {
-                            //TODO
-                            Toast.makeText(mActivity, "ParseError", Toast.LENGTH_LONG).show();
-                        } else {
-                            //TODO
-                            Toast.makeText(mActivity, "UnknownError", Toast.LENGTH_LONG).show();
-                        }
+//                        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+//                            Toast.makeText(mActivity, "TimeoutError", Toast.LENGTH_LONG).show();
+//                        } else if (error instanceof AuthFailureError) {
+//                            //TODO
+//                            Toast.makeText(mActivity, "AuthFailureError", Toast.LENGTH_LONG).show();
+//                        } else if (error instanceof ServerError) {
+//                            //TODO
+//                            Toast.makeText(mActivity, "ServerError", Toast.LENGTH_LONG).show();
+//                        } else if (error instanceof NetworkError) {
+//                            //TODO
+//                            Toast.makeText(mActivity, "NetworkError", Toast.LENGTH_LONG).show();
+//                        } else if (error instanceof ParseError) {
+//                            //TODO
+//                            Toast.makeText(mActivity, "ParseError", Toast.LENGTH_LONG).show();
+//                        } else {
+//                            //TODO
+//                            Toast.makeText(mActivity, "UnknownError", Toast.LENGTH_LONG).show();
+//                        }
                     }
                 });
         customMultipartRequest
@@ -1065,7 +1066,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     if (videoPath != null && videoPath.length() > 0) {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.MINI_KIND);
                         if (thumbnail == null) {
-                            Utils.showToast(mActivity, "Cannot get thumbnail");
+//                            Utils.showToast(mActivity, "Cannot get thumbnail");
                             return;
                         }
                         ibPlay.setVisibility(View.VISIBLE);
@@ -1096,7 +1097,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     if (videoPath.length() > 0) {
                         Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(videoPath, MediaStore.Video.Thumbnails.MINI_KIND);
                         if (thumbnail == null) {
-                            Utils.showToast(mActivity, "Cannot get thumbnail");
+//                            Utils.showToast(mActivity, "Cannot get thumbnail");
                             return;
                         }
                         ibPlay.setVisibility(View.VISIBLE);
@@ -1223,9 +1224,9 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         // set the video image quality to high
         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
         // set max time limit
-        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 20);
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
         ///set max size limit
-        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, DeviceUtility.getFreeRamSize(mActivity) * 1024 * 1024 / 7);
+        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, DeviceUtility.getFreeRamSize(mActivity) * 1024 * 1024 / 1);
         // start the Video Capture Intent
         startActivityForResult(intent, take_video_from_camera);
     }

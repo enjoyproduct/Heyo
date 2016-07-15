@@ -524,10 +524,10 @@ public class CheckinFragment extends Fragment {
                 ibAdd.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.sandglass_small));
 //            } else if (arrFriends.get(position).getFriendStatus().equals("none")){
 //                ibAdd.setImageDrawable(getResources().getDrawable(R.drawable.ic_green_plus));
-            } else if (arrFriends.get(position).getFriendStatus().equals("active")){
-                ibAdd.setVisibility(View.INVISIBLE);
-            } else {
+            } else if (arrFriends.get(position).getFriendStatus().equals("none")){
                 ibAdd.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_green_plus));
+            } else {
+                ibAdd.setVisibility(View.INVISIBLE);
             }
 
             ibChat.setOnClickListener(new View.OnClickListener() {

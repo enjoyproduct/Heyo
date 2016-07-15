@@ -21,7 +21,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         ///set exception handler
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
+//        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
 //        SocialUtility.printKeyHash(this);
 
