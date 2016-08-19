@@ -69,21 +69,21 @@ public class PhotoCropActivity extends AppCompatActivity implements CropImageVie
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(getResources().getString(R.string.choose_photo));
         builder.setCancelable(true);
-        builder.setPositiveButton("Camera",
+        builder.setPositiveButton( getResources().getString(R.string.Camera),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dispatchTakePictureIntent();
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("gallery",
+        builder.setNegativeButton( getResources().getString(R.string.Gallery),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         takePictureFromGallery();
                         dialog.cancel();
                     }
                 });
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton( getResources().getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int arg1) {

@@ -50,6 +50,7 @@ import com.heyoe_chat.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe_chat.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe_chat.widget.AttachmentPreviewAdapterView;
 import com.heyoe_chat.widget.MyCircularImageView;
+import com.layer.atlas.util.Util;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.exceptions.LayerConversationException;
 import com.layer.sdk.messaging.Conversation;
@@ -85,6 +86,7 @@ public class CheckinFragment extends Fragment {
     public CheckinFragment() {
         // Required empty public constructor
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,6 +98,7 @@ public class CheckinFragment extends Fragment {
         onCheckinClick();
         return view;
     }
+
     private void initVariables() {
         mActivity = getActivity();
         isLast = false;
@@ -104,6 +107,7 @@ public class CheckinFragment extends Fragment {
         checkin = "";
 
     }
+
     private void initUI(View view) {
         ///create listview
         mPullRefreshHomeListView = (PullToRefreshListView) view.findViewById(R.id.lv_checkin_user);
@@ -137,6 +141,7 @@ public class CheckinFragment extends Fragment {
                     .show();
         }
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constant.REQUEST_PLACE_PICKER) {
@@ -155,10 +160,11 @@ public class CheckinFragment extends Fragment {
             }
         }
     }
+
     public static void updateUserState(String user_id, Uri conversation_id) {
-        for (int i = 0; i < arrUsers.size(); i ++) {
+        for (int i = 0; i < arrUsers.size(); i++) {
             if (arrUsers.get(i).getUser_id().equals(user_id)) {
-                if(arrUsers.get(i).getConversation() != null) {
+                if (arrUsers.get(i).getConversation() != null) {
                     Global.getInstance().decreaseMessageCount(arrUsers.get(i).getConversation().getTotalUnreadMessageCount());
                     HomeActivity.showMsgBadge("", "");
                 }
@@ -174,6 +180,7 @@ public class CheckinFragment extends Fragment {
     }
 
     static List<Conversation> arrConversations;
+
     private static void getAllConversations() {
         arrConversations = new ArrayList<>();
 
@@ -186,12 +193,13 @@ public class CheckinFragment extends Fragment {
         Utils.hideProgress();
         addConversation();
     }
+
     private static void addConversation() {
         //get dialog of active friends
         for (int i = 0; i < arrUsers.size(); i++) {
             arrUsers.get(i).setUnreadMsgCount(0);
             arrUsers.get(i).setLastMsgSentTime(0);
-            for (int j = 0; j < arrConversations.size(); j ++) {
+            for (int j = 0; j < arrConversations.size(); j++) {
                 Conversation conversation = arrConversations.get(j);
                 if (conversation.getParticipants().contains(arrUsers.get(i).getUser_id())) {
 
@@ -209,6 +217,7 @@ public class CheckinFragment extends Fragment {
         lvHome.setAdapter(checkinUserAdapter);
         mPullRefreshHomeListView.onRefreshComplete();
     }
+
     private Conversation createConversation(String friend_id) {
         Conversation conversation;
         try {
@@ -244,7 +253,7 @@ public class CheckinFragment extends Fragment {
 //                                    isLast = true;
 //                                }
 //                                offset ++;
-                                for (int i = 0; i < userCount; i ++)  {
+                                for (int i = 0; i < userCount; i++) {
 
                                     JSONObject userObject = jsonArray.getJSONObject(i);
 
@@ -304,12 +313,12 @@ public class CheckinFragment extends Fragment {
                                     mPullRefreshHomeListView.onRefreshComplete();
                                 }
 
-                            } else  if (status.equals("400")) {
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -324,6 +333,7 @@ public class CheckinFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
+
     private static void sendFriendRequest(String user_id, final int position) {
         Utils.showProgress(mActivity);
 
@@ -344,12 +354,12 @@ public class CheckinFragment extends Fragment {
                                 arrUsers.get(position).setFriendStatus("waiting");
                                 checkinUserAdapter.notifyDataSetChanged();
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.invite_sucess));
-                            } else  if (status.equals("400")) {
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -364,7 +374,7 @@ public class CheckinFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
-    
+
     private void enterCheckin() {
         Utils.showProgress(mActivity);
 
@@ -383,12 +393,12 @@ public class CheckinFragment extends Fragment {
                             String status = response.getString("status");
                             if (status.equals("200")) {
                                 getCheckinUsers();
-                            } else  if (status.equals("400")) {
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -403,6 +413,7 @@ public class CheckinFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
+
     private void exitCheckin() {
         Map<String, String> params = new HashMap<String, String>();
         params.put(Constant.DEVICE_TYPE, Constant.ANDROID);
@@ -419,12 +430,12 @@ public class CheckinFragment extends Fragment {
                             String status = response.getString("status");
                             if (status.equals("200")) {
 
-                            } else  if (status.equals("400")) {
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -440,15 +451,17 @@ public class CheckinFragment extends Fragment {
         requestQueue.add(signinRequest);
     }
 
-    
+
     public static class CheckinUserAdapter extends BaseAdapter {
 
         LayoutInflater mlayoutInflater;
         ArrayList<UserModel> arrFriends;
-        public CheckinUserAdapter (ArrayList<UserModel> arrFriends) {
+
+        public CheckinUserAdapter(ArrayList<UserModel> arrFriends) {
             mlayoutInflater = LayoutInflater.from(mActivity);
             this.arrFriends = arrFriends;
         }
+
         @Override
         public int getCount() {
             return arrFriends.size();
@@ -468,7 +481,7 @@ public class CheckinFragment extends Fragment {
         public View getView(final int position, View convertView, ViewGroup parent) {
             View view = mlayoutInflater.inflate(R.layout.item_checkin_user, null);
 
-            MyCircularImageView myCircularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
+            MyCircularImageView myCircularImageView = (MyCircularImageView) view.findViewById(R.id.civ_imf_friend_avatar3);
             if (!arrFriends.get(position).getAvatar().equals("")) {
                 UrlRectangleImageViewHelper.setUrlDrawable(myCircularImageView, arrFriends.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                     @Override
@@ -481,7 +494,7 @@ public class CheckinFragment extends Fragment {
                         }
                     }
                 });
-            }else {
+            } else {
                 myCircularImageView.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.default_user));
             }
             myCircularImageView.setOnClickListener(new View.OnClickListener() {
@@ -490,7 +503,7 @@ public class CheckinFragment extends Fragment {
 //                    HomeActivity.navigateToProfile(arrFriends.get(position).getUser_id());
                 }
             });
-            TextView tvName = (TextView)view.findViewById(R.id.tv_imf_friend_name);
+            TextView tvName = (TextView) view.findViewById(R.id.tv_imf_friend_name);
             tvName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -498,11 +511,11 @@ public class CheckinFragment extends Fragment {
                 }
             });
 
-            TextView tvAboutMe = (TextView)view.findViewById(R.id.tv_imf_aboutme);
-            ImageButton ibAdd = (ImageButton)view.findViewById(R.id.ib_imf_add);
-            ImageButton ibChat = (ImageButton)view.findViewById(R.id.ib_imf_chat);
-            RelativeLayout rlChatBubble = (RelativeLayout)view.findViewById(R.id.rl_checkin_chat_bubble);
-            TextView tvUnreadMsgCount = (TextView)view.findViewById(R.id.tv_if_unreadmsgcount);
+            TextView tvAboutMe = (TextView) view.findViewById(R.id.tv_imf_aboutme);
+            ImageButton ibAdd = (ImageButton) view.findViewById(R.id.ib_imf_add);
+            ImageButton ibChat = (ImageButton) view.findViewById(R.id.ib_imf_chat);
+            RelativeLayout rlChatBubble = (RelativeLayout) view.findViewById(R.id.rl_checkin_chat_bubble);
+            TextView tvUnreadMsgCount = (TextView) view.findViewById(R.id.tv_if_unreadmsgcount);
 
             tvName.setText(arrFriends.get(position).getFullname());
             tvAboutMe.setText(arrFriends.get(position).getAbout_you());
@@ -524,7 +537,7 @@ public class CheckinFragment extends Fragment {
                 ibAdd.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.sandglass_small));
 //            } else if (arrFriends.get(position).getFriendStatus().equals("none")){
 //                ibAdd.setImageDrawable(getResources().getDrawable(R.drawable.ic_green_plus));
-            } else if (arrFriends.get(position).getFriendStatus().equals("none")){
+            } else if (arrFriends.get(position).getFriendStatus().equals("none")) {
                 ibAdd.setImageDrawable(mActivity.getResources().getDrawable(R.drawable.ic_green_plus));
             } else {
                 ibAdd.setVisibility(View.INVISIBLE);
@@ -540,9 +553,9 @@ public class CheckinFragment extends Fragment {
                     } else if (arrFriends.get(position).getCheckinRequestState() == 2) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
                         builder.setTitle(Constant.INDECATOR);
-                        builder.setMessage("Do you want accept " + arrFriends.get(position).getFullname() + "'s request?");
+                        builder.setMessage(mActivity.getResources().getString(R.string.do_you_want_accept) + " " + arrFriends.get(position).getFullname() + mActivity.getResources().getString(R.string.s_request));
                         builder.setCancelable(true);
-                        builder.setPositiveButton("Accept",
+                        builder.setPositiveButton(mActivity.getResources().getString(R.string.Accept),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         acceptCheckinRequest(position);
@@ -552,7 +565,7 @@ public class CheckinFragment extends Fragment {
                                         dialog.cancel();
                                     }
                                 });
-                        builder.setNegativeButton("Cancel",
+                        builder.setNegativeButton(mActivity.getResources().getString(R.string.dlg_cancel),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         dialog.cancel();
@@ -568,7 +581,7 @@ public class CheckinFragment extends Fragment {
                         if (arrFriends.get(position).getConversation() != null) {
                             intent.putExtra(GcmBroadcastReceiver.LAYER_CONVERSATION_KEY, arrFriends.get(position).getConversation().getId());
                         }
-                        intent.putExtra("user_id",arrFriends.get(position).getUser_id());
+                        intent.putExtra("user_id", arrFriends.get(position).getUser_id());
                         intent.putExtra("avatar", arrFriends.get(position).getAvatar());
                         intent.putExtra("fullname", arrFriends.get(position).getFullname());
                         intent.putExtra("page", "checkin_chat");
@@ -588,6 +601,7 @@ public class CheckinFragment extends Fragment {
             return view;
         }
     }
+
     private static void sendCheckinRequest(final int position) {
         Utils.showProgress(mActivity);
 
@@ -607,13 +621,13 @@ public class CheckinFragment extends Fragment {
                             if (status.equals("200")) {
                                 arrUsers.get(position).setCheckinRequestState(1);
                                 checkinUserAdapter.notifyDataSetChanged();
-                                Utils.showToast(mActivity, "Sent request successfully");
-                            } else  if (status.equals("400")) {
+                                Utils.showToast(mActivity, mActivity.getResources().getString(R.string.sent_request_successfully));
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -648,13 +662,13 @@ public class CheckinFragment extends Fragment {
                             if (status.equals("200")) {
                                 arrUsers.get(position).setCheckinRequestState(3);
                                 checkinUserAdapter.notifyDataSetChanged();
-                                Utils.showToast(mActivity, "Accepted request successfully");
-                            } else  if (status.equals("400")) {
+                                Utils.showToast(mActivity, mActivity.getResources().getString(R.string.accepted_request_successfully));
+                            } else if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
 //                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
                             }
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -669,10 +683,11 @@ public class CheckinFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
-    public static void updateCheckinRequest (String user_id, String type) {
+
+    public static void updateCheckinRequest(String user_id, String type) {
 
         if (type.equals("2") || type.equals("3")) {
-            for (int i = 0; i < arrUsers.size(); i ++) {
+            for (int i = 0; i < arrUsers.size(); i++) {
                 if (arrUsers.get(i).getUser_id().equals(user_id)) {
                     arrUsers.get(i).setCheckinRequestState(Integer.parseInt(type));
                     if (type.equals("2")) {
@@ -683,11 +698,11 @@ public class CheckinFragment extends Fragment {
                     break;
                 }
             }
-        } else if (type.equals("increase_message_count")){
-            for (int i = 0; i < arrUsers.size(); i ++) {
+        } else if (type.equals("increase_message_count")) {
+            for (int i = 0; i < arrUsers.size(); i++) {
                 if (arrUsers.get(i).getUser_id().equals(user_id)) {
                     int unreadMsgCount = arrUsers.get(i).getUnreadMsgCount();
-                    unreadMsgCount ++;
+                    unreadMsgCount++;
                     arrUsers.get(i).setUnreadMsgCount(unreadMsgCount);
                     checkinUserAdapter.notifyDataSetChanged();
                     break;
@@ -698,15 +713,16 @@ public class CheckinFragment extends Fragment {
 
         checkinUserAdapter.notifyDataSetChanged();
     }
+
     private static void showAcceptedAlert(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(Constant.INDECATOR);
         View view = mActivity.getLayoutInflater().inflate(R.layout.item_more_friend, null);
-        RelativeLayout relativeLayout = (RelativeLayout)view.findViewById(R.id.rl_imf_social);
+        RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.rl_imf_social);
         relativeLayout.setVisibility(View.GONE);
-        TextView tvMsg = (TextView)view.findViewById(R.id.tv_imf_friend_name);
-        tvMsg.setText(arrUsers.get(position).getFullname() + " accepted your request");
-        MyCircularImageView circularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
+        TextView tvMsg = (TextView) view.findViewById(R.id.tv_imf_friend_name);
+        tvMsg.setText(arrUsers.get(position).getFullname() + " " + mActivity.getResources().getString(R.string.accepted_your_request));
+        MyCircularImageView circularImageView = (MyCircularImageView) view.findViewById(R.id.civ_imf_friend_avatar3);
         if (!arrUsers.get(position).equals("")) {
             UrlRectangleImageViewHelper.setUrlDrawable(circularImageView, arrUsers.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
@@ -726,7 +742,7 @@ public class CheckinFragment extends Fragment {
 //        builder.setMessage("Do you want accept " + arrUsers.get(position).getFullname() + "'s request?");
         builder.setCancelable(true);
 
-        builder.setNegativeButton("Close",
+        builder.setPositiveButton(mActivity.getResources().getString(R.string.dlg_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
@@ -736,15 +752,17 @@ public class CheckinFragment extends Fragment {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
     private static void showAcceptAlert(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(Constant.INDECATOR);
         View view = mActivity.getLayoutInflater().inflate(R.layout.item_more_friend, null);
-        RelativeLayout relativeLayout = (RelativeLayout)view.findViewById(R.id.rl_imf_social);
+        RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.rl_imf_social);
         relativeLayout.setVisibility(View.GONE);
-        TextView tvMsg = (TextView)view.findViewById(R.id.tv_imf_friend_name);
-        tvMsg.setText(mActivity.getResources().getString(R.string.do_you_want_accept) + " " + arrUsers.get(position).getFullname() + "'" +mActivity.getResources().getString(R.string.s_request));
-        MyCircularImageView circularImageView = (MyCircularImageView)view.findViewById(R.id.civ_imf_friend_avatar3);
+        final String user_id = arrUsers.get(position).getUser_id();
+        TextView tvMsg = (TextView) view.findViewById(R.id.tv_imf_friend_name);
+        tvMsg.setText(mActivity.getResources().getString(R.string.do_you_want_accept) + " " + arrUsers.get(position).getFullname() + "'" + mActivity.getResources().getString(R.string.s_request));
+        MyCircularImageView circularImageView = (MyCircularImageView) view.findViewById(R.id.civ_imf_friend_avatar3);
         if (!arrUsers.get(position).equals("")) {
             UrlRectangleImageViewHelper.setUrlDrawable(circularImageView, arrUsers.get(position).getAvatar(), R.drawable.default_user, new UrlImageViewCallback() {
                 @Override
@@ -766,9 +784,14 @@ public class CheckinFragment extends Fragment {
         builder.setPositiveButton("Accept",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        acceptCheckinRequest(position);
-                        arrUsers.get(position).setCheckinRequestState(3);
-                        checkinUserAdapter.notifyDataSetChanged();
+                        if (checkExistence(user_id)) {
+                            acceptCheckinRequest(position);
+                            arrUsers.get(position).setCheckinRequestState(3);
+                            checkinUserAdapter.notifyDataSetChanged();
+
+                        } else {
+                            Utils.showOKDialog(mActivity, mActivity.getResources().getString(R.string.user_left_this_location));
+                        }
 
                         dialog.cancel();
                     }
@@ -784,16 +807,27 @@ public class CheckinFragment extends Fragment {
         alert.show();
     }
 
+    private static boolean checkExistence(String user_id) {
+        boolean user_still_exist = false;
+        for (UserModel userModel : arrUsers) {
+            if (userModel.getUser_id().equals(user_id)) {
+                user_still_exist = true;
+                break;
+            }
+        }
+        return user_still_exist;
+    }
+
     public static void updateFriendRequestState(String user_id, String type) {
         if (type.equals("receive_invite")) {
-            for (int i = 0; i < arrUsers.size(); i ++) {
+            for (int i = 0; i < arrUsers.size(); i++) {
                 if (arrUsers.get(i).getUser_id().equals(user_id)) {
                     arrUsers.get(i).setFriendStatus("waiting");
                     break;
                 }
             }
         } else if (type.equals("accept_friend")) {
-            for (int i = 0; i < arrUsers.size(); i ++) {
+            for (int i = 0; i < arrUsers.size(); i++) {
                 if (arrUsers.get(i).getUser_id().equals(user_id)) {
                     arrUsers.get(i).setFriendStatus("active");
                     break;
@@ -802,6 +836,7 @@ public class CheckinFragment extends Fragment {
         }
         checkinUserAdapter.notifyDataSetChanged();
     }
+
     public static void addNewUser(UserModel userModel, String type) {
         if (type.equals("enter_checkin")) {
             if (userModel.getFriendStatus().equals("active")) {
@@ -822,7 +857,7 @@ public class CheckinFragment extends Fragment {
             }
 
         } else if (type.equals("exit_checkin")) {
-            for (int i = 0; i < arrUsers.size(); i ++) {
+            for (int i = 0; i < arrUsers.size(); i++) {
                 if (arrUsers.get(i).getUser_id().equals(userModel.getUser_id())) {
                     arrUsers.remove(i);
                     break;
@@ -843,9 +878,8 @@ public class CheckinFragment extends Fragment {
     }
 
 
-
     private void clear_chat_history() {
-        for (int i = 0; i < arrUsers.size(); i ++ ) {
+        for (int i = 0; i < arrUsers.size(); i++) {
             if (arrUsers.get(i).getFriendStatus().equals("active")) {
                 continue;
             }

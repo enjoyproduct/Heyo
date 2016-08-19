@@ -269,7 +269,7 @@ public class ActivityFragment extends Fragment {
             ImageView ivType = (ImageView)view.findViewById(R.id.iv_ia_type);
 
             if (activityModel.getRead_status().equals("unread")) {
-                relativeLayout.setBackgroundColor(getResources().getColor(R.color.grey));
+                relativeLayout.setBackgroundColor(getResources().getColor(R.color.grey_light));
             } else {
                 relativeLayout.setBackgroundColor(getResources().getColor(R.color.white));
             }
@@ -292,28 +292,28 @@ public class ActivityFragment extends Fragment {
             String str = "";
             if (activityModel.getType().equals("like")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_like_white));
-                str = "<b>" + activityModel.getFullname() + "</b>" + " liked your post";
+                str = "<b>" + activityModel.getFullname() + "</b>" + " " + getResources().getString(R.string.liked_your_post);
             } else if (activityModel.getType().equals("dislike")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_dislike));
-                str = "<b>" + activityModel.getFullname() + "</b>" + " disliked your post";
+                str = "<b>" + activityModel.getFullname() + "</b>" + " " + getResources().getString(R.string.disliked_your_post);
             } else if (activityModel.getType().equals("comment")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_comment_white41));
-                str = "<b>" + activityModel.getFullname() + "</b>" + " commented on your post";
+                str = "<b>" + activityModel.getFullname() + "</b>" + " " + getResources().getString(R.string.commented_on_your_post);
             } else if (activityModel.getType().equals("share")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_share57));
-                str = "<b>" + activityModel.getFullname() + "</b>" + " shared your post";
+                str = "<b>" + activityModel.getFullname() + "</b>" + " " + getResources().getString(R.string.shared_your_post);
             } else if (activityModel.getType().equals("invite")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_plus));
-                str = "<b>" + activityModel.getFullname() + "</b>" + " sent friend request to you";
+                str = "<b>" + activityModel.getFullname() + "</b>" + " " + getResources().getString(R.string.sent_friend_request_to_you);
             } else if (activityModel.getType().equals("accept")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_plus));
-                str = "<b>" + activityModel.getFullname() + "</b>" + " is now your friend";
+                str = "<b>" + activityModel.getFullname() + "</b>" + " " + getResources().getString(R.string.is_now_your_friend);
             } else if (activityModel.getType().equals("reject")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.activity_cross_line_white49));
-                str = "<b>" + activityModel.getFullname() + "</b>" + " rejected your friend request";
+                str = "<b>" + activityModel.getFullname() + "</b>" + " "  + getResources().getString(R.string.rejected_your_friend_request);
             } else if (activityModel.getType().equals("taged")) {
                 ivType.setImageDrawable(getResources().getDrawable(R.drawable.ic_small_comment_white));
-                str = "<b>" + activityModel.getFullname() + "</b>" + " tagged you in post";
+                str = "<b>" + activityModel.getFullname() + "</b>" + " " + getResources().getString(R.string.tagged_you_in_post);
             }
             tvFullname.setText(Html.fromHtml(str));
             ivButton.setOnClickListener(new View.OnClickListener() {

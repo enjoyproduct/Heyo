@@ -112,6 +112,11 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
     private static final String VIDEO_FILE_PREFIX = "Heyoe_Compose_video_";
     private static final String VIDEO_FILE_SUFFIX = ".mp4";
 
+    int max_file_size = 40;
+    int file_size_rate = 10;
+
+    int MAX_HASHTAG_COUNT = 20;
+
     private ImageButton ibTag, ibPhoto, ibVideo, ibCheckin;
     private Button btnPost;
     private MyCircularImageView myCircularImageView;
@@ -536,7 +541,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 return false;
             }
             if (checkFileSize(videoPath)) {
-                Utils.showToast(mActivity, "Video size is too big");
+                Utils.showToast(mActivity, getResources().getString(R.string.file_size_big));
+
                 return false;
             }
             mediaType = "post_video";
@@ -554,6 +560,9 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         }
         return true;
     }
+
+
+
     private boolean checkFileSize(String filePath) {
         boolean isBigger = false;
         File file =new File(filePath);
@@ -579,9 +588,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
             System.out.println("zettabytes : " + zettabytes);
             System.out.println("yottabytes : " + yottabytes);
 
-//            if (megabytes * 5 > DeviceUtility.getFreeRamSize(mActivity)) {
-            if (megabytes > 30 || megabytes * 10 > DeviceUtility.getFreeRamSize(mActivity)) {
+//            Utils.showToast(mActivity, String.valueOf(megabytes));
+            if (megabytes > max_file_size || megabytes * file_size_rate > DeviceUtility.getFreeRamSize(mActivity)) {
                 isBigger = true;
+
             }
         }else{
             System.out.println("File does not exists!");
@@ -614,7 +624,8 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             }else  if (status.equals("401")) {
-//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.post_failed));
+//                                Utils.showOKDialog(mActivity,response.getString("reason"));
                             }
 
                         }catch (Exception e) {
@@ -924,8 +935,9 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         tvTextCount.setText(String.valueOf(richEditor.getText().toString().length() + strTag.length()));
         richEditor.append(Html.fromHtml(str));
     }
+
     private void inputHashTag(String strHashTag) {
-        if (arrHashTags.size() > 4) {
+        if (arrHashTags.size() > MAX_HASHTAG_COUNT - 1) {
             return;
         }
         Tag tag = new Tag("#" + strHashTag);
@@ -952,7 +964,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                 arrTagedFriends.add(arrFriends.get(which));
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -1120,10 +1132,10 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     // User cancelled the video capture
-                    Toast.makeText(mActivity, "User cancelled the video capture.",Toast.LENGTH_LONG).show();
+//                    Toast.makeText(mActivity, "User cancelled the video capture.",Toast.LENGTH_LONG).show();
                 } else {
                     // Video capture failed, advise user
-                    Toast.makeText(mActivity, "Video capture failed.",Toast.LENGTH_LONG).show();
+//                    Toast.makeText(mActivity, "Video capture failed.",Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -1159,7 +1171,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(getResources().getString(R.string.choose_video));
         builder.setCancelable(true);
-        builder.setPositiveButton("Camera",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.Camera),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         etYotubeUrl.setVisibility(View.GONE);
@@ -1169,7 +1181,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Gallery",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.Gallery),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         etYotubeUrl.setVisibility(View.GONE);
@@ -1179,7 +1191,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
                         dialog.cancel();
                     }
                 });
-        builder.setNeutralButton("Youtube", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton( mActivity.getResources().getString(R.string.Youtube), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int arg1) {
@@ -1280,21 +1292,21 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(getResources().getString(R.string.choose_photo));
         builder.setCancelable(true);
-        builder.setPositiveButton("Camera",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.Camera),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dispatchTakePictureIntent();
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Gallery",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.Gallery),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         takePictureFromGallery();
                         dialog.cancel();
                     }
                 });
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton( mActivity.getResources().getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int arg1) {
@@ -1347,7 +1359,7 @@ public class NewPostFragment extends Fragment implements GoogleApiClient.OnConne
 
         File storageDir = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            storageDir = mAlbumStorageDirFactory.getAlbumStorageDir("AllyTours");
+            storageDir = mAlbumStorageDirFactory.getAlbumStorageDir("Heyoe");
             if (storageDir != null) {
                 if (! storageDir.mkdirs()) {
                     if (! storageDir.exists()){

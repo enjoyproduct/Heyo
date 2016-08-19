@@ -69,7 +69,7 @@ public class Utils {
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(message);
         builder.setCancelable(true);
-        builder.setPositiveButton("OK",
+        builder.setPositiveButton( context.getResources().getString(R.string.dlg_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 

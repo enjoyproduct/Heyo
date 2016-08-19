@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="email">E-posta</string>
+    <string name="password">şifre</string>
+    <string name="login">giriş yap</string>
+    <string name="forgot_password">şifreyi unuttum</string>
+    <string name="register">kaydol</string>
+    <string name="firstname">isim</string>
+    <string name="lastname">soy isim</string>
+    <string name="fullname">isim</string>
+    <string name="Signup">KAYDOL</string>
+    <string name="confirm_password">şifreyi tekrar yazın</string>
+    <string name="Sign_up"></string>
+    <string name="By_clicking">Kaydol a basarak</string>
+    <string name="you_are_agree">Heyoe</string>
+    <string name="Terms_of_use">kullanım şartlarını </string>
+    <string name="and">ve</string>
+    <string name="Privacy_policy">koşullarını onaylamış oluyorsunuz</string>
+    <string name="checkout_all_comment">Tüm yorumları gör</string>
+
+    <string name="FAVORITES">FAVORİLER</string>
+    <string name="FRIENDS">ARKADAŞLAR </string>
+    <string name="REQUESTS">İSTEKLER</string>
+    <string name="MORE_FRIENDS">ARKADAŞLARINI BUL</string>
+    <string name="INVITE_FRIENDS">ARKADAŞLARINI \nDAVET ET</string>
+    <string name="GROUPS">GRUPLAR</string>
+    <string name="CALENDAR">TAKVİM</string>
+    <string name="FAQ">HEYOE NASIL KULLANILIYOR</string>
+    <string name="LOG_OUT">ÇIKIŞ YAP</string>
+    <string name="like_a_photo_from"> ın fotoğrafını beğendi</string>
+    <string name="like_a_video_from"> ın videosunu beğendi </string>
+
+    <string name="seconds_ago"> saniye önce</string>
+    <string name="minutes_ago"> dakika önce</string>
+    <string name="hours_ago"> saat önce</string>
+    <string name="days_ago"> gün önce</string>
+    <string name="weeks_ago"> hafta önce</string>
+    <string name="monthes_ago"> ay önce</string>
+    <string name="years_ago"> yil önce</string>
+
+
+    <string name="second_ago"> saniye önce</string>
+    <string name="minute_ago"> dakika önce</string>
+    <string name="hour_ago"> saat önce</string>
+    <string name="day_ago"> gün önce</string>
+    <string name="week_ago"> hafta önce</string>
+    <string name="monthe_ago"> ay önce</string>
+    <string name="year_ago"> yil önce</string>
+
+    <string name="people">kişiler</string>
+    <string name="typing">yazıyor...</string>
+    <string name="online">çevrimiçi</string>
+    <string name="offline">çevrim dışı</string>
+    <string name="old_password">eski şifre</string>
+    <string name="new_password">yeni şifre</string>
+    <string name="profile">profil</string>
+
+    <string name="media">medya</string>
+    <string name="Friends">arkadaşlar</string>
+    <string name="crop">düzenle</string>
+    <string name="Login_with">ile giris yap</string>
+    <string name="waiting">lüfen bekleyiniz...</string>
+    <string name="Edit">Düzenle</string>
+    <string name="Delete">Sil</string>
+    <string name="INFO">BİLGİ</string>
+    <string name="MEDIA">MEDYA</string>
+    <string name="FRIEND">ARKADAŞLAR</string>
+
+    <string name="photos">FOTOĞRAFLAR</string>
+    <string name="videos">videolar</string>
+
+    <string name="contact">bilgi</string>
+    <string name="about_me">hakkımda</string>
+    <string name="Name">İsim</string>
+    <string name="City">Şehir</string>
+    <string name="Country">Ülke</string>
+    <string name="Language">Dil</string>
+    <string name="Email">E-posta</string>
+    <string name="Birthday">Doğum tarihim</string>
+    <string name="Gender">Cinsiyet</string>
+    <string name="Celebrity">Ünlü</string>
+    <string name="Password">şifre</string>
+    <string name="Confirm_Password">Şifreyi onayla</string>
+
+    <string name="post">paylaş</string>
+    <string name="outgoing">Gönderiler</string>
+    <string name="incoming">Gelen</string>
+    <string name="blocked">Engellenenler</string>
+    <string name="friends">Arkadaşlar</string>
+    <string name="favorite">favoriler</string>
+    <string name="more_friends">ARKADAŞLARINI BUL</string>
+    <string name="requests">İSTEKLER</string>
+    <string name="invited_friends">vrienden uitnodigen</string>
+    <string name="open_drawer">AÇ</string>
+    <string name="close_drawer">KAPAT</string>
+
+    <string name="Please_input_name">Lütfen isminizi yazınız</string>
+    <string name="Invalid_email">E-posta hatalı</string>
+    <string name="Input_password">Şifrenizi yazınız</string>
+    <string name="Input_longer_password">Şifreniz en az 3 harf veya numara olması lağzım</string>
+    <string name="Confirm_password">Lütfen şifrenizi onaylayınız</string>
+    <string name="input_email">Şifrenizi yazınız</string>
+    <string name="choose_photo">Fotoğraf seçiniz</string>
+    <string name="choose_video">Video seçiniz</string>
+    <string name="take_more_media">Medya seçiniz</string>
+    <string name="type_comment_below">Yorumunuzu yazınız</string>
+    <string name="input_fullname">İsminizi yazınız</string>
+    <string name="input_new_password">Yeni şifrenizi yazınız</string>
+    <string name="input_confirm_password_again">Şifrenizi lütfen tekrarlayınız</string>
+    <string name="wait_one_minute">tekrar kullanmak için bir dakika bekleyiniz</string>
+    <string name="confirm_header_photo">Bu fotoğrafı profilfotoğrafı olarak istiyormusunuz?</string>
+    <string name="confirm_header_video">Bu video yı profilvideosu olarak istiyormusunuz?</string>
+    <string name="confirm_delete_post">Bu paylaşımınızı silmek istiyormusunuz?</string>
+    <string name="confirm_update_avatar">Profil fotografınızı değistirmek istiyormusunuz?</string>
+    <string name="input_description">lütfen hikayenizi yazınız</string>
+    <string name="do_you_want_accept"></string>
+    <string name="s_request">ile sohbet etmek istiyormusunuz</string>
+
+    <string name="email_registerd">E-posta kullanılmakta</string>
+    <string name="email_unregistered">E-posta kayıtlı değil</string>
+    <string name="incorrect_password">Hatalı şifre</string>
+    <string name="post_failed">Paylaşım hatalı</string>
+    <string name="post_success">paylaşım başarılı</string>
+    <string name="access_denied">Hatalı giriş</string>
+    <string name="invite_sucess">İsteğiniz başarılı sunuldu</string>
+    <string name="cancel_invite">Bu istekten vazgeçmek istiyormusunuz?</string>
+    <string name="reject_friend">isteği kabul etmiyormuzunuz?</string>
+    <string name="cancel_success">Arkadaşlık gönderinizi iptal ettiniz</string>
+    <string name="reject_success">teklif kabul edilmedi</string>
+    <string name="accept_success"> şu anda sizin arkadaşınız </string>
+    <string name="Youtube_play_error">Video oynatılamıyor</string>
+    <string name="success">başarılı</string>
+    <string name="user_not_exist">aradığınız kişi bulunmamakta</string>
+
+    <string name="Male">Bay</string>
+    <string name="Female">Bayan</string>
+
+    <string name="please_wait">Lütfen bekleyiniz</string>
+
+    <string name="dlg_error">Error</string>
+    <string name="dlg_ok">OK</string>
+    <string name="dlg_cancel">İPTAL</string>
+    <string name="dlg_loading">Yükleniyor…</string>
+    <string name="dlg_choose_image_from">Fotoğrafı buradan seçiniz…</string>
+    <string name="dlg_retry">Tekrar deneyiniz</string>
+
+    <string name="no_internet_connection">İnternet bağlantısı bulunmamakta</string>
+
+
+    <string-array name="gender">
+        <item>Bay</item>
+        <item>Bayan</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>Ingilizce</item>
+        <item>Hollandaca</item>
+        <item>Türkçe</item>
+        <item>Almanya</item>
+        <!--<item>Spanish</item>-->
+    </string-array>
+
+    <string name="English">Ingilizce</string>
+    <string name="Netherland">Hollandaca</string>
+    <string name="Turkish">Türkçe</string>
+    <string name="Germany">Almanya</string>
+
+    <string name="Input_Description">hikaye yazınız</string>
+    <string name="input_hashtag">hashtag yazınız</string>
+    <string name="paste_youtube_link">Youtube video link</string>
+    <string name="Tag">Etiketle</string>
+    <string name="Send">Gönder</string>
+
+    <string name="Log_out">ÇIKIŞ YAP</string>
+    <string name="Do_you_want_logout">ÇIKIŞ yapmak istiyormusunuz?</string>
+    <string name="Accept">EVET</string>
+    <string name="accepted_your_request">sizinle sohbet etmeyi kabul etti</string>
+    <string name="No">Hayır</string>
+    <string name="Camera">Kamera</string>
+    <string name="Gallery">Albüm</string>
+    <string name="Youtube">Youtube</string>
+    <string name="Set">paylaş</string>
+    <string name="Discard">İptal</string>
+    <string name="Play">Oynat</string>
+    <string name="How_it_works">HEYOE NASIL KULLANILIYOR</string>
+
+    <string name="liked_your_post">sizin paylaşımınızı beğendi</string>
+    <string name="disliked_your_post">sizin paylaşımınızı beğenmedi</string>
+    <string name="commented_on_your_post">sizin paylaşımınızı yorumladı</string>
+    <string name="shared_your_post">sizin paylaşımınızı paylaştı</string>
+    <string name="sent_friend_request_to_you">size arkadaşlık teklif etti</string>
+    <string name="is_now_your_friend">şu anda sizin arkadaşınız</string>
+    <string name="rejected_your_friend_request">sizin arkadaşlık teklifinizi kabul etmedi</string>
+    <string name="tagged_you_in_post">sizi bir paylaşım da etiketledi</string>
+
+    <string name="You_receive_checkin_chat_request">size checkin sohbeti gönderi de bulundu</string>
+    <string name="accepted_your_checkin_chat_request">sizin checkin sohbetinizi kabul etti</string>
+    <string name="You_received_new_message">Heyoe - Yeni bir mesajınız var</string>
+    <string name="sent_friend_invitation">size istek gönderdi</string>
+    <string name="accept_friend_invitiation">arkadaşlık teklifinizi kabul etti</string>
+    <string name="reject_friend_invitation">arkadaşlık teklifinizi kabul etmedi</string>
+    <string name="You_are_tagged_by">sizi etiketledi</string>
+
+    <string name="file_size_big">Dosya boyutu çok büyük</string>
+    <string name="user_left_this_location">Maalesef, bu kullanıcı bu konumu sol</string>
+
+    <string name="Yes">Evet</string>
+    <string name="are_you_sure_delete"> ı listenizden silmek istiyormusunuz?</string>
+    <string name="Deleted_friend_successfully">başarılı silinmiştir</string>
+    <string name="Chat_history_deleted_successfully">Sohbetiniz silinmiştir</string>
+    <string name="pls_input_email">Lütfen giriş e-posta</string>
+    <string name="invalid_email">Geçersiz e posta</string>
+    <string name="pls_input_password">giriş şifrenizi lütfen</string>
+    <string name="email_sent">E-postanıza gönderilen yeni şifre</string>
+    <string name="dont_remember_password">Yine şifre hatırlamak değil?</string>
+
+    <string name="user_agreement">user agreement</string>
+    <string name="sent_request_successfully">Sohbet isteğiniz iletildi</string>
+    <string name="accepted_request_successfully">İsteğiniz kabul edildi</string>
+
+    <string name="Public">Halka açık</string>
+    <string name="Friend_Only">Arkadaşını Sadece</string>
+    <string name="Private">Özel</string>
+
+    <string-array name="private_status">
+        <item>Halka açık</item>
+        <item>Arkadaşını Sadece</item>
+        <item>Özel</item>
+    </string-array>
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+
+
+
+
+    <string name="action_details">Sohbet detayları</string>
+    <string name="action_sendlogs">Send Debug Info</string>
+    <string name="title_conversations_list">Conversations</string>
+    <string name="title_select_conversation">Yeni mesaj</string>
+    <string name="title_messages_list">Mesajlar</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_conversation_details">Detaylar</string>
+    <string name="alert_message_resuming">yazıya devam etmek istiyormusunuz</string>
+    <string name="alert_message_logout">çıkış yapmak istiyormusunuz?</string>
+    <string name="alert_message_delete_message">mesajı silmek istiyormusunuz?</string>
+    <string name="alert_message_delete_conversation">Sohbeti sil?</string>
+    <string name="alert_dialog_logout">Çıkış yap…</string>
+    <string name="alert_button_cancel">İptal</string>
+    <string name="alert_button_delete_my_devices">For Me</string>
+    <string name="alert_button_delete_all_participants">From All</string>
+    <string name="alert_button_remove">Sil</string>
+    <string name="alert_button_block">ENGELLE</string>
+    <string name="alert_button_unblock">Engeli kaldır</string>
+    <string name="alert_button_logout">Çıkış yap</string>
+    <string name="attachment_menu_camera">Kamera</string>
+    <string name="attachment_menu_gallery">albüm</string>
+    <string name="attachment_menu_location">Konum</string>
+    <string name="toast_group_name_updated">Grup ismi güncellendi</string>
+    <string name="toast_failed_to_deauthenticate">Failed to deauthenticate: %1$s</string>
+    <string name="toast_copied_to_clipboard">Copied to clipboard</string>
+    <string name="conversation_details_title_options">Ayalar</string>
+    <string name="conversation_details_hint_group_name">Grup ismi</string>
+    <string name="conversation_details_switch_show_notifications">Show Notifications</string>
+    <string name="conversation_details_button_leave_group">Leave Group</string>
+    <string name="conversation_details_title_participants">Participants</string>
+    <string name="conversation_details_button_add_participants">Add Participants</string>
+    <string name="settings_clipboard_description">Settings</string>
+    <string name="settings_content_connected">Bağlantı sağlandı</string>
+    <string name="settings_content_disconnected">Bağlantı sağlanamadı</string>
+    <string name="settings_content_app_version">Naam %1$s / Code %2$d</string>
+    <string name="settings_content_android_version">Versie %1$s / API level %2$d</string>
+    <string name="settings_content_disk_unlimited">Unlimited</string>
+    <string name="settings_content_disk_usage">%1$.2f %2$s</string>
+    <string name="settings_content_disk_gb">GB</string>
+    <string name="settings_content_disk_mb">MB</string>
+    <string name="settings_content_disk_kb">KB</string>
+    <string name="settings_content_disk_b">B</string>
+    <string name="settings_title_account">Account</string>
+    <string name="settings_button_log_out">Çıkış yap</string>
+    <string name="settings_title_notifications">Notificaties</string>
+    <string name="settings_switch_show_notifications">Toon notificaties</string>
+    <string name="settings_title_debug">Debug</string>
+    <string name="settings_switch_verbose_logging">Verbose Logging</string>
+    <string name="settings_title_app_version">App Versiyonu</string>
+    <string name="settings_title_android_version">Android Versiyonu</string>
+    <string name="settings_title_atlas_version">Atlas Versiyonu</string>
+    <string name="settings_title_layer_version">Layer Versiyonu</string>
+    <string name="settings_title_user_id">Kullanıcı ismi</string>
+    <string name="settings_title_statistics">İstatikler</string>
+    <string name="settings_title_conversations">Sohbetler</string>
+    <string name="settings_title_messages">Mesajlar</string>
+    <string name="settings_title_unread_messages">Okunmayan mesajlar</string>
+    <string name="settings_title_rich_content">Rich Content</string>
+    <string name="settings_title_disk_utilization">Disk Utilization</string>
+    <string name="settings_title_disk_allowance">Disk Allowance</string>
+    <string name="settings_title_auto_download_types">Auto-Download MIME Types</string>
+    <string name="notifications_num_more">+%1$d meer</string>
+    <string name="notifications_new_messages">%1$s yeni mesajlar</string>
+
+</resources>

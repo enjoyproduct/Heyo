@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="email">email</string>
+    <string name="password">wachtwoord</string>
+    <string name="login">inloggen</string>
+    <string name="forgot_password">wachtwoord vergeten</string>
+    <string name="register">aanmelden</string>
+    <string name="firstname">voornaam</string>
+    <string name="lastname">achternaam</string>
+    <string name="fullname">Volledige naam</string>
+    <string name="confirm_password">herhaal wachtwoord</string>
+    <string name="Sign_up">registreren</string>
+    <string name="Signup">registreren</string>
+    <string name="By_clicking">Door je te </string>
+    <string name="you_are_agree">ga je akkoord met onze</string>
+    <string name="Terms_of_use">Heyoe gebruikersvoorwaarden</string>
+    <string name="and">en</string>
+    <string name="Privacy_policy">privacy beleid</string>
+    <string name="checkout_all_comment">Bekijk alle reacties</string>
+
+    <string name="FAVORITES">FAVORIETEN</string>
+    <string name="FRIENDS">VRIENDEN</string>
+    <string name="REQUESTS">VERZOEKEN</string>
+    <string name="MORE_FRIENDS">ZOEK VRIENDEN</string>
+    <string name="INVITE_FRIENDS">VRIENDEN UITNODIGEN</string>
+    <string name="GROUPS">GROEPEN</string>
+    <string name="CALENDAR">KALENDER</string>
+    <string name="FAQ">HOE WERKT HEYOE</string>
+    <string name="LOG_OUT">AFMELDEN</string>
+    <string name="like_a_photo_from"> vindt een foto leuk van </string>
+    <string name="like_a_video_from"> vindt een video leuk van </string>
+
+    <string name="seconds_ago"> seconden geleden</string>
+    <string name="minutes_ago"> minuten geleden</string>
+    <string name="hours_ago"> uren geleden</string>
+    <string name="days_ago"> dagen geleden</string>
+    <string name="weeks_ago"> weken geleden</string>
+    <string name="monthes_ago"> maand geleden</string>
+    <string name="years_ago"> jaren geleden</string>
+
+    <string name="second_ago"> seconden geleden</string>
+    <string name="minute_ago"> minuut geleden</string>
+    <string name="hour_ago"> uur geleden</string>
+    <string name="day_ago"> dag geleden</string>
+    <string name="week_ago"> week geleden</string>
+    <string name="monthe_ago"> maand geleden</string>
+    <string name="year_ago"> jaar geleden</string>
+
+    <string name="people">personen</string>
+    <string name="typing">aan het typen...</string>
+    <string name="online">online</string>
+    <string name="offline">offline</string>
+    <string name="old_password">oud wachtwoord</string>
+    <string name="new_password">nieuwe wachtwoord</string>
+    <string name="profile">profiel</string>
+
+    <string name="media">media</string>
+    <string name="Friends">vrienden</string>
+    <string name="crop">düzenle</string>
+    <string name="Login_with">Inloggen met</string>
+    <string name="waiting">een moment geduld...</string>
+    <string name="Edit">Wijzigen</string>
+    <string name="Delete">Verwijderen</string>
+
+    <string name="INFO">INFO</string>
+    <string name="MEDIA">MEDIA</string>
+    <string name="FRIEND">VRIENDEN</string>
+
+    <string name="photos">fotos</string>
+    <string name="videos">videos</string>
+
+    <string name="contact">info</string>
+    <string name="about_me">over mij</string>
+    <string name="Name">Naam</string>
+    <string name="City">Stad</string>
+    <string name="Country">Land</string>
+    <string name="Language">Taal</string>
+    <string name="Email">Email</string>
+    <string name="Birthday">Geboortedatum</string>
+    <string name="Gender">Geslacht</string>
+    <string name="Celebrity">Celebrity</string>
+    <string name="Password">Wachtwoord</string>
+    <string name="Confirm_Password">Bevestig wachtwoord</string>
+
+    <string name="post">plaatsen</string>
+    <string name="outgoing">Uitgaande</string>
+    <string name="incoming">Inkomende</string>
+    <string name="blocked">Geblokkeerd</string>
+    <string name="friends">Vrienden</string>
+    <string name="favorite">favorieten</string>
+    <string name="more_friends">zoek vrienden</string>
+    <string name="requests">verzoeken</string>
+    <string name="invited_friends">vrienden uitnodigen</string>
+    <string name="open_drawer">Open</string>
+    <string name="close_drawer">Sluiten</string>
+
+    <string name="Please_input_name">Vul je naam in</string>
+    <string name="Invalid_email">Incorrecte email</string>
+    <string name="Input_password">Vul je wachtwoord in</string>
+    <string name="Input_longer_password">Wachtwoord moet minstens 3 karakters bevatten</string>
+    <string name="Confirm_password">Gelieve het wachtwoord te bevestigen</string>
+    <string name="input_email">Vul je email in</string>
+    <string name="choose_photo">Kies een foto via</string>
+    <string name="choose_video">Kies een video via</string>
+    <string name="take_more_media">Kies media</string>
+    <string name="type_comment_below">Type jouw reactie hieronder</string>
+    <string name="input_fullname">Voer je naam in</string>
+    <string name="input_new_password">Type je nieuwe wachtwoord in</string>
+    <string name="input_confirm_password_again">Type ter bevestiging jouw wachtwoord</string>
+    <string name="wait_one_minute">Wacht één minuut voor hergebruik van deze knop</string>
+    <string name="confirm_header_photo">Deze foto als profielfoto gebruiken?</string>
+    <string name="confirm_header_video">Deze video als profielvideo gebruiken?</string>
+    <string name="confirm_delete_post">Dit bericht verwijderen?</string>
+    <string name="confirm_update_avatar">Profielfoto wijzigen?</string>
+    <string name="input_description">Voeg een beschrijving toe</string>
+    <string name="do_you_want_accept">Accepteer je </string>
+    <string name="s_request">s verzoek?</string>
+
+
+    <string name="email_registerd">Email bestaat al</string>
+    <string name="email_unregistered">Email bestaat niet</string>
+    <string name="incorrect_password">Incorrect wachtwoord</string>
+    <string name="post_failed">Plaatsing is niet gelukt</string>
+    <string name="post_success">Uw bericht is geplaatst</string>
+    <string name="access_denied">Toegang geweigerd</string>
+    <string name="invite_sucess">Succesvol uitgenodigd</string>
+    <string name="cancel_invite">Dit verzoek annuleren?</string>
+    <string name="reject_friend">Dit verzoek weigeren?</string>
+    <string name="cancel_success">Jouw verzoek is geannuleerd</string>
+    <string name="reject_success">Het verzoek is geweigerd</string>
+
+    <string name="accept_success">is nu jouw vriend</string>
+
+    <string name="Youtube_play_error">Kan deze video niet afspelen</string>
+    <string name="success">succes</string>
+    <string name="user_not_exist">gebruiker bestaat niet</string>
+
+    <string name="Male">Man</string>
+    <string name="Female">Vrouw</string>
+
+    <string name="please_wait">Eén moment geduld a.u.b.</string>
+
+    <string name="dlg_error">Error</string>
+    <string name="dlg_ok">OK</string>
+    <string name="dlg_cancel">Annuleren</string>
+    <string name="dlg_loading">Loading…</string>
+    <string name="dlg_choose_image_from">Kies foto van…</string>
+    <string name="dlg_retry">Tekrar proberen</string>
+
+    <string name="no_internet_connection">No internet connection</string>
+
+    <string-array name="gender">
+        <item>Man</item>
+        <item>Vrouw</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>Engels</item>
+        <item>Nederlands</item>
+        <item>Turks</item>
+        <item>Duitsland</item>
+        <!--<item>Spanish</item>-->
+    </string-array>
+
+    <string name="English">Engels</string>
+    <string name="Netherland">Nederlands</string>
+    <string name="Turkish">Turks</string>
+    <string name="Germany">Duitsland</string>
+
+    <string name="Input_Description">beschrijving toevoegen</string>
+    <string name="input_hashtag">hashtag toevoegen</string>
+    <string name="paste_youtube_link">plak Youtube video link hier</string>
+    <string name="Tag">Tag</string>
+    <string name="Send">Verzenden</string>
+
+    <string name="Log_out">Afmelden</string>
+    <string name="Do_you_want_logout">Wilt u zich afmelden?</string>
+    <string name="Accept">Accepteer</string>
+    <string name="accepted_your_request">accepteerde jouw verzoek</string>
+    <string name="No">Nee</string>
+    <string name="Camera">Camera</string>
+    <string name="Gallery">Album</string>
+    <string name="Youtube">Youtube</string>
+    <string name="Set">Toepassen</string>
+    <string name="Discard">Annuleren</string>
+    <string name="Play">Afspelen</string>
+    <string name="How_it_works">HOE WERKT HEYOE</string>
+
+    <string name="liked_your_post">vindt jouw bericht leuk</string>
+    <string name="disliked_your_post">vindt jouw bericht niet leuk</string>
+    <string name="commented_on_your_post">heeft op jouw bericht gereageerd</string>
+    <string name="shared_your_post">heeft jouw bericht gedeeld</string>
+    <string name="sent_friend_request_to_you">heeft jou een verzoek gestuurd</string>
+    <string name="is_now_your_friend">is nu jouw vriend</string>
+    <string name="rejected_your_friend_request">heeft jouw verzoek geweigerd</string>
+    <string name="tagged_you_in_post">heeft jou in een bericht getagged</string>
+
+    <string name="You_receive_checkin_chat_request">Je hebt een checkin chat verzoek ontvangen van </string>
+    <string name="accepted_your_checkin_chat_request">heeft jouw checkin chat verzoek geaccepteerd</string>
+    <string name="You_received_new_message">Heyoe - Je hebt een nieuwe bericht ontvangen</string>
+    <string name="sent_friend_invitation">heeft jou een verzoek gestuurd</string>
+    <string name="accept_friend_invitiation">accepteert jouw vrienden verzoek</string>
+    <string name="reject_friend_invitation">weigert jouw vrienden verzoek</string>
+    <string name="You_are_tagged_by">Je bent getagged door </string>
+
+    <string name="file_size_big">bestandsgrootte is te groot</string>
+    <string name="user_left_this_location">Sorry, deze gebruiker verliet deze plaats</string>
+
+    <string name="Yes">Ja</string>
+    <string name="are_you_sure_delete">worden verwijderd uit je vriendenlijst.</string>
+    <string name="Deleted_friend_successfully">Verwijderde vriend met succes</string>
+    <string name="Chat_history_deleted_successfully">Chat historie is succesvol verwijderd</string>
+    <string name="pls_input_email">Gelieve ingang e-mail</string>
+    <string name="invalid_email">Ongeldig e-mail</string>
+    <string name="pls_input_password">Behagen wachtwoord invoeren</string>
+    <string name="email_sent">Nieuw wachtwoord verzonden naar uw e-mail</string>
+    <string name="dont_remember_password">Nog steeds niet met een wachtwoord te onthouden?</string>
+
+    <string name="user_agreement">gebruikersovereenkomst</string>
+    <string name="sent_request_successfully">Verzonden verzoek succesvol</string>
+    <string name="accepted_request_successfully">Geaccepteerd verzoek succesvol</string>
+
+    <string name="Public">Openbaar</string>
+    <string name="Friend_Only">Only friend</string>
+    <string name="Private">Privaat</string>
+
+    <string-array name="private_status">
+        <item>Openbaar</item>
+        <item>Only friend</item>
+        <item>Privaat</item>
+    </string-array>
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+
+
+
+    <string name="action_details">Chat details</string>
+    <string name="action_sendlogs">Send Debug Info</string>
+    <string name="title_conversations_list">Conversations</string>
+    <string name="title_select_conversation">Nieuw bericht</string>
+    <string name="title_messages_list">Berichten</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_conversation_details">Details</string>
+    <string name="alert_message_resuming">Sessie voortzetten</string>
+    <string name="alert_message_logout">Afmelden?</string>
+    <string name="alert_message_delete_message">Verwijder bericht?</string>
+    <string name="alert_message_delete_conversation">Verwijder chat?</string>
+    <string name="alert_dialog_logout">Afmelden…</string>
+    <string name="alert_button_cancel">Annuleren</string>
+    <string name="alert_button_delete_my_devices">Voor mij</string>
+    <string name="alert_button_delete_all_participants">Voor iedereen</string>
+    <string name="alert_button_remove">Verwijder</string>
+    <string name="alert_button_block">Blokkeer</string>
+    <string name="alert_button_unblock">De-blokkeer</string>
+    <string name="alert_button_logout">Afmelden</string>
+    <string name="attachment_menu_camera">Camera</string>
+    <string name="attachment_menu_gallery">Album</string>
+    <string name="attachment_menu_location">Locatie</string>
+    <string name="toast_group_name_updated">Group name updated</string>
+    <string name="toast_failed_to_deauthenticate">Failed to deauthenticate: %1$s</string>
+    <string name="toast_copied_to_clipboard">Copied to clipboard</string>
+    <string name="conversation_details_title_options">Opties</string>
+    <string name="conversation_details_hint_group_name">Group Name</string>
+    <string name="conversation_details_switch_show_notifications">Show Notifications</string>
+    <string name="conversation_details_button_leave_group">Leave Group</string>
+    <string name="conversation_details_title_participants">Participants</string>
+    <string name="conversation_details_button_add_participants">Add Participants</string>
+    <string name="settings_clipboard_description">Settings</string>
+    <string name="settings_content_connected">Verbonden</string>
+    <string name="settings_content_disconnected">Niet verbonden</string>
+    <string name="settings_content_app_version">Naam %1$s / Code %2$d</string>
+    <string name="settings_content_android_version">Versie %1$s / API level %2$d</string>
+    <string name="settings_content_disk_unlimited">Unlimited</string>
+    <string name="settings_content_disk_usage">%1$.2f %2$s</string>
+    <string name="settings_content_disk_gb">GB</string>
+    <string name="settings_content_disk_mb">MB</string>
+    <string name="settings_content_disk_kb">KB</string>
+    <string name="settings_content_disk_b">B</string>
+    <string name="settings_title_account">Account</string>
+    <string name="settings_button_log_out">Afmelden</string>
+    <string name="settings_title_notifications">Notificaties</string>
+    <string name="settings_switch_show_notifications">Toon notificaties</string>
+    <string name="settings_title_debug">Debug</string>
+    <string name="settings_switch_verbose_logging">Verbose Logging</string>
+    <string name="settings_title_app_version">App Versie</string>
+    <string name="settings_title_android_version">Android Versie</string>
+    <string name="settings_title_atlas_version">Atlas Versie</string>
+    <string name="settings_title_layer_version">Layer Versie</string>
+    <string name="settings_title_user_id">User ID</string>
+    <string name="settings_title_statistics">Statistieken</string>
+    <string name="settings_title_conversations">Chats</string>
+    <string name="settings_title_messages">Berichten</string>
+    <string name="settings_title_unread_messages">Ongelezen berichten</string>
+    <string name="settings_title_rich_content">Rich Content</string>
+    <string name="settings_title_disk_utilization">Disk Utilization</string>
+    <string name="settings_title_disk_allowance">Disk Allowance</string>
+    <string name="settings_title_auto_download_types">Auto-Download MIME Types</string>
+    <string name="notifications_num_more">+%1$d meer</string>
+    <string name="notifications_new_messages">%1$s nieuwe berichten</string>
+</resources>

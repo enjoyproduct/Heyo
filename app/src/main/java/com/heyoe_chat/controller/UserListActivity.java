@@ -113,6 +113,8 @@ public class UserListActivity extends AppCompatActivity {
 
             if (currentFragmentNum == 1) {
                 if (data.type.equals("receive_invite") || data.type.equals("accept_friend")) {
+//                if (data.type.equals("increase_activity_count") || data.type.equals("accept_friend")) {
+
                     CheckinFragment.updateFriendRequestState(data.user_id, data.type);
                 } else if (data.type.equals("enter_checkin") || data.type.equals("exit_checkin")) {
                     UserModel userModel = new UserModel();

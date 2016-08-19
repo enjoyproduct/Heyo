@@ -151,6 +151,43 @@
                 android:layout_width="fill_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/grey"/>
+            <!--language-->
+            <RelativeLayout
+                android:id="@+id/rl_info_language"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/grey_light"
+                android:visibility="gone"
+                >
+                <TextView
+                    android:id="@+id/tv_info_language"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Language"
+                    android:textSize="@dimen/txt_18sp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dimen_16dp"/>
+                <TextView
+                    android:id="@+id/et_info_language"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+
+                    android:enabled="false"
+                    android:textSize="@dimen/txt_18sp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/dimen_16dp"
+                    android:layout_toRightOf="@+id/tv_info_language"
+                    android:textAlignment="viewEnd"
+                    android:singleLine="true"
+                    android:maxLength="50"
+                    android:background="@color/transparent"/>
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/grey"
+                    android:layout_alignParentBottom="true"/>
+            </RelativeLayout>
+
             <!--email-->
             <RelativeLayout
                 android:id="@+id/rl_profile_info_email"
@@ -245,6 +282,38 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dimen_16dp"
                     android:layout_toRightOf="@+id/tv_info_gender"
+                    android:textAlignment="viewEnd"
+                    android:singleLine="true"
+                    android:maxLength="50"
+                    android:background="@color/transparent"/>
+            </RelativeLayout>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/grey"/>
+            <!--Private Status-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@color/grey_light"
+                >
+                <TextView
+                    android:id="@+id/tv_private_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Private_status"
+                    android:textSize="@dimen/txt_18sp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dimen_16dp"/>
+                <TextView
+                    android:id="@+id/et_private_status"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:textSize="@dimen/txt_18sp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/dimen_16dp"
+                    android:layout_toRightOf="@+id/tv_private_status"
                     android:textAlignment="viewEnd"
                     android:singleLine="true"
                     android:maxLength="50"

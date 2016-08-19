@@ -7,6 +7,9 @@ import android.content.Context;
 import com.heyoe_chat.BuildConfig;
 import com.heyoe_chat.R;
 import com.heyoe_chat.controller.layer_chat.util.AuthenticationProvider;
+import com.heyoe_chat.model.Constant;
+import com.heyoe_chat.utilities.LocaleHelper;
+import com.heyoe_chat.utilities.Utils;
 import com.layer.atlas.messagetypes.text.TextCellFactory;
 import com.layer.atlas.messagetypes.threepartimage.ThreePartImageUtils;
 import com.layer.atlas.provider.ParticipantProvider;
@@ -51,6 +54,14 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //multi language+++
+        String language = Utils.getFromPreference(this, Constant.LANGUAGE_CODE);
+        if (language.length() == 0 ) {
+            language = "en";
+            Utils.saveToPreference(this, Constant.LANGUAGE_CODE, language);
+        }
+        LocaleHelper.onCreate(this, language);
 
         // Enable verbose logging in debug builds
         if (BuildConfig.DEBUG) {

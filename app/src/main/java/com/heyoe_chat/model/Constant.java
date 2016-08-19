@@ -25,6 +25,7 @@ public class Constant {
     public static String FULLNAME = "fullname";
     public static String BIRTHDAY = "birthday";
     public static String GENDER = "gender";
+    public static String PRIVATE_STATUS = "private_status";
     public static String AVATAR = "avatar";
     public static String SOCIAL_AVATAR = "social_avatar";
     public static String ADD_AVATAR = "add_avatar";
@@ -36,6 +37,7 @@ public class Constant {
     public static String FRIEND_COUNT = "friend_count";
     public static String HEADER_PHOTO = "header_photo";
     public static String HEADER_VIDEO = "header_video";
+    public static String LANGUAGE_CODE = "LANGUAGE_CODE";
 
     ///for facebook login
     public static String FB_EMAIL = INDECATOR + "_fb_email";

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="atlas_message_item_unknown_user">Unbekannt</string>....
+
+    <string name="atlas_message_item_read">gelesen</string>
+    <string name="atlas_message_item_delivered">Übermittelt</string>
+
+    <string name="atlas_notification_text">%1$s: %2$s</string>
+    <string name="atlas_notification_image">Befestigung von %1$s: Bild</string>
+    <string name="atlas_notification_location">Befestigung von %1$s: Standort</string>
+
+    <string name="atlas_gallery_sender_chooser">Foto anhängen</string>
+
+    <string name="atlas_text_cell_factory_clipboard_description">Nachricht</string>
+    <string name="atlas_text_cell_factory_copied_to_clipboard">In die Zwischenablage kopiert</string>
+
+    <string name="atlas_message_preview_image">Anhang: Bild</string>
+    <string name="atlas_message_preview_location">Anhang: Standort</string>
+
+    <string name="atlas_time_today">Heute</string>
+    <string name="atlas_time_yesterday">Gestern</string>
+
+    <string-array name="atlas_time_days_of_week">
+        <item>Sonntag</item>
+        <item>Montag</item>
+        <item>Dienstag</item>
+        <item>Mittwoch</item>
+        <item>Donnerstag</item>
+        <item>Freitag</item>
+        <item>Samstag</item>
+    </string-array>
+
+    <string-array name="atlas_typing_indicator">
+        <item>Niemand Tippt</item>
+        <item>%s schreibt…</item>
+        <item>Zwei Menschen schreiben…</item>
+        <item>Drei Personen schreiben…</item>
+        <item>Viele schreiben…</item>
+    </string-array>
+
+    <string name="atlas_message_composer_hint">Nachricht</string>
+    <string name="atlas_message_composer_send_button">SENDEN</string>
+</resources>

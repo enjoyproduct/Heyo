@@ -164,6 +164,7 @@ public class PostAdapter extends BaseAdapter {
             tvViewedCount.setText(postModel.getViewed_count());
             tvSharedCount.setText(postModel.getShared_count());
 
+
             int commentCount = postModel.getArrComments().size() > 3 ? 3 : postModel.getArrComments().size();
             for (int i = 0; i < commentCount; i ++) {
                 CommentModel commentModel = postModel.getArrComments().get(i);
@@ -172,6 +173,12 @@ public class PostAdapter extends BaseAdapter {
                 CharSequence str2 = StringUtility.trimTrailingWhitespace(Html.fromHtml(str1));
                 tvComments[i].setText(str2);
                 llComments[i].setVisibility(View.VISIBLE);
+            }
+            LinearLayout llComment = (LinearLayout)view.findViewById(R.id.ll_comment);
+            if (commentCount == 0) {
+                llComment.setVisibility(View.GONE);
+            } else {
+                llComment.setVisibility(View.VISIBLE);
             }
             TextView tvCheckoutAllComments = (TextView)view.findViewById(R.id.tv_ipff_checkout_all_comments);
             tvCheckoutAllComments.setOnClickListener(new View.OnClickListener() {
@@ -621,7 +628,5 @@ public class PostAdapter extends BaseAdapter {
 
         return view;
     }
-    private void showAlertToShare(int position) {
 
-    }
 }

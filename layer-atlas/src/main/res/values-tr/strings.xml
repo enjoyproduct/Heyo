@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="atlas_message_item_unknown_user">Bilinmeyen</string>
+
+    <string name="atlas_message_item_read">Okundu</string>
+    <string name="atlas_message_item_delivered">iletildi</string>
+
+
+    <string name="atlas_gallery_sender_chooser">Fotoğraf takın</string>
+
+    <string name="atlas_text_cell_factory_clipboard_description">Mesaj</string>
+    <string name="atlas_text_cell_factory_copied_to_clipboard">Panoya kopyalandı</string>
+
+    <string name="atlas_message_preview_image">Eklenti: Görüntü</string>
+    <string name="atlas_message_preview_location">Eklenti: Yer</string>
+
+    <string name="atlas_time_today">Bugün</string>
+    <string name="atlas_time_yesterday">Dün</string>
+
+    <string-array name="atlas_time_days_of_week">
+        <item>Pazar</item>
+        <item>Pazartesi</item>
+        <item>Salı</item>
+        <item>Çarşamba</item>
+        <item>Perşembe</item>
+        <item>Cuma</item>
+        <item>Cumartesi</item>
+    </string-array>
+
+    <string-array name="atlas_typing_indicator">
+        <item>No one is typing</item>
+        <item>%s is typing…</item>
+        <item>Two people are typing…</item>
+        <item>Three people are typing…</item>
+        <item>Many people are typing…</item>
+    </string-array>
+
+    <string name="atlas_message_composer_hint">Mesaj</string>
+    <string name="atlas_message_composer_send_button">GÖNDER</string>
+</resources>

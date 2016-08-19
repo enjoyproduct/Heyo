@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="email">Email</string>
+    <string name="password">Passwort</string>
+    <string name="login">Anmeldung</string>
+    <string name="forgot_password">Passwort vergessen</string>
+    <string name="register"> Neu registrieren</string>
+    <string name="firstname">Vorname</string>
+    <string name="lastname">Name</string>
+    <string name="fullname">Vollständiger Name</string>
+    <string name="confirm_password">Bestätige das Passwort</string>
+    <string name="Sign_up"> Anmelden</string>
+    <string name="Signup"> Anmelden</string>
+    <string name="By_clicking">Durch das Klicken</string>
+    <string name="you_are_agree">stimmen Sie unseren</string>
+    <string name="Terms_of_use">Geschäftsbedingungen (AgB)</string>
+    <string name="and">und</string>
+    <string name="Privacy_policy">Datenschutz-Bestimmungen</string>
+    <string name="checkout_all_comment">Alle Kommentare</string>
+
+    <string name="FAVORITES">FAVORITEN</string>
+    <string name="FRIENDS">FREUNDE</string>
+    <string name="REQUESTS"> ANTRÄGE</string>
+    <string name="MORE_FRIENDS"> FREUNDE FINDEN</string>
+    <string name="INVITE_FRIENDS">FREUNDE EINLADEN</string>
+    <string name="GROUPS"> GRUPPEN</string>
+    <string name="CALENDAR"> KALENDER</string>
+    <string name="FAQ">FAQ</string>
+    <string name="LOG_OUT">AUSLOGGEN</string>
+    <string name="like_a_photo_from">mag ein Foto von</string>
+    <string name="like_a_video_from">mag ein Video von</string>
+
+    <string name="seconds_ago"> vor Sekunden</string>
+    <string name="minutes_ago"> vor ein paar Minuten</string>
+    <string name="hours_ago"> vor Stunden</string>
+    <string name="days_ago"> vor Tagen</string>
+    <string name="weeks_ago"> vor Wochen</string>
+    <string name="monthes_ago"> vor Monaten</string>
+    <string name="years_ago"> vor Jahren</string>
+
+    <string name="second_ago"> vor einer Sekunde</string>
+    <string name="minute_ago"> vor einer Minute</string>
+    <string name="hour_ago"> vor einer Stunde</string>
+    <string name="day_ago"> vor einem Tag</string>
+    <string name="week_ago"> vor einer Woche</string>
+    <string name="monthe_ago"> vor einem Monat</string>
+    <string name="year_ago"> vor einem Jahr</string>
+
+    <string name="people">Personen</string>
+    <string name="typing">Schreibt ...</string>
+    <string name="online">online</string>
+    <string name="offline">offline</string>
+    <string name="old_password">Altes Passwort</string>
+    <string name="new_password">Neues Kennwort</string>
+    <string name="profile">Profil</string>
+
+    <string name="media">Medien</string>
+    <string name="Friends">Freunde</string>
+    <string name="crop"> Ernte</string>
+    <string name="Login_with">Einloggen mit</string>
+    <string name="waiting">warten...</string>
+    <string name="Edit"> Bearbeiten</string>
+    <string name="Delete"> Löschen</string>
+
+    <string name="INFO">INFO</string>
+    <string name="MEDIA">MEDIEN</string>
+    <string name="FRIEND"> FRIENDS</string>
+
+    <string name="photos"> Fotos</string>
+    <string name="videos"> Videos</string>
+
+    <string name="contact">Info</string>
+    <string name="about_me">über mich</string>
+    <string name="Name"> Name</string>
+    <string name="City"> Stadt</string>
+    <string name="Country">Land</string>
+    <string name="Language"> Sprache</string>
+    <string name="Email">Email</string>
+    <string name="Birthday"> Geburtstag</string>
+    <string name="Gender"> Geschlecht</string>
+    <string name="Celebrity">Berühmtheit</string>
+    <string name="Password">Passwort</string>
+    <string name="Confirm_Password">Bestätige das Passwort</string>
+
+    <string name="post">Post</string>
+    <string name="outgoing">Ausgehend</string>
+    <string name="incoming">Eingehend</string>
+    <string name="blocked">gesperrt</string>
+    <string name="friends">Freunde</string>
+    <string name="favorite">Favoriten</string>
+    <string name="more_friends">Freunde finden</string>
+    <string name="requests">Anfragen</string>
+    <string name="invited_friends">Freunde einladen</string>
+    <string name="open_drawer">Öffnen</string>
+    <string name="close_drawer">Schließen</string>
+
+    <string name="Please_input_name">Bitte geben Sie Ihren Namen</string>
+    <string name="Invalid_email">Ungültige E-Mail</string>
+    <string name="Input_password">Bitte geben Sie das Passwort</string>
+    <string name="Input_longer_password">Kennwortlänge muss länger als 3</string>
+    <string name="Confirm_password">Bitte Passwort bestätigen</string>
+    <string name="input_email">Bitte Eingabe E-Mail</string>
+    <string name="choose_photo">Wählen Sie Bild aus</string>
+    <string name="choose_video">Wählen Sie Video aus</string>
+    <string name="take_more_media">Bitte wähle Medien</string>
+    <string name="type_comment_below">Geben Sie Ihren Kommentar unten ein</string>
+    <string name="input_fullname">Bitte Vor- und Nachname angeben</string>
+    <string name="input_new_password">Bitte neues Passwort eingeben</string>
+    <string name="input_confirm_password_again">Geben Sie das Kennwort zur Bestätigung</string>
+    <string name="wait_one_minute">Bitte warten Sie eine Minute diese wieder zu verwenden.</string>
+    <string name="confirm_header_photo">Verwenden Sie dieses Foto als Profilbild ?</string>
+    <string name="confirm_header_video">Verwenden Sie dieses Video als Profil -Film?</string>
+    <string name="confirm_delete_post">Wollen Sie diesen Eintrag löschen ?</string>
+    <string name="confirm_update_avatar">Profilbild ändern?</string>
+    <string name="input_description">Beschreibung bitte eingeben</string>
+    <string name="do_you_want_accept">Wollen Sie akzeptieren </string>
+    <string name="s_request">Antrag ?</string>
+
+
+    <string name="email_registerd">Email schon registriert (vergeben)</string>
+    <string name="email_unregistered">E-Mail ist nicht registriert</string>
+    <string name="incorrect_password">Falsches Passwort</string>
+    <string name="post_failed">Posting fehlgeschlagen</string>
+    <string name="post_success">Posted erfolgreich</string>
+    <string name="access_denied">Zugriff abgelehnt</string>
+    <string name="invite_sucess">Einladung erfolgreich</string>
+    <string name="cancel_invite">Sind Sie sicher, dass Sie diesen Antrag Abbrechen ?</string>
+    <string name="reject_friend">Sind Sie sicher, dass Sie diesen Antrag ablehnen?</string>
+    <string name="cancel_success">Ihre Einladung wurde abgelehnt</string>
+    <string name="reject_success">Sie haben die Anfrage abgelehnt</string>
+
+    <string name="accept_success">ist jetzt dein Freund</string>
+    <string name="Youtube_play_error">Kann dieses Video nicht abspielen</string>
+    <string name="success">Erfolg</string>
+    <string name="user_not_exist">Benutzer existiert nicht</string>
+    <string name="Male">Männlich</string>
+    <string name="Female">Weiblich</string>
+    <string name="please_wait">Bitte warten…</string>
+
+    <string name="dlg_error">Fehler</string>
+    <string name="dlg_ok">OK</string>
+    <string name="dlg_cancel">Abbrechen</string>
+    <string name="dlg_loading">Laden…</string>
+    <string name="dlg_choose_image_from">Wählen Sie ein Foto aus ...</string>
+    <string name="dlg_retry">Wiederholen</string>
+    <string name="no_internet_connection">Keine Internetverbindung</string>
+
+    <string-array name="gender">
+        <item>Männlich</item>
+        <item>Weiblich</item>
+    </string-array>
+
+    <string-array name="languages">
+        <item>Englisch</item>
+        <item>Niederlande</item>
+        <item>Türkisch</item>
+        <item>Germany</item>
+        <!--<item>Spanish</item>-->
+    </string-array>
+
+    <string name="English">Englisch</string>
+    <string name="Netherland">Niederlande</string>
+    <string name="Turkish">Türkisch</string>
+    <string name="Germany">Germany</string>
+
+    <string name="Input_Description">Beschreibung einfügen</string>
+    <string name="input_hashtag">Hashtag einfügen</string>
+    <string name="paste_youtube_link">Fügen Sie hier Youtube -Video-URL</string>
+    <string name="Tag">Etikett</string>
+    <string name="Send">Senden</string>
+
+    <string name="Log_out">Ausloggen</string>
+    <string name="Do_you_want_logout">Möchten Sie sich abmelden ?</string>
+    <string name="Accept">Akzeptieren</string>
+    <string name="accepted_your_request">Akzeptiert Ihre Anfrage</string>
+    <string name="No"> Nein</string>
+    <string name="Camera"> Kamera</string>
+    <string name="Gallery">Galerie</string>
+    <string name="Youtube">Youtube</string>
+    <string name="Set">Set</string>
+    <string name="Discard">Abbrechen</string>
+    <string name="Play"> Abspielen</string>
+    <string name="How_it_works">WIE ES FUNKTIONIERT</string>
+
+    <string name="liked_your_post">Mochte Ihren Beitrag</string>
+    <string name="disliked_your_post">gefällt ihr Eintrag nicht</string>
+    <string name="commented_on_your_post">Ihren Beitrag kommentiert</string>
+    <string name="shared_your_post">hat ihren Beitrag geteilt</string>
+    <string name="sent_friend_request_to_you">hat Ihnen eine Anrage gesendet</string>
+    <string name="is_now_your_friend">ist jetzt dein Freund</string>
+    <string name="rejected_your_friend_request">hat ihre Freundschaftsanfrage abgelehnt</string>
+    <string name="tagged_you_in_post">hat Sie in einem Beitrag erwähnt</string>
+
+    <string name="You_receive_checkin_chat_request">Sie haben eine Chat-Anfrage erhalten</string>
+    <string name="accepted_your_checkin_chat_request">hat Ihre checkin Chatanfrage akzeptiert</string>
+    <string name="You_received_new_message">Heyoe - Sie haben eine neue Nachricht erhalten</string>
+    <string name="sent_friend_invitation">hat ihnen eine Freundschaftsanfrage geschickt</string>
+    <string name="accept_friend_invitiation">hat deine Freundschaftsanfrage akzeptiert</string>
+    <string name="reject_friend_invitation">hat deine Freundschafstanfrage abgelehnt</string>
+    <string name="You_are_tagged_by">Sie wurden markiert von </string>
+
+    <string name="file_size_big">Dateigröße ist zu groß</string>
+    <string name="user_left_this_location">Leider hat der User diesen Ort verlassen</string>
+
+    <string name="Yes">ja</string>
+    <string name="are_you_sure_delete">Sind Sie sicher, dass Sie löschen möchten</string>
+    <string name="Deleted_friend_successfully">Freund erfolgreich gelöscht</string>
+    <string name="Chat_history_deleted_successfully">Chat erfolgreich gelöscht</string>
+    <string name="pls_input_email">Bitte e-mail eingeben</string>
+    <string name="invalid_email">Ungültige E-Mail</string>
+    <string name="pls_input_password">Bitte Passwort eingeben</string>
+    <string name="email_sent">Neues Passwort an Ihre E-Mail gesendet</string>
+    <string name="dont_remember_password">Passwort vergessen?</string>
+
+    <string name="user_agreement">Nutzungsbedingungen</string>
+    <string name="sent_request_successfully">Anfrage erfolgreich gesendet</string>
+    <string name="accepted_request_successfully">Anforderung akzeptiert</string>
+
+    <string name="Public">Öffentlichkeit</string>
+    <string name="Friend_Only">Nur Freunde</string>
+    <string name="Private">Privatgelände</string>
+
+    <string-array name="private_status">
+        <item>Öffentlichkeit</item>
+        <item>Nur Freunde</item>
+        <item>Privatgelände</item>
+    </string-array>
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+    <!--<string name=""></string>-->
+
+
+
+    <string name="action_details">Unterhaltungs Einzelheiten</string>
+    <string name="action_sendlogs">Debug info senden</string>
+    <string name="title_conversations_list">Gespräche</string>
+    <string name="title_select_conversation"> Neue Nachricht</string>
+    <string name="title_messages_list"> Nachrichten</string>
+    <string name="title_settings">Einstellungen</string>
+    <string name="title_conversation_details">Details</string>
+    <string name="alert_message_resuming">Sitzung fortsetzen</string>
+    <string name="alert_message_logout">Ausloggen?</string>
+
+    <string name="alert_message_delete_message">Nachricht löschen?</string>
+    <string name="alert_message_delete_conversation">Unterhaltung löschen?</string>
+    <string name="alert_dialog_logout"> Ausloggen…</string>
+    <string name="alert_button_cancel"> Stornieren</string>
+    <string name="alert_button_delete_my_devices">Für mich</string>
+    <string name="alert_button_delete_all_participants">Von allen</string>
+    <string name="alert_button_remove"> Entfernen</string>
+    <string name="alert_button_block">Blocken</string>
+    <string name="alert_button_unblock">Freigeben</string>
+    <string name="alert_button_logout"> Ausloggen</string>
+
+    <string name="attachment_menu_camera">Kamera</string>
+    <string name="attachment_menu_gallery">Galerie</string>
+    <string name="attachment_menu_location">Ort</string>
+    <string name="toast_group_name_updated">Gruppenname aktualisiert</string>
+    <string name="toast_failed_to_deauthenticate">Fehler beim Authentifizieren: %1$s</string>
+    <string name="toast_copied_to_clipboard">In die Zwischenablage kopiert</string>
+    <string name="conversation_details_title_options">Optionen</string>
+    <string name="conversation_details_hint_group_name">Gruppenname</string>
+    <string name="conversation_details_switch_show_notifications">Zeige Benachrichtigungen</string>
+    <string name="conversation_details_button_leave_group"> Gruppe verlassen</string>
+    <string name="conversation_details_title_participants">Die Teilnehmer</string>
+    <string name="conversation_details_button_add_participants">Teilnehmer hinzufügen</string>
+    <string name="settings_clipboard_description">Einstellungen</string>
+    <string name="settings_content_connected">Verbunden</string>
+    <string name="settings_content_disconnected"> Getrennt</string>
+
+    <string name="settings_content_app_version">Name %1$s / Code %2$d</string>
+    <string name="settings_content_android_version">Version %1$s / API-Level %2$d</string>
+    <string name="settings_content_disk_unlimited"> Unbegrenzt</string>
+    <string name="settings_content_disk_usage">%1$.2f %2$s</string>
+    <string name="settings_content_disk_gb">GB</string>
+    <string name="settings_content_disk_mb">MB</string>
+    <string name="settings_content_disk_kb">KB</string>
+    <string name="settings_content_disk_b">B</string>
+
+    <string name="settings_title_account">Konto</string>
+    <string name="settings_button_log_out"> Ausloggen</string>
+    <string name="settings_title_notifications">Benachrichtigungen</string>
+    <string name="settings_switch_show_notifications">Zeige Benachrichtigungen</string>
+    <string name="settings_title_debug">Debuggen</string>
+    <string name="settings_switch_verbose_logging"> Ausführliche Protokollierung</string>
+    <string name="settings_title_app_version">App Version</string>
+    <string name="settings_title_android_version">Android Version</string>
+    <string name="settings_title_atlas_version">Atlas Version</string>
+    <string name="settings_title_layer_version">Layer Version</string>
+    <string name="settings_title_user_id">Benutzeridentifikation</string>
+    <string name="settings_title_statistics"> Statistiken</string>
+    <string name="settings_title_conversations">Gespräche</string>
+    <string name="settings_title_messages"> Nachrichten</string>
+    <string name="settings_title_unread_messages"> ungelesene Nachrichten</string>
+    <string name="settings_title_rich_content">Rich- Inhalt</string>
+    <string name="settings_title_disk_utilization">Datenträgerauslastung</string>
+    <string name="settings_title_disk_allowance">Disk- Allowance</string>
+    <string name="settings_title_auto_download_types">Auto- Download- MIME-Typen</string>
+    <string name="notifications_num_more">+%1$d mehr</string>
+    <string name="notifications_new_messages">%1$s neue Nachrichten</string>
+</resources>

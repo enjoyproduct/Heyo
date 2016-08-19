@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="atlas_message_item_unknown_user">Onbekend</string>
+
+    <string name="atlas_message_item_read">Gelezen</string>
+    <string name="atlas_message_item_delivered">Bezorgd</string>
+
+    <string name="atlas_notification_text">%1$s: %2$s</string>
+    <string name="atlas_notification_image">Bijlage van %1$s: afbeelding</string>
+    <string name="atlas_notification_location">Bijlage van %1$s: Locatie</string>
+
+    <string name="atlas_gallery_sender_chooser">Foto toevoegen</string>
+
+    <string name="atlas_text_cell_factory_clipboard_description">Bericht</string>
+    <string name="atlas_text_cell_factory_copied_to_clipboard">Kopieer naar klipbord</string>
+
+    <string name="atlas_message_preview_image">Bijlage: afbeelding</string>
+    <string name="atlas_message_preview_location">Bijlage: Locatie</string>
+
+    <string name="atlas_time_today">Vandaag</string>
+    <string name="atlas_time_yesterday">Gisteren</string>
+
+    <string-array name="atlas_time_days_of_week">
+        <item>Zondag</item>
+        <item>Maandag</item>
+        <item>Dinsdag</item>
+        <item>Woensdag</item>
+        <item>Donderdag</item>
+        <item>Vrijdag</item>
+        <item>Zaterdag</item>
+    </string-array>
+
+    <string-array name="atlas_typing_indicator">
+        <item>Niemand typt</item>
+        <item>%s is aan het typen…</item>
+        <item>Two people are typing…</item>
+        <item>Three people are typing…</item>
+        <item>Many people are typing…</item>
+    </string-array>
+
+    <string name="atlas_message_composer_hint">Bericht</string>
+    <string name="atlas_message_composer_send_button">Verzenden</string>
+</resources>

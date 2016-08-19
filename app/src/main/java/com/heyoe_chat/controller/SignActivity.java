@@ -88,7 +88,7 @@ public class SignActivity extends AppCompatActivity {
                 break;
 
             case 3:
-                fragments[pageNum] = new PrivacyPolicyFragment();
+                fragments[pageNum] = new TermsOfUseFragment();
                 transaction
                         .replace(R.id.fragment_container, fragments[pageNum])
                         .commit();

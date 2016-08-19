@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.crashlytics.android.Crashlytics;
 import com.heyoe_chat.R;
+import com.heyoe_chat.model.Constant;
 import com.heyoe_chat.utilities.ExceptionHandler;
+import com.heyoe_chat.utilities.LocaleHelper;
+import com.heyoe_chat.utilities.Utils;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -26,6 +29,7 @@ public class SplashActivity extends AppCompatActivity {
 //        SocialUtility.printKeyHash(this);
 
 
+        ///----
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -35,5 +39,4 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 1000);
     }
-
 }

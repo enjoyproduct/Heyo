@@ -2,6 +2,9 @@ package com.heyoe_chat.controller.fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -124,7 +127,6 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                     .build();
         }
         callbackManager = CallbackManager.Factory.create();
-
     }
     private void initUI(View view) {
         etEmail = (EditText)view.findViewById(R.id.et_signin_email);
@@ -146,6 +148,11 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
         tvForgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Utils.isEmailValid(etEmail.getText().toString().trim())) {
+                    confirmForgetPassword();
+                } else {
+                    Utils.showOKDialog(mActivity, getResources().getString(R.string.invalid_email));
+                }
 
             }
         });
@@ -173,6 +180,66 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
             }
         });
     }
+    void confirmForgetPassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        builder.setMessage(getResources().getString(R.string.dont_remember_password));
+        builder.setCancelable(true);
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.Yes),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        forgotPassword();
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton(mActivity.getResources().getString(R.string.dlg_cancel),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+//
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    private void forgotPassword(){
+        String email = etEmail.getText().toString().trim();
+
+        Utils.showProgress(mActivity);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("email", email);
+
+        CustomRequest signinRequest = new CustomRequest(Request.Method.POST, API.SEND_EMAIL, params,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Utils.hideProgress();
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("200")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.email_sent));
+                            } else  if (status.equals("401")) {
+                                Utils.showOKDialog(mActivity, getResources().getString(R.string.email_unregistered));
+                            } else if (status.equals("402")) {
+//                                Utils.showOKDialog(mActivity, getResources().getString(R.string.incorrect_password));
+                            }else if (status.equals("403")) {
+                            }
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Utils.hideProgress();
+                        Toast.makeText(mActivity, error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
+        requestQueue.add(signinRequest);
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -192,7 +259,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
             Utils.saveToPreference(mActivity, Constant.FB_EMAIL, account.getEmail());
             Uri avatarUri = account.getPhotoUrl();
             if (avatarUri != null) {
-                Utils.saveToPreference(mActivity, Constant.FB_EMAIL, avatarUri.toString());
+                Utils.saveToPreference(mActivity, Constant.FB_PHOTO, avatarUri.toString());
             }
 
 
@@ -297,6 +364,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 String birthday = jsonObject.getString("birthday");
                                 String gender = jsonObject.getString("gender");
                                 String celebrity = jsonObject.getString("celebrity");
+                                String private_status = jsonObject.getString("private_status");
                                 String about_me = jsonObject.getString("about_you");
                                 String media_count = jsonObject.getString("post_count");
                                 String friend_count = jsonObject.getString("friend_count");
@@ -315,6 +383,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 Utils.saveToPreference(mActivity, Constant.BIRTHDAY, birthday);
                                 Utils.saveToPreference(mActivity, Constant.GENDER, gender);
                                 Utils.saveToPreference(mActivity, Constant.CELEBRITY, celebrity);
+                                Utils.saveIntToPreference(mActivity, Constant.PRIVATE_STATUS, Integer.parseInt(private_status));
                                 Utils.saveToPreference(mActivity, Constant.ABOUT_ME, about_me);
                                 Utils.saveToPreference(mActivity, Constant.MEDIA_COUNT, media_count);
                                 Utils.saveToPreference(mActivity, Constant.FRIEND_COUNT, friend_count);
@@ -356,14 +425,14 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
         password = etPassword.getText().toString();
 
         if (email.length() == 0 ) {
-            Utils.showOKDialog(mActivity, "Please input email");
+            Utils.showOKDialog(mActivity, getResources().getString(R.string.pls_input_email));
             return false;
         } else if (!Utils.isEmailValid(email)) {
-            Utils.showOKDialog(mActivity, "Please input correct email");
+            Utils.showOKDialog(mActivity, getResources().getString(R.string.invalid_email));
             return false;
         }
         else if (password.length() == 0) {
-            Utils.showOKDialog(mActivity, "Please input password");
+            Utils.showOKDialog(mActivity,getResources().getString(R.string.pls_input_password));
             return false;
         }
         return true;
@@ -398,6 +467,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 String birthday = jsonObject.getString("birthday");
                                 String gender = jsonObject.getString("gender");
                                 String celebrity = jsonObject.getString("celebrity");
+                                String private_status = jsonObject.getString("private_status");
                                 String about_me = jsonObject.getString("about_you");
                                 String media_count = jsonObject.getString("post_count");
                                 String friend_count = jsonObject.getString("friend_count");
@@ -415,6 +485,7 @@ public class SigninFragment extends Fragment implements  GoogleApiClient.OnConne
                                 Utils.saveToPreference(mActivity, Constant.BIRTHDAY, birthday);
                                 Utils.saveToPreference(mActivity, Constant.GENDER, gender);
                                 Utils.saveToPreference(mActivity, Constant.CELEBRITY, celebrity);
+                                Utils.saveIntToPreference(mActivity, Constant.PRIVATE_STATUS, Integer.parseInt(private_status));
                                 Utils.saveToPreference(mActivity, Constant.ABOUT_ME, about_me);
                                 Utils.saveToPreference(mActivity, Constant.MEDIA_COUNT, media_count);
                                 Utils.saveToPreference(mActivity, Constant.FRIEND_COUNT, friend_count);

@@ -26,7 +26,6 @@
             android:textSize="@dimen/txt_20sp"
             android:textColor="@color/white"
             android:layout_marginLeft="@dimen/dimen_16dp"
-
             />
     </LinearLayout>
 

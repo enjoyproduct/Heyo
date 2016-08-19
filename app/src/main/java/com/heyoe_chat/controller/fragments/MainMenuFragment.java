@@ -135,7 +135,7 @@ public class MainMenuFragment extends Fragment {
                 R.string.INVITE_FRIENDS,
 //                R.string.GROUPS,
 //                R.string.CALENDAR,
-                R.string.FAQ,
+                R.string.How_it_works,
                 R.string.LOG_OUT,
         };
         ArrayList<MenuModel> arrayList = new ArrayList<>();

@@ -216,7 +216,7 @@
                       <TextView
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
-                          android:text="@string/Signup"
+                          android:text="@string/Sign_up"
                           android:textColor="@color/white"
                           android:layout_marginRight="@dimen/dimen_4dp"
                           android:layout_marginLeft="@dimen/dimen_4dp"

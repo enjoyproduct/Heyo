@@ -171,29 +171,48 @@ public class TimeUtility {
 
         int result = second;
         if (second < 0) {
-            str = "0  " + context.getResources().getString(R.string.minutes_ago);
+            str = "0  " + context.getResources().getString(R.string.minute_ago);
         } else if((int)(result / 60) < 60){
-            str = String.valueOf((int) (result / 60)) + "  " + context.getResources().getString(R.string.minutes_ago);
+            int time = result / 60;
+            String timeUnit = "";
+            if (time <= 1) timeUnit =  context.getResources().getString(R.string.minute_ago);
+            else timeUnit = context.getResources().getString(R.string.minutes_ago);
+            str = String.valueOf(time) + "  " + timeUnit;
 
         } else {
             result = (int)(second / 3600);
             if(result < 24){
+                String timeUnit = "";
+                if (result <= 1) timeUnit =  context.getResources().getString(R.string.hour_ago);
+                else timeUnit = context.getResources().getString(R.string.hours_ago);
                 str = String.valueOf(result) + "  " + context.getResources().getString(R.string.hours_ago);
             }else{
                 result = (int)(second /  (3600 * 24));
                 if(result < 7){
-                    str = String.valueOf(result) + "  " + context.getResources().getString(R.string.days_ago);
+                    String timeUnit = "";
+                    if (result <= 1) timeUnit =  context.getResources().getString(R.string.day_ago);
+                    else timeUnit = context.getResources().getString(R.string.days_ago);
+                    str = String.valueOf(result) + "  " + timeUnit;
                 }else{
                     result = (int)(second / (3600 * 24 * 7));
                     if(result < 4){
-                        str = String.valueOf(result) + "  " + context.getResources().getString(R.string.weeks_ago);
+                        String timeUnit = "";
+                        if (result <= 1) timeUnit =  context.getResources().getString(R.string.week_ago);
+                        else timeUnit = context.getResources().getString(R.string.weeks_ago);
+                        str = String.valueOf(result) + "  " + timeUnit;
                     }else {
                         result = (int)(second / (3600 * 24 * 30));
                         if(result < 12){
-                            str = String.valueOf(result) + "  " + context.getResources().getString(R.string.monthes_ago);
+                            String timeUnit = "";
+                            if (result <= 1) timeUnit =  context.getResources().getString(R.string.monthe_ago);
+                            else timeUnit = context.getResources().getString(R.string.monthes_ago);
+                            str = String.valueOf(result) + "  " + timeUnit;
                         }else {
                             result = (int)(second / (3600 * 24 * 365));
-                            str = String.valueOf(result) + "  " + context.getResources().getString(R.string.years_ago);
+                            String timeUnit = "";
+                            if (result <= 1) timeUnit =  context.getResources().getString(R.string.year_ago);
+                            else timeUnit = context.getResources().getString(R.string.years_ago);
+                            str = String.valueOf(result) + "  " + timeUnit;
                         }
                     }
                 }

@@ -3,6 +3,8 @@ package com.heyoe_chat.controller.fragments;
 
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -393,6 +395,27 @@ public class MyBlackFriendsFregment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
+    void confirmDeleteFriend(final int position, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle(Constant.INDECATOR);
+        builder.setMessage(message);
+        builder.setCancelable(true);
+        builder.setPositiveButton(mActivity.getResources().getString(R.string.Yes),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        deleteFriend(position);
+                        dialog.cancel();
+                    }
+                });
+        builder.setNegativeButton(mActivity.getResources().getString(R.string.No),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
     private void deleteFriend(final int position) {
 
         Utils.showProgress(mActivity);
@@ -416,7 +439,7 @@ public class MyBlackFriendsFregment extends Fragment {
                         try {
                             String status = response.getString("status");
                             if (status.equals("200")) {
-                                Utils.showToast(mActivity, "Deleted friend successfully");
+                                Utils.showToast(mActivity, getResources().getString(R.string.Deleted_friend_successfully));
                                 if (state == 0) {
                                     deleteChatOfActiveFriend(position);
                                     arrActiveUsers.remove(position);
@@ -603,7 +626,7 @@ public class MyBlackFriendsFregment extends Fragment {
                 public void onClick(View v) {
 
                     if (arrActiveUsers.get(position).getConversation() != null) {
-                        Utils.showToast(mActivity, "Cleared chat history successfully");
+                        Utils.showToast(mActivity, getResources().getString(R.string.Chat_history_deleted_successfully));
                         deleteChatOfActiveFriend(position);
                     }
                     mItemManger.closeAllItems();
@@ -621,7 +644,8 @@ public class MyBlackFriendsFregment extends Fragment {
             swipeLayout.findViewById(R.id.delete_friend).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteFriend(position);
+//                    confirmDeleteFriend(position, mActivity.getString(R.string.are_you_sure_delete) + " " + arrFriends.get(position).getFullname() + "?");
+                    confirmDeleteFriend(position, arrFriends.get(position).getFullname() +  " " + mActivity.getString(R.string.are_you_sure_delete) );
                     mItemManger.closeAllItems();
                 }
             });
@@ -802,7 +826,9 @@ public class MyBlackFriendsFregment extends Fragment {
             swipeLayout.findViewById(R.id.delete_friend).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteFriend(position);
+//                    confirmDeleteFriend(position, mActivity.getString(R.string.are_you_sure_delete) + " " + arrFriends.get(position).getFullname() + "?");
+                    confirmDeleteFriend(position, arrFriends.get(position).getFullname() +  " " + mActivity.getString(R.string.are_you_sure_delete) );
+
                     mItemManger.closeAllItems();
                 }
             });

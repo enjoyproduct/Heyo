@@ -132,7 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                        .commit();
 //                break;
             case 0:
-                setTitle(mActivity.getResources().getString(R.string.info));
+                setTitle("");
                 fragmentManager.beginTransaction()
                         .add(R.id.fragment_container, new ProfileInfoFragment())
                         .addToBackStack("profileinfo")

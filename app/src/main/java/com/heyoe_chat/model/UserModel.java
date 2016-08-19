@@ -17,6 +17,7 @@ public class UserModel implements Serializable {
     String birthday;
     String about_you;
     String celebrity;
+    int private_status;
     String media_count;
     String friend_count;
     String avatar;
@@ -29,7 +30,13 @@ public class UserModel implements Serializable {
     long lastMsgSentTime;
     Conversation conversation;
 
+    public int getPrivate_status() {
+        return private_status;
+    }
 
+    public void setPrivate_status(int private_status) {
+        this.private_status = private_status;
+    }
 
     public Conversation getConversation() {
         return conversation;

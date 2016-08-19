@@ -3,11 +3,14 @@ package com.heyoe_chat.controller.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,7 +24,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,6 +57,7 @@ import com.heyoe_chat.controller.HomeActivity;
 import com.heyoe_chat.controller.MediaPlayActivity;
 import com.heyoe_chat.controller.ProfileActivity;
 import com.heyoe_chat.controller.UserListActivity;
+import com.heyoe_chat.controller.layer_chat.util.Util;
 import com.heyoe_chat.controller.photo_crop.PhotoCropActivity;
 import com.heyoe_chat.model.API;
 import com.heyoe_chat.model.CommentModel;
@@ -60,6 +67,7 @@ import com.heyoe_chat.model.UserModel;
 import com.heyoe_chat.utilities.BitmapUtility;
 import com.heyoe_chat.utilities.DeviceUtility;
 import com.heyoe_chat.utilities.FileUtility;
+import com.heyoe_chat.utilities.LocaleHelper;
 import com.heyoe_chat.utilities.StringUtility;
 import com.heyoe_chat.utilities.TimeUtility;
 import com.heyoe_chat.utilities.UIUtility;
@@ -218,6 +226,7 @@ public class ProfileFragment extends Fragment {
                                     String birthday = jsonObject.getString("birthday");
                                     String gender = jsonObject.getString("gender");
                                     String celebrity = jsonObject.getString("celebrity");
+                                    String private_status = jsonObject.getString("private_status");
                                     String about_me = jsonObject.getString("about_you");
                                     String media_count = jsonObject.getString("post_count");
                                     String friend_count = jsonObject.getString("friend_count");
@@ -236,6 +245,7 @@ public class ProfileFragment extends Fragment {
                                     userModel.setBirthday(birthday);
                                     userModel.setGender(gender);
                                     userModel.setCelebrity(celebrity);
+                                    userModel.setPrivate_status(Integer.parseInt(private_status));
                                     userModel.setAbout_you(about_me);
                                     userModel.setAvatar(avatar);
                                     userModel.setMedia_count(media_count);
@@ -245,6 +255,10 @@ public class ProfileFragment extends Fragment {
                                     userModel.setFriendStatus(friend_status);
                                 }
 
+                                if (isPrivate()) {
+                                    lvMain.setAdapter(mProfileAdapter);
+                                    return;
+                                }
 
                                 JSONArray jsonArray = response.getJSONArray("posts");
                                 int postCount = jsonArray.length();
@@ -325,6 +339,19 @@ public class ProfileFragment extends Fragment {
         RequestQueue requestQueue = Volley.newRequestQueue(mActivity);
         requestQueue.add(signinRequest);
     }
+    private boolean isPrivate() {
+        if (userModel.getUser_id().equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
+            return false;
+        }
+        if (userModel.getPrivate_status() == 2) {
+            return true;
+        } else  if (userModel.getPrivate_status() == 1) {
+            if (!userModel.getFriendStatus().equals("friend")) {
+                return true;
+            }
+        }
+        return false;
+    }
     private void uploadHeaderMedia(final int type) {
         Utils.showProgress(mActivity);
         CustomMultipartRequest customMultipartRequest = new CustomMultipartRequest(API.SET_HEADER_MEDIA,
@@ -346,6 +373,7 @@ public class ProfileFragment extends Fragment {
                                 } else if (type == 1) {
                                     Utils.saveToPreference(mActivity, Constant.HEADER_PHOTO, headerMediaUrl);
                                     userModel.setHeader_photo(headerMediaUrl);
+                                    showHeaderPhoto();
                                     FileUtility.deleteFile(photoPath);
                                 }
                             } else  if (status.equals("400")) {
@@ -517,6 +545,29 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    void showHeaderPhoto() {
+        if (!userModel.getHeader_photo().equals("")) {
+
+            UrlRectangleImageViewHelper.setUrlDrawable(ivMedia, API.BASE_HEADER_PHOTO + userModel.getHeader_photo(), R.drawable.default_tour, new UrlImageViewCallback() {
+                @Override
+                public void onLoaded(ImageView imageView, Bitmap loadedBitmap, String url, boolean loadedFromCache) {
+                    if (!loadedFromCache) {
+                        ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, ScaleAnimation.RELATIVE_TO_SELF, .5f, ScaleAnimation.RELATIVE_TO_SELF, .5f);
+                        scale.setDuration(10);
+                        scale.setInterpolator(new OvershootInterpolator());
+                        imageView.startAnimation(scale);
+                    }
+                }
+            });
+        }
+    }
+
+
+
+
+
+
+
     ImageView ivMedia;
     ImageButton ibPlayVideo;
     static ImageView ivCelebrity;
@@ -541,38 +592,44 @@ public class ProfileFragment extends Fragment {
                 rlInfo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        ProfileActivity.pushFragment(1);
-                        Intent intent = new Intent(mActivity, ProfileActivity.class);
-                        intent.putExtra("to_where", 0);
-                        intent.putExtra("userModel", userModel);
-                        if (isMe()) {
-                            startActivityForResult(intent, 104);
-                        } else {
-                            startActivity(intent);
+                        if (!isPrivate()) {
+                            Intent intent = new Intent(mActivity, ProfileActivity.class);
+                            intent.putExtra("to_where", 0);
+                            intent.putExtra("userModel", userModel);
+                            if (isMe()) {
+                                mActivity.startActivityForResult(intent, 104);
+                            } else {
+                                mActivity.startActivity(intent);
+                            }
                         }
+//
                     }
                 });
                 rlMedia.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        ProfileActivity.pushFragment(2);
-                        Intent intent = new Intent(mActivity, ProfileActivity.class);
-                        intent.putExtra("to_where", 1);
-                        intent.putExtra("userModel", userModel);
+                        if (!isPrivate()) {
+                            Intent intent = new Intent(mActivity, ProfileActivity.class);
+                            intent.putExtra("to_where", 1);
+                            intent.putExtra("userModel", userModel);
 
-                        startActivity(intent);
+                            startActivity(intent);
+
+                        }
 
                     }
                 });
                 rlFriend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        ProfileActivity.pushFragment(3);
-                        Intent intent = new Intent(mActivity, ProfileActivity.class);
-                        intent.putExtra("to_where", 2);
-                        intent.putExtra("userModel", userModel);
+                        if (!isPrivate()) {
+                            Intent intent = new Intent(mActivity, ProfileActivity.class);
+                            intent.putExtra("to_where", 2);
+                            intent.putExtra("userModel", userModel);
 
-                        startActivity(intent);
+                            startActivity(intent);
+
+                        }
                     }
                 });
                 tvFullname = (TextView)view.findViewById(R.id.tv_profile_fullname);
@@ -773,6 +830,14 @@ public class ProfileFragment extends Fragment {
                     tvComments[i].setText(str2);
                     llComments[i].setVisibility(View.VISIBLE);
                 }
+                //hide comment layout if comment count is zero
+                LinearLayout llComment = (LinearLayout)view.findViewById(R.id.ll_comment);
+                if (commentCount == 0) {
+                    llComment.setVisibility(View.GONE);
+                } else {
+                    llComment.setVisibility(View.VISIBLE);
+                }
+
                 TextView tvCheckoutAllComments = (TextView)view.findViewById(R.id.tv_ipff_checkout_all_comments);
                 tvCheckoutAllComments.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1250,6 +1315,7 @@ public class ProfileFragment extends Fragment {
 
 
 
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -1265,7 +1331,7 @@ public class ProfileFragment extends Fragment {
                     byte[] byteArray = data.getByteArrayExtra("cropped_image");
                     Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
                     if (bitmap != null) {
-                        ivMedia.setImageBitmap(bitmap);
+//                        ivMedia.setImageBitmap(bitmap);
                         imageWidth = bitmap.getWidth();
                         imageHeight = bitmap.getHeight();
                         photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", "heyoe_header_photo.jpg");
@@ -1291,7 +1357,7 @@ public class ProfileFragment extends Fragment {
                     cursor.close();
 
                     Bitmap bitmap = BitmapUtility.adjustBitmap(avatarPath);
-                    avatar.setImageBitmap(bitmap);
+//                    avatar.setImageBitmap(bitmap);
                     imageWidth = bitmap.getWidth();
                     imageHeight = bitmap.getHeight();
                     avatarPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(avatarPath));
@@ -1326,7 +1392,7 @@ public class ProfileFragment extends Fragment {
                     cursor.close();
 
                     Bitmap bitmap = BitmapUtility.adjustBitmap(photoPath);
-                    ivMedia.setImageBitmap(bitmap);
+//                    ivMedia.setImageBitmap(bitmap);
                     imageWidth = bitmap.getWidth();
                     imageHeight = bitmap.getHeight();
                     photoPath = BitmapUtility.saveBitmap(bitmap, Constant.MEDIA_PATH + "heyoe", FileUtility.getFilenameFromPath(photoPath));
@@ -1400,14 +1466,14 @@ public class ProfileFragment extends Fragment {
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(getResources().getString(R.string.confirm_update_avatar));
         builder.setCancelable(true);
-        builder.setPositiveButton("Set",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.Set),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                        updateAvatar();
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Discard",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.Discard),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (userModel.getAvatar().length() == 0) {
@@ -1484,7 +1550,7 @@ public class ProfileFragment extends Fragment {
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(msg);
         builder.setCancelable(true);
-        builder.setPositiveButton("Set",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.Set),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (checkFileSize(videoPath)) {
@@ -1496,7 +1562,7 @@ public class ProfileFragment extends Fragment {
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Discard",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.Discard),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (type == 1) {
@@ -1535,14 +1601,14 @@ public class ProfileFragment extends Fragment {
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(getResources().getString(R.string.choose_video));
         builder.setCancelable(true);
-        builder.setPositiveButton("Camera",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.Camera),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         captureVideoFromCamera();
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Gallery",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.Gallery),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         takeVideoFromGallery();
@@ -1550,7 +1616,7 @@ public class ProfileFragment extends Fragment {
                     }
                 });
 
-        builder.setNeutralButton("Play",
+        builder.setNeutralButton( mActivity.getResources().getString(R.string.Play),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (userModel.getHeader_video().length() > 0) {
@@ -1648,21 +1714,21 @@ public class ProfileFragment extends Fragment {
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(getResources().getString(R.string.choose_photo));
         builder.setCancelable(true);
-        builder.setPositiveButton("Camera",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.Camera),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dispatchTakePictureIntent(type);
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("gallery",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.Gallery),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         takePictureFromGallery(type);
                         dialog.cancel();
                     }
                 });
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton( mActivity.getResources().getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int arg1) {
@@ -1795,10 +1861,10 @@ public class ProfileFragment extends Fragment {
         Bitmap bitmap = null;
         if (type == 0) {// take picture for header photo
             bitmap = BitmapUtility.adjustBitmap(photoPath);
-            ivMedia.setImageBitmap(bitmap);
+//            ivMedia.setImageBitmap(bitmap);
         } else {
             bitmap = BitmapUtility.adjustBitmapForAvatar(avatarPath);
-            avatar.setImageBitmap(bitmap);
+//            avatar.setImageBitmap(bitmap);
         }
 
 

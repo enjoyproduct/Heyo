@@ -132,31 +132,31 @@ public class GcmIntentService extends IntentService {
         if(data.containsKey("liked_post")){
             message = data.getString("liked_post");
             String[] str = message.split("_like_post_");
-            message = str[0];
+            message = str[0] + " " + getResources().getString(R.string.liked_your_post);
             receiver_id = str[1];
             type = "activity";
         }else if (data.containsKey("disliked_post")){
             message = data.getString("disliked_post");
             String[] str = message.split("_dislike_post_");
-            message = str[0];
+            message = str[0] + " " + getResources().getString(R.string.liked_your_post);
             receiver_id = str[1];
             type = "activity";
         }else if (data.containsKey("commented_post")){
             message = data.getString("commented_post");
             String[] str = message.split("_comment_post_");
-            message = str[0];
+            message = str[0] + " " + getResources().getString(R.string.commented_on_your_post);
             receiver_id = str[1];
             type = "activity";
         } else if (data.containsKey("taged")) {
             message = data.getString("taged");
             String[] str = message.split("_taged_");
-            message = str[0];
+            message =  getResources().getString(R.string.You_are_tagged_by) + " " + str[0];
             receiver_id = str[1];
             type = "activity";
         }else if (data.containsKey("shared_post")){
             message = data.getString("shared_post");
             String[] str = message.split("_share_post_");
-            message = str[0];
+            message = str[0] + " " + getResources().getString(R.string.shared_your_post);
             receiver_id = str[1];
             type = "activity";
         }else if (data.containsKey("rejected_invite")){
@@ -164,9 +164,10 @@ public class GcmIntentService extends IntentService {
 
             PushModel pushModel = new PushModel();
             String[] string = message.split("_reject_invite_");
-            message = string[1];
+            message = string[1] + " " + getResources().getString(R.string.reject_friend_invitation);
             pushModel.receiver_id = string[0];
             pushModel.type = "reject_invite";
+            Global.getInstance().increaseActivityCount();
             localBroadCast(pushModel);
             type = "reject_invite";
         }else if (data.containsKey("received_invite")){
@@ -174,9 +175,10 @@ public class GcmIntentService extends IntentService {
 
             PushModel pushModel = new PushModel();
             String[] string = message.split("_invite_friend_");
-            message = string[1];
+            message = string[1] + " " + getResources().getString(R.string.sent_friend_invitation);
             pushModel.receiver_id = string[0];
             pushModel.type = "receive_invite";
+            Global.getInstance().increaseActivityCount();
             localBroadCast(pushModel);
             type = "receive_invite";
         }else if (data.containsKey("accepted_invite")){
@@ -184,20 +186,18 @@ public class GcmIntentService extends IntentService {
 
             PushModel pushModel = new PushModel();
             String[] string = message.split("_accept_invite_");
-            message = string[1];
+            message = string[1]+ " " + getResources().getString(R.string.accept_friend_invitiation);
             pushModel.receiver_id = string[0];
             pushModel.type = "accept_friend";
+            Global.getInstance().increaseActivityCount();
             localBroadCast(pushModel);
             type = "accept_friend";
-
-
         } else if (data.containsKey("receive_checkin_chat_request")){
-
             message = data.getString("receive_checkin_chat_request");
 
             PushModel pushModel = new PushModel();
             String[] string = message.split("_receive_checkin_chat_request_");
-            message ="You received checkin chat request from " + string[1];
+            message = getResources().getString(R.string.You_receive_checkin_chat_request) + " " + string[1];
 
             pushModel.user_id = string[0];
             pushModel.type = string[2];
@@ -209,7 +209,7 @@ public class GcmIntentService extends IntentService {
 
             PushModel pushModel = new PushModel();
             String[] string = message.split("_accept_checkin_chat_request_");
-            message = string[1] + " accepted your checkin chat request";
+            message = string[1] + " " + getResources().getString(R.string.accepted_your_checkin_chat_request);
 
             pushModel.user_id = string[0];
             pushModel.type = string[2];

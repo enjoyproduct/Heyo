@@ -216,10 +216,12 @@
         </LinearLayout>
         <!--comments-->
         <LinearLayout
+            android:id="@+id/ll_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="@dimen/dimen_8dp">
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:visibility="visible">
             <ImageView
                 android:id="@+id/iv_ipff_comments"
                 android:layout_width="wrap_content"

@@ -177,14 +177,14 @@ public class DetailPostActivity extends AppCompatActivity {
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(getResources().getString(R.string.confirm_delete_post));
         builder.setCancelable(true);
-        builder.setPositiveButton("Delete",
+        builder.setPositiveButton(getResources().getString(R.string.Delete),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         deletePost();
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Cancel",
+        builder.setNegativeButton(getResources().getString(R.string.dlg_cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();

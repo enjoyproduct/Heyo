@@ -2,6 +2,7 @@ package com.heyoe_chat.controller;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -28,7 +30,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -70,6 +74,7 @@ import com.heyoe_chat.model.Global;
 import com.heyoe_chat.model.PostModel;
 import com.heyoe_chat.model.PushModel;
 import com.heyoe_chat.model.UserModel;
+import com.heyoe_chat.utilities.LocaleHelper;
 import com.heyoe_chat.utilities.UIUtility;
 import com.heyoe_chat.utilities.Utils;
 import com.layer.atlas.util.Util;
@@ -80,7 +85,9 @@ import org.json.JSONObject;
 import org.liuyichen.dribsearch.DribSearchView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HomeActivity extends AppCompatActivity implements
@@ -206,8 +213,8 @@ public class HomeActivity extends AppCompatActivity implements
 
     private void login_layer(final String user_id) {
         Utils.showProgress(this);
-        if (!App.getLayerClient().isAuthenticated()) {
-
+        if (App.getLayerClient().isAuthenticated()) {
+//            return;
         }
         App.authenticate(new DemoAuthenticationProvider.Credentials(App.getLayerAppId(), user_id),
                 new AuthenticationProvider.Callback() {
@@ -230,7 +237,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     }
 
-    private void logout_layer() {
+    private static void logout_layer() {
         App.deauthenticate(new Util.DeauthenticationCallback() {
             @Override
             public void onDeauthenticationSuccess(LayerClient client) {
@@ -245,7 +252,7 @@ public class HomeActivity extends AppCompatActivity implements
                 if (Log.isLoggable(Log.ERROR)) {
                     Log.e("Failed to deauthenticate: " + reason);
                 }
-                Toast.makeText(HomeActivity.this, getString(R.string.toast_failed_to_deauthenticate, reason), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(HomeActivity.this, getString(R.string.toast_failed_to_deauthenticate, reason), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -261,7 +268,6 @@ public class HomeActivity extends AppCompatActivity implements
                     data.type.equals("reject_invite") ||
                     data.type.equals("accept_friend")) {
                 if (data.receiver_id.equals(Utils.getFromPreference(mActivity, Constant.USER_ID))) {
-//                    Global.getInstance().increaseActivityCount();
                     showActivityBadge();
                 }
 
@@ -273,7 +279,6 @@ public class HomeActivity extends AppCompatActivity implements
                             return;
                         }
                     }
-//                    Global.getInstance().increaseMessageCount();
                     showMsgBadge(data.user_id, data.conversation_id);
 
                 }
@@ -316,10 +321,7 @@ public class HomeActivity extends AppCompatActivity implements
         tvActivityCount = (TextView) findViewById(R.id.txt_activity_count);
 
         //init autocomplete search view/////////////////////////////////////////////////
-
-
         //init search widget///////////////////////////////////////////////////////////
-
         dribSearchView = (DribSearchView) findViewById(R.id.dribSearchView);
         dribSearchView.setOnClickSearchListener(new DribSearchView.OnClickSearchListener() {
             @Override
@@ -364,6 +366,7 @@ public class HomeActivity extends AppCompatActivity implements
         materialMenu = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.EXTRA_THIN);
         toolbar.setNavigationIcon(materialMenu);
         materialMenu.setNeverDrawTouch(true);
+
         //////////////////////////////////////////////////////////////////
 
         autoCompleteTextView = (AutoCompleteTextView) toolbar.findViewById(R.id.sv_menu);
@@ -400,6 +403,7 @@ public class HomeActivity extends AppCompatActivity implements
         showActivityBadge();
         showMsgBadge("", "");
     }
+
 
     public static void showActivityBadge() {
         mActivity.runOnUiThread(new Runnable() {
@@ -446,6 +450,7 @@ public class HomeActivity extends AppCompatActivity implements
         if (mActivity == null) {
             return;
         }
+
         if (flag) {
             autoCompleteTextView.setVisibility(View.VISIBLE);
             autoCompleteTextView.setFocusable(true);
@@ -764,6 +769,7 @@ public class HomeActivity extends AppCompatActivity implements
         if (v == rlActivity) {
             navigateTo(4);
         }
+
     }
 
 
@@ -826,6 +832,7 @@ public class HomeActivity extends AppCompatActivity implements
                     navigateTo(0);
                 }
 
+
                 break;
             case 104:////from detail post in profile
                 if (data != null) {
@@ -838,6 +845,10 @@ public class HomeActivity extends AppCompatActivity implements
                             ProfileFragment.deletePost(postModel);
                         }
                     }
+                }
+                if (resultCode == 50) {
+                    startActivity(new Intent(this, HomeActivity.class));
+                    finish();
                 }
                 break;
             case 105://from social sharing in profile
@@ -1033,15 +1044,15 @@ public class HomeActivity extends AppCompatActivity implements
     public static void showSignOutAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(mActivity.getResources().getString(R.string.app_name));
-        builder.setMessage("Do you want to log out?");
+        builder.setMessage(mActivity.getResources().getString(R.string.Do_you_want_logout));
         builder.setCancelable(true);
-        builder.setPositiveButton("Log Out",
+        builder.setPositiveButton(mActivity.getResources().getString(R.string.Log_out),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         sign_out();
                     }
                 });
-        builder.setNegativeButton("Cancel",
+        builder.setNegativeButton(mActivity.getResources().getString(R.string.dlg_cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
@@ -1053,6 +1064,8 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private static void sign_out() {
+
+//        logout_layer();
 
         setOffline("off");
 

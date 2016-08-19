@@ -398,21 +398,21 @@ public class SignupFragment extends Fragment {
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(message);
         builder.setCancelable(true);
-        builder.setPositiveButton("Camera",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.Camera),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dispatchTakePictureIntent();
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Gallery",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.Gallery),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         takePictureFromGallery();
                         dialog.cancel();
                     }
                 });
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton( mActivity.getResources().getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int arg1) {

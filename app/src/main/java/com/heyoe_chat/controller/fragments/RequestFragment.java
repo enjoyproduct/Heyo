@@ -306,9 +306,10 @@ public class RequestFragment extends Fragment {
                             String status = response.getString("status");
                             if (status.equals("200")) {
                                 createConversation(arrUsers.get(position).getUser_id());
+                                Utils.showOKDialog(mActivity, arrUsers.get(position).getFullname() + " " + getResources().getString(R.string.accept_success));
                                 arrUsers.remove(position);
                                 friendAdapter.notifyDataSetChanged();
-                                Utils.showOKDialog(mActivity, getResources().getString(R.string.accept_success));
+
                             } else  if (status.equals("400")) {
                                 Utils.showOKDialog(mActivity, getResources().getString(R.string.access_denied));
                             } else if (status.equals("402")) {
@@ -431,14 +432,14 @@ public class RequestFragment extends Fragment {
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(getResources().getString(R.string.cancel_invite));
         builder.setCancelable(true);
-        builder.setPositiveButton("OK",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.dlg_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         cancelInvite(position);
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Cancel",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.dlg_cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
@@ -454,14 +455,14 @@ public class RequestFragment extends Fragment {
         builder.setTitle(Constant.INDECATOR);
         builder.setMessage(getResources().getString(R.string.reject_friend));
         builder.setCancelable(true);
-        builder.setPositiveButton("OK",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.dlg_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         rejectFriend(position);
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("Cancel",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.dlg_cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();

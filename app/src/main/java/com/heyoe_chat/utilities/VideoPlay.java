@@ -7,6 +7,8 @@ import android.util.Log;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+import com.heyoe_chat.R;
+
 public class VideoPlay {
     private Context mContext;
     private VideoView videoView;
@@ -20,13 +22,14 @@ public class VideoPlay {
     public void playVideo(){
         try {
             // Start the MediaController
-            MediaController mediacontroller = new MediaController(
-                    mContext);
+            MediaController mediacontroller = new MediaController(mContext);
             mediacontroller.setAnchorView(videoView);
+            mediacontroller.setBackgroundColor(mContext.getResources().getColor(R.color.white));
             // Get the URL from String VideoURL
             Uri video = Uri.parse(videoUrl);
             videoView.setMediaController(mediacontroller);
             videoView.setVideoURI(video);
+
 //            videoView.setVideoPath("android.resource://" + getPackageName() + "/" + R.raw.asd);
         } catch (Exception e) {
             Log.e("Error", e.getMessage());

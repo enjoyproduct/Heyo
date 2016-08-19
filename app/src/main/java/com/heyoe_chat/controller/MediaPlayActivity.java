@@ -253,6 +253,7 @@ public class MediaPlayActivity extends YouTubeBaseActivity implements YouTubePla
     private void initVideoview() {
         videoView = (VideoView) findViewById(R.id.videoview);
         videoView.setVisibility(View.VISIBLE);
+
         VideoPlay videoPlay = new VideoPlay(this, videoView, url);
         videoPlay.playVideo();
     }

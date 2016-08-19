@@ -4,10 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.heyoe_chat.controller.fragments.FAQFragment">
 
-    <!-- TODO: Update blank fragment text_layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+
 
 </LinearLayout>

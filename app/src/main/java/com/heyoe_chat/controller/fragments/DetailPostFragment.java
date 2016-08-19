@@ -514,7 +514,7 @@ public class DetailPostFragment extends Fragment {
                 arrTagedFriends.add(arrFriends.get(which));
             }
         });
-        builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder1.setNegativeButton( mActivity.getResources().getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

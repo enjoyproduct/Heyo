@@ -494,14 +494,14 @@ public class MainFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(Constant.INDECATOR);
         builder.setCancelable(true);
-        builder.setPositiveButton("Send",
+        builder.setPositiveButton( mActivity.getResources().getString(R.string.Send),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                         dialog.cancel();
                     }
                 });
-        builder.setNegativeButton("No",
+        builder.setNegativeButton( mActivity.getResources().getString(R.string.No),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
