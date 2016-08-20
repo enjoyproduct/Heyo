@@ -75,6 +75,7 @@ import com.heyoe_chat.model.PostModel;
 import com.heyoe_chat.model.PushModel;
 import com.heyoe_chat.model.UserModel;
 import com.heyoe_chat.utilities.LocaleHelper;
+import com.heyoe_chat.utilities.TimeUtility;
 import com.heyoe_chat.utilities.UIUtility;
 import com.heyoe_chat.utilities.Utils;
 import com.layer.atlas.util.Util;
@@ -545,6 +546,7 @@ public class HomeActivity extends AppCompatActivity implements
                             String status = response.getString("status");
                             if (status.equals("200")) {
                                 Utils.saveToPreference(mActivity, Constant.BLACK_PASSWORD, black_pass);
+                                Utils.saveToPreference(mActivity, Constant.BLACK_PASSWORD_TIME, TimeUtility.getCurrentTimeStamp());
 //                                Intent intent = new Intent(mActivity, Black_Friend_Activity.class);
 //                                startActivity(intent);
                                 navigateToBlackChat();
@@ -1065,7 +1067,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     private static void sign_out() {
 
-//        logout_layer();
+        logout_layer();
 
         setOffline("off");
 

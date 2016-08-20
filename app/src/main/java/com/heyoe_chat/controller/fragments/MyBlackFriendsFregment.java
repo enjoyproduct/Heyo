@@ -46,6 +46,7 @@ import com.heyoe_chat.utilities.Utils;
 import com.heyoe_chat.utilities.image_downloader.UrlImageViewCallback;
 import com.heyoe_chat.utilities.image_downloader.UrlRectangleImageViewHelper;
 import com.heyoe_chat.widget.MyCircularImageView;
+import com.layer.atlas.util.Util;
 import com.layer.sdk.LayerClient;
 import com.layer.sdk.exceptions.LayerConversationException;
 import com.layer.sdk.messaging.Conversation;
@@ -130,10 +131,10 @@ public class MyBlackFriendsFregment extends Fragment {
 
         }
         if (state == 0) {
-//                    ArrayList<UserModel> temp = new ArrayList<UserModel>();
-//                    temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
-//                    arrActiveUsers = new ArrayList<UserModel>();
-//                    arrActiveUsers.addAll(temp);
+                    ArrayList<UserModel> temp = new ArrayList<UserModel>();
+                    temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
+                    arrActiveUsers = new ArrayList<UserModel>();
+                    arrActiveUsers.addAll(temp);
 
 
         } else {
@@ -253,7 +254,9 @@ public class MyBlackFriendsFregment extends Fragment {
 
             }
         });
-
+        if (Integer.parseInt(TimeUtility.getCurrentTimeStamp()) < Integer.parseInt(Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD_TIME)) + 3600 * 24 * 3) {
+            Utils.showToast(mActivity, getResources().getString(R.string.password) + ": " + Utils.getFromPreference(mActivity, Constant.BLACK_PASSWORD));
+        }
 
     }
     private void getBlackFriends() {

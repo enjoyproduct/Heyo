@@ -22,6 +22,7 @@ public class Constant {
     public static String EMAIL = "email";
     public static String PASSWORD = "password";
     public static String BLACK_PASSWORD = "black_password";
+    public static String BLACK_PASSWORD_TIME = "black_password_time";
     public static String FULLNAME = "fullname";
     public static String BIRTHDAY = "birthday";
     public static String GENDER = "gender";

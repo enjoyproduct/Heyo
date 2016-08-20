@@ -109,8 +109,7 @@ public class MyFriendFragment extends Fragment  {
                 }
             }
         }
-        friendAdapter = new FriendAdapter(arrActiveUsers);
-        lvHome.setAdapter(friendAdapter);
+
 
         for (int i = 0; i < arrBlockedUsers.size(); i++) {
             arrBlockedUsers.get(i).setUnreadMsgCount(0);
@@ -128,16 +127,19 @@ public class MyFriendFragment extends Fragment  {
 
         }
         if (state == 0) {
-//                    ArrayList<UserModel> temp = new ArrayList<UserModel>();
-//                    temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
-//                    arrActiveUsers = new ArrayList<UserModel>();
-//                    arrActiveUsers.addAll(temp);
+                    ArrayList<UserModel> temp = new ArrayList<UserModel>();
+                    temp.addAll(Global.getInstance().qsortUsersByMsgDate(arrActiveUsers));
+                    arrActiveUsers = new ArrayList<UserModel>();
+                    arrActiveUsers.addAll(temp);
 
+            friendAdapter = new FriendAdapter(arrActiveUsers);
+            lvHome.setAdapter(friendAdapter);
 
         } else {
             blockedFriendAdapter = new BlockedFriendAdapter(arrBlockedUsers);
             lvHome.setAdapter(blockedFriendAdapter);
         }
+
         mPullRefreshHomeListView.onRefreshComplete();
     }
     private Conversation createConversation(String friend_id) {

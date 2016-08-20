@@ -6,15 +6,11 @@
     <string name="atlas_message_item_read">Okundu</string>
     <string name="atlas_message_item_delivered">iletildi</string>
 
-
     <string name="atlas_gallery_sender_chooser">Fotoğraf takın</string>
-
     <string name="atlas_text_cell_factory_clipboard_description">Mesaj</string>
     <string name="atlas_text_cell_factory_copied_to_clipboard">Panoya kopyalandı</string>
-
     <string name="atlas_message_preview_image">Eklenti: Görüntü</string>
     <string name="atlas_message_preview_location">Eklenti: Yer</string>
-
     <string name="atlas_time_today">Bugün</string>
     <string name="atlas_time_yesterday">Dün</string>
 

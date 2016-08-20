@@ -6,19 +6,19 @@ import java.util.ArrayList;
  * Created by dell17 on 5/18/2016.
  */
 public class QSort {
-    private ArrayList<Long> arrDate;
-    public QSort (ArrayList<Long> arrayList) {
-        this.arrDate = new ArrayList<>();
-        arrDate.addAll(arrayList);
+    private ArrayList<UserModel> arrUsers;
+    public QSort (ArrayList<UserModel> arrayList) {
+        this.arrUsers = new ArrayList<>();
+        arrUsers.addAll(arrayList);
     }
     // This method sorts an array and internally calls quickSort
     public void sort(){
         int left = 0;
-        int right = arrDate.size()-1;
+        int right = arrUsers.size()-1;
         quickSort(left, right);
     }
-    public ArrayList<Long> getResult() {
-        return arrDate;
+    public ArrayList<UserModel> getResult() {
+        return arrUsers;
     }
     // It takes the left and the right end of the array as the two cursors.
     private void quickSort(int left,int right){
@@ -26,7 +26,7 @@ public class QSort {
         if(left >= right)
             return;
         // For the simplicity, we took the right most item of the array as a pivot
-        long pivot = arrDate.get(right);
+        long pivot = arrUsers.get(right).getLastMsgSentTime();
         int partition = partition(left, right, pivot);
         // Recursively, calls the quicksort with the different left and right parameters of the sub-array
         quickSort(0, partition-1);
@@ -37,8 +37,8 @@ public class QSort {
         int leftCursor = left - 1;
         int rightCursor = right;
         while(leftCursor < rightCursor){
-            while(arrDate.get(++leftCursor) < pivot);
-            while(rightCursor > 0 && arrDate.get(--rightCursor) > pivot);
+            while(arrUsers.get(++leftCursor).lastMsgSentTime > pivot);
+            while(rightCursor > 0 && arrUsers.get(--rightCursor).lastMsgSentTime < pivot);
             if(leftCursor >= rightCursor){
                 break;
             }else{
@@ -50,12 +50,12 @@ public class QSort {
     }
             // This method is used to swap the values between the two given index
     public void swap(int left,int right){
-        long tempLeft = arrDate.get(left);
-        long tempRight = arrDate.get(right);
-        arrDate.remove(left);
-        arrDate.add(left, tempRight);
-        arrDate.remove(right);
-        arrDate.add(right, tempLeft);
+        UserModel tempLeft = arrUsers.get(left);
+        UserModel tempRight = arrUsers.get(right);
+        arrUsers.remove(left);
+        arrUsers.add(left, tempRight);
+        arrUsers.remove(right);
+        arrUsers.add(right, tempLeft);
     }
 
 }

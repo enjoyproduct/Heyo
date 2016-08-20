@@ -24,13 +24,10 @@
     <string name="atlas_notification_location">Attachment from %1$s: Location</string>
 
     <string name="atlas_gallery_sender_chooser">Attach Photo</string>
-
     <string name="atlas_text_cell_factory_clipboard_description">Message</string>
     <string name="atlas_text_cell_factory_copied_to_clipboard">Copied to clipboard</string>
-
     <string name="atlas_message_preview_image">Attachment: Image</string>
     <string name="atlas_message_preview_location">Attachment: Location</string>
-
     <string name="atlas_time_today">Today</string>
     <string name="atlas_time_yesterday">Yesterday</string>
 

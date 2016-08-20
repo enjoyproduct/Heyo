@@ -210,7 +210,7 @@
         <item>English</item>
         <item>Dutch</item>
         <item>Turkish</item>
-        <item>Germany</item>
+        <!--<item>Germany</item>-->
         <!--<item>Spanish</item>-->
     </string-array>
 

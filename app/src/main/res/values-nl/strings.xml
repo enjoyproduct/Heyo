@@ -159,7 +159,7 @@
         <item>Engels</item>
         <item>Nederlands</item>
         <item>Turks</item>
-        <item>Duitsland</item>
+        <!--<item>Duitsland</item>-->
         <!--<item>Spanish</item>-->
     </string-array>
 

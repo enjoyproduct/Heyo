@@ -769,7 +769,7 @@ public class DetailPostFragment extends Fragment {
                 ibLike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("dislike")) {
+                        if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 15 && !postModel.getLike().equals("dislike")) {
                             if (postModel.getLike().equals("like")) {
                                 setLike("cancel_like");
                             } else if (postModel.getLike().equals("none")) {
@@ -785,7 +785,7 @@ public class DetailPostFragment extends Fragment {
                 ibDislike.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 60 && !postModel.getLike().equals("like")) {
+                        if (Long.parseLong(TimeUtility.getCurrentTimeStamp()) - postModel.getClickedTime() > 15 && !postModel.getLike().equals("like")) {
                             if (postModel.getLike().equals("dislike")) {
                                 setLike("cancel_dislike");
                             } else if (postModel.getLike().equals("none")) {
